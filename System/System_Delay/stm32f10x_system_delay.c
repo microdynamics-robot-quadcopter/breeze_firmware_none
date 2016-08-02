@@ -1,63 +1,118 @@
+/*************************************************
+Copyright (C), 2016-2016, Team MicroDynamics. 
+
+Filename:    stm32f10x_system_delay.c
+Author:      maksyuki
+Version:     1.0
+Date:        2016.8.2
+Description: implement the time delay function
+Others:      none
+Function List:
+             1. extern void delay_init(void); 
+             2. extern void delay_ms(u16 nms);
+             3. extern void delay_us(u32 nus);
+History:     none
+*************************************************/
+
 #include "stm32f10x.h"
 #include "stm32f10x_system_delay.h"
 
-//-----私有全局变量-----//
-static u8  g_fac_us = 0;			//us定时因子
-static u16 g_fac_ms = 0;			//ms定时因子
+/**************************************************
+* Global variable function:
+*      the timing factor in microsecond precision
+* Avalable value:
+*      0      - initial value
+*      Others - set value
+* Call relationship:
+*      only function delay_init(void) and delay_us(u32 nus) 
+*      in this modual can modify it 
+**************************************************/
+static u8 g_fac_us = 0;
 
-/****************************************************
-函数名：void delay_init(void)
-说明：延迟初始化
-入口：无
-出口：无
-备注：使用SysTick时钟进行延迟，请务必使用8MHz外部晶振
-*****************************************************/
+/**************************************************
+* Global variable function:
+*      the timing factor in millisecond precision
+* Avalable value:
+*      0      - initial value
+*      Others - set value
+* Call relationship:
+*      only function delay_init(void) and delay_ms(u16 nms) 
+*      in this modual can modify it 
+**************************************************/
+static u16 g_fac_ms = 0;
+
+/*************************************************
+Function:       void delay_init(void)
+Description:    initializes the delay function
+Calls:          void SysTick_CLKSourceConfig(void)
+Called By:      int main(void)
+Table Accessed: none
+Table Updated:  none
+Input:          none
+Output:         none
+Return:         none
+Others:         none
+*************************************************/
 void delay_init(void)
 {
-	SysTick_CLKSourceConfig(SysTick_CLKSource_HCLK_Div8);	//选择外部时钟HCLK/8
-	g_fac_us = SystemCoreClock / 8000000;									//时钟的1/8  
-	g_fac_ms = (u16)g_fac_us * 1000;											//延迟因子
+	SysTick_CLKSourceConfig(SysTick_CLKSource_HCLK_Div8); /*Select external clock HCLK/8*/
+	g_fac_us = SystemCoreClock / 8000000;				  /*Clock time's 1/8*/  
+	g_fac_ms = (u16)g_fac_us * 1000;
 }	
 
-/****************************************************
-函数名：void Delay_us(u32 nus)
-说明：us延迟
-入口：u32 nus  输入延迟的us，最大范围为(2^24/fac_us)
-出口：无
-备注：使用SysTick时钟进行延迟，请务必使用8MHz外部晶振
-*****************************************************/ 								   
+/*************************************************
+Function:       void delay_us(u32 nus)
+Description:    set time with microsecond precision
+Calls:          
+Called By:      
+Table Accessed: none
+Table Updated:  none
+Input:          set value, the maximum value is [2^24/g_fac_us]
+Output:         none
+Return:         none
+Others:         to use SysTick clock to delay time, an external 
+                8MHz crystal oscillator is required
+*************************************************/ 								   
 void delay_us(u32 nus)
 {		
 	u32 temp;	    	 
 	SysTick->LOAD = nus * g_fac_us;	 
-	SysTick->VAL = 0x00;        									//清空计数器
-	SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk ;    //开始倒数
+	SysTick->VAL = 0x00;        				 /*Clear timer*/
+	SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;    /*Start countdown*/
 	do
 	{
 		temp = SysTick->CTRL;
 	}
-	while (temp & 0x01 && !(temp & (1 << 16)));				//等待时间到达
-	SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;        //关闭计数器
-	SysTick->VAL = 0x00;     													//清空计数器
+	while((temp & 0x01) && !(temp & (1 << 16))); /*Wait time to arrive*/
+	SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;   /*Disable timer*/
+	SysTick->VAL = 0x00;                         /*Clear timer*/
 }
-/**************************************************************
-函数名：void Delay_ms(u16 nms)
-说明：ms延迟
-入口16 nms  输入延迟的ms，最大范围为(0xffffff*8*1000/SYSCLK)
-出口：无
-备注：8MHz时的最大延迟为1864ms
-***************************************************************/ 		
+
+/*************************************************
+Function:       void delay_ms(u16 nms)
+Description:    set time with millisecond precision
+Calls:          
+Called By:      
+Table Accessed: none
+Table Updated:  none
+Input:          set value, the maximum value is [0xffffff*8*1000/SYSCLK]
+Output:         none
+Return:         none
+Others:         to use SysTick clock to delay time, an external 
+                8MHz crystal oscillator is required, the maximum
+                delay is 1864ms
+*************************************************/ 			
 void delay_ms(u16 nms)
 {	 		  	  
 	u32 temp;		   
-	SysTick->LOAD = (u32)nms*g_fac_ms;								//时间加载，SysTick->LOAD为24bit
-	SysTick->VAL = 0x00;          										//清空计数器
-	SysTick->CTRL|=SysTick_CTRL_ENABLE_Msk ;          //开始倒数  
+	SysTick->LOAD = (u32)nms * g_fac_ms;	     /*Load time, SysTick->LOAD is 24bit*/
+	SysTick->VAL = 0x00;          			     /*Clear timer*/
+	SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;    /*Start countdown*/
 	do
 	{
-		temp=SysTick->CTRL;
+		temp = SysTick->CTRL;
 	}
-	while (temp & 0x01 && !(temp & (1 << 16)));				//等待时间到达
-	SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;				//关闭计数器
-	SysTick->VAL = 0x00;     													//清空计数器
+	while((temp & 0x01) && !(temp & (1 << 16))); /*Wait time to arrive*/
+	SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;   /*Disable timer*/
+	SysTick->VAL = 0x00;     				     /*Clear timer*/
 } 

@@ -1,6 +1,6 @@
-..\build\output\delay.o: ..\System\delay\delay.c
-..\build\output\delay.o: ..\System\delay\delay.h
-..\build\output\delay.o: ..\System\sys\sys.h
+..\build\output\delay.o: ..\System\System_Delay\delay.c
+..\build\output\delay.o: ..\System\System_Delay\delay.h
+..\build\output\delay.o: ..\System\System_Sys\sys.h
 ..\build\output\delay.o: ..\Libraries\CMSIS\stm32f10x.h
 ..\build\output\delay.o: ..\Libraries\CMSIS\core_cm3.h
 ..\build\output\delay.o: E:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h

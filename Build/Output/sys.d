@@ -1,5 +1,5 @@
-..\build\output\sys.o: ..\System\sys\sys.c
-..\build\output\sys.o: ..\System\sys\sys.h
+..\build\output\sys.o: ..\System\System_Sys\sys.c
+..\build\output\sys.o: ..\System\System_Sys\sys.h
 ..\build\output\sys.o: ..\Libraries\CMSIS\stm32f10x.h
 ..\build\output\sys.o: ..\Libraries\CMSIS\core_cm3.h
 ..\build\output\sys.o: E:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h

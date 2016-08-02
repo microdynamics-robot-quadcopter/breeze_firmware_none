@@ -7,7 +7,7 @@
 
   <Targets>
     <Target>
-      <TargetName>microdynamics_stm32_template</TargetName>
+      <TargetName>breeze_firmware_none</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
       <pCCUsed>5060061::V5.06 update 1 (build 61)::ARMCC</pCCUsed>
@@ -373,7 +373,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER, STM32F10X_MD</Define>
               <Undefine></Undefine>
-              <IncludePath>..\User;..\Drivers\Driver_Led;..\Libraries\CMSIS;..\Libraries\FWLib\inc;..\System\delay;..\System\sys;..\System\usart</IncludePath>
+              <IncludePath>..\User;..\Drivers\Driver_Led;..\Libraries\CMSIS;..\Libraries\FWLib\inc;..\System\System_Delay;..\System\System_Sys;..\System\System_Usart</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -454,17 +454,17 @@
             <File>
               <FileName>delay.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\System\delay\delay.c</FilePath>
+              <FilePath>..\System\System_Delay\delay.c</FilePath>
             </File>
             <File>
               <FileName>sys.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\System\sys\sys.c</FilePath>
+              <FilePath>..\System\System_Sys\sys.c</FilePath>
             </File>
             <File>
               <FileName>usart.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\System\usart\usart.c</FilePath>
+              <FilePath>..\System\System_Usart\usart.c</FilePath>
             </File>
           </Files>
         </Group>

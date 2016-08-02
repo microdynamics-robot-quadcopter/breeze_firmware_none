@@ -1,5 +1,5 @@
-..\build\output\usart.o: ..\System\usart\usart.c
-..\build\output\usart.o: ..\System\sys\sys.h
+..\build\output\usart.o: ..\System\System_Usart\usart.c
+..\build\output\usart.o: ..\System\System_Sys\sys.h
 ..\build\output\usart.o: ..\Libraries\CMSIS\stm32f10x.h
 ..\build\output\usart.o: ..\Libraries\CMSIS\core_cm3.h
 ..\build\output\usart.o: E:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
@@ -29,5 +29,5 @@
 ..\build\output\usart.o: ..\Libraries\FWLib\inc\stm32f10x_usart.h
 ..\build\output\usart.o: ..\Libraries\FWLib\inc\stm32f10x_wwdg.h
 ..\build\output\usart.o: ..\Libraries\FWLib\inc\misc.h
-..\build\output\usart.o: ..\System\usart\usart.h
+..\build\output\usart.o: ..\System\System_Usart\usart.h
 ..\build\output\usart.o: E:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h

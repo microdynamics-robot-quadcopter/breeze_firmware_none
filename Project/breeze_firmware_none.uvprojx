@@ -48,7 +48,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>..\Build\Output\</OutputDirectory>
-          <OutputName>microdynamics_stm32_template</OutputName>
+          <OutputName>breeze_firmware_none</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>1</CreateHexFile>
@@ -452,9 +452,9 @@
           <GroupName>System</GroupName>
           <Files>
             <File>
-              <FileName>delay.c</FileName>
+              <FileName>stm32f10x_system_delay.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\System\System_Delay\delay.c</FilePath>
+              <FilePath>..\System\System_Delay\stm32f10x_system_delay.c</FilePath>
             </File>
             <File>
               <FileName>sys.c</FileName>

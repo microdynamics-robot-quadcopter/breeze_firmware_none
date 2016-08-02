@@ -29,7 +29,7 @@
 ..\build\output\main.o: ..\Libraries\FWLib\inc\stm32f10x_usart.h
 ..\build\output\main.o: ..\Libraries\FWLib\inc\stm32f10x_wwdg.h
 ..\build\output\main.o: ..\Libraries\FWLib\inc\misc.h
-..\build\output\main.o: ..\System\System_Delay\delay.h
+..\build\output\main.o: ..\System\System_Delay\stm32f10x_system_delay.h
 ..\build\output\main.o: ..\System\System_Usart\usart.h
 ..\build\output\main.o: E:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 ..\build\output\main.o: ..\Drivers\Driver_Led\stm32f10x_driver_led.h

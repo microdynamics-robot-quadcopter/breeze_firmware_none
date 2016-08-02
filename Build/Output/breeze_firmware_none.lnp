@@ -3,7 +3,7 @@
 "..\build\output\stm32f10x_driver_led.o"
 "..\build\output\main.o"
 "..\build\output\stm32f10x_it.o"
-"..\build\output\delay.o"
+"..\build\output\stm32f10x_system_delay.o"
 "..\build\output\sys.o"
 "..\build\output\usart.o"
 "..\build\output\misc.o"
@@ -31,7 +31,7 @@
 "..\build\output\stm32f10x_wwdg.o"
 "..\build\output\core_cm3.o"
 "..\build\output\system_stm32f10x.o"
---strict --scatter "..\Build\Output\microdynamics_stm32_template.sct"
+--strict --scatter "..\Build\Output\breeze_firmware_none.sct"
 --summary_stderr --info summarysizes --map --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
---list "..\Build\Listing\microdynamics_stm32_template.map" -o ..\Build\Output\microdynamics_stm32_template.axf
+--list "..\Build\Listing\breeze_firmware_none.map" -o ..\Build\Output\breeze_firmware_none.axf

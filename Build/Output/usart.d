@@ -1,5 +1,5 @@
 ..\build\output\usart.o: ..\System\System_Usart\usart.c
-..\build\output\usart.o: ..\System\System_Sys\sys.h
+..\build\output\usart.o: ..\Drivers\Driver_Sys\stm32f10x_driver_sys.h
 ..\build\output\usart.o: ..\Libraries\CMSIS\stm32f10x.h
 ..\build\output\usart.o: ..\Libraries\CMSIS\core_cm3.h
 ..\build\output\usart.o: E:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h

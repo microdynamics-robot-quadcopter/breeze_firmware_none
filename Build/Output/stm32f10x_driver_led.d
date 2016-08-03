@@ -30,4 +30,4 @@
 ..\build\output\stm32f10x_driver_led.o: ..\Libraries\FWLib\inc\stm32f10x_wwdg.h
 ..\build\output\stm32f10x_driver_led.o: ..\Libraries\FWLib\inc\misc.h
 ..\build\output\stm32f10x_driver_led.o: ..\Drivers\Driver_Led\stm32f10x_driver_led.h
-..\build\output\stm32f10x_driver_led.o: ..\System\System_Sys\sys.h
+..\build\output\stm32f10x_driver_led.o: ..\Drivers\Driver_Sys\stm32f10x_driver_sys.h

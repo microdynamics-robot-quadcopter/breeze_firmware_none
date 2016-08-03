@@ -22,4 +22,5 @@ History:     none
 extern void delay_init(void);  /*Initializes the delay function*/
 extern void delay_ms(u16 nms); /*Set time with millisecond precision*/
 extern void delay_us(u32 nus); /*Set time with microsecond precision*/
+
 #endif

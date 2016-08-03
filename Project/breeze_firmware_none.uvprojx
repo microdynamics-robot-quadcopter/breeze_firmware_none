@@ -373,7 +373,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER, STM32F10X_MD</Define>
               <Undefine></Undefine>
-              <IncludePath>..\User;..\Drivers\Driver_Led;..\Libraries\CMSIS;..\Libraries\FWLib\inc;..\System\System_Delay;..\System\System_Sys;..\System\System_Usart</IncludePath>
+              <IncludePath>..\User;..\Drivers\Driver_Led;..\Drivers\Driver_Sys;..\Libraries\CMSIS;..\Libraries\FWLib\inc;..\System\System_Delay;..\System\System_Usart</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -431,6 +431,11 @@
               <FileType>1</FileType>
               <FilePath>..\Drivers\Driver_Led\stm32f10x_driver_led.c</FilePath>
             </File>
+            <File>
+              <FileName>stm32f10x_driver_sys.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\Driver_Sys\stm32f10x_driver_sys.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -455,11 +460,6 @@
               <FileName>stm32f10x_system_delay.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\System\System_Delay\stm32f10x_system_delay.c</FilePath>
-            </File>
-            <File>
-              <FileName>sys.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\System\System_Sys\sys.c</FilePath>
             </File>
             <File>
               <FileName>usart.c</FileName>

@@ -1,7 +1,7 @@
 #ifndef STM32F10X_DRIVER_LED_H
 #define STM32F10X_DRIVER_LED_H
 
-#include "sys.h"
+#include "stm32f10x_driver_sys.h"
 
 #define LED0 PBout(5)
 

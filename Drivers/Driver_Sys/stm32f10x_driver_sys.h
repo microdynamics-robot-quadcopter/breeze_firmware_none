@@ -1,3 +1,17 @@
+/*******************************************************************************
+Copyright (C), 2016-2016, Team MicroDynamics. 
+
+Filename:    stm32f10x_driver_sys.h
+Author:      maksyuki
+Version:     1.0
+Date:        2016.8.3
+Description: define the bitband operation
+Others:      none
+Function List:
+             none
+History:     none
+*******************************************************************************/
+
 #ifndef __STM32F10X_DRIVER_SYS_H__
 #define __STM32F10X_DRIVER_SYS_H__	
 #include "stm32f10x.h"

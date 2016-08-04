@@ -373,7 +373,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER, STM32F10X_MD</Define>
               <Undefine></Undefine>
-              <IncludePath>..\User;..\Drivers\Driver_Led;..\Drivers\Driver_Sys;..\Libraries\CMSIS;..\Libraries\FWLib\inc;..\System\System_Delay;..\System\System_Usart</IncludePath>
+              <IncludePath>..\User;..\Drivers\Driver_Sys;..\Drivers\Driver_IIC;..\Drivers\Driver_SPI;..\Drivers\Driver_PWM;..\System\System_Delay;..\System\System_Usart;..\Libraries\FWLib\inc;..\Libraries\CMSIS</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -427,14 +427,24 @@
           <GroupName>Drivers</GroupName>
           <Files>
             <File>
-              <FileName>stm32f10x_driver_led.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Drivers\Driver_Led\stm32f10x_driver_led.c</FilePath>
-            </File>
-            <File>
               <FileName>stm32f10x_driver_sys.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Drivers\Driver_Sys\stm32f10x_driver_sys.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_driver_iic.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\Driver_IIC\stm32f10x_driver_iic.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_driver_pwm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\Driver_PWM\stm32f10x_driver_pwm.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_driver_spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\Driver_SPI\stm32f10x_driver_spi.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -460,11 +470,6 @@
               <FileName>stm32f10x_system_delay.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\System\System_Delay\stm32f10x_system_delay.c</FilePath>
-            </File>
-            <File>
-              <FileName>usart.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\System\System_Usart\usart.c</FilePath>
             </File>
           </Files>
         </Group>

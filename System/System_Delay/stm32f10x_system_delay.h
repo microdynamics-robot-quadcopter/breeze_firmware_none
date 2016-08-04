@@ -1,4 +1,4 @@
-/*************************************************
+/*******************************************************************************
 Copyright (C), 2016-2016, Team MicroDynamics. 
 
 Filename:    stm32f10x_system_delay.h
@@ -12,7 +12,7 @@ Function List:
              2. extern void delay_ms(u16 nms);
              3. extern void delay_us(u32 nus);
 History:     none
-*************************************************/
+*******************************************************************************/
 
 #ifndef __STM32F10X_SYSTEM_DELAY_H__
 #define __STM32F10X_SYSTEM_DELAY_H__

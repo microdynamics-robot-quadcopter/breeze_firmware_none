@@ -1,4 +1,4 @@
-/*************************************************
+/*******************************************************************************
 Copyright (C), 2016-2016, Team MicroDynamics. 
 
 Filename:    stm32f10x_system_delay.c
@@ -12,12 +12,12 @@ Function List:
              2. extern void delay_ms(u16 nms);
              3. extern void delay_us(u32 nus);
 History:     none
-*************************************************/
+*******************************************************************************/
 
 #include "stm32f10x.h"
 #include "stm32f10x_system_delay.h"
 
-/**************************************************
+/*******************************************************************************
 * Global variable function:
 *      the timing factor in microsecond precision
 * Avalable value:
@@ -26,10 +26,10 @@ History:     none
 * Call relationship:
 *      only function delay_init(void) and delay_us(u32 nus) 
 *      in this modual can modify it 
-**************************************************/
+*******************************************************************************/
 static u8 g_fac_us = 0;
 
-/**************************************************
+/*******************************************************************************
 * Global variable function:
 *      the timing factor in millisecond precision
 * Avalable value:
@@ -38,10 +38,10 @@ static u8 g_fac_us = 0;
 * Call relationship:
 *      only function delay_init(void) and delay_ms(u16 nms) 
 *      in this modual can modify it 
-**************************************************/
+*******************************************************************************/
 static u16 g_fac_ms = 0;
 
-/*************************************************
+/*******************************************************************************
 Function:       void delay_init(void)
 Description:    initializes the delay function
 Calls:          void SysTick_CLKSourceConfig(void)
@@ -52,7 +52,7 @@ Input:          none
 Output:         none
 Return:         none
 Others:         none
-*************************************************/
+*******************************************************************************/
 void delay_init(void)
 {
 	SysTick_CLKSourceConfig(SysTick_CLKSource_HCLK_Div8); /*Select external clock HCLK/8*/
@@ -60,7 +60,7 @@ void delay_init(void)
 	g_fac_ms = (u16)g_fac_us * 1000;
 }	
 
-/*************************************************
+/*******************************************************************************
 Function:       void delay_us(u32 nus)
 Description:    set time with microsecond precision
 Calls:          
@@ -72,23 +72,25 @@ Output:         none
 Return:         none
 Others:         to use SysTick clock to delay time, an external 
                 8MHz crystal oscillator is required
-*************************************************/ 								   
+*******************************************************************************/ 								   
 void delay_us(u32 nus)
 {		
 	u32 temp;	    	 
 	SysTick->LOAD = nus * g_fac_us;	 
-	SysTick->VAL = 0x00;                         /*Clear timer*/
+	SysTick->VAL  = 0x00;                        /*Clear timer*/
 	SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;    /*Start countdown*/
+    
 	do
 	{
-		temp = SysTick->CTRL;
+        temp = SysTick->CTRL;
 	}
-	while((temp & 0x01) && !(temp & (1 << 16))); /*Wait time to arrive*/
+	while ((temp & 0x01) && !(temp & (1 << 16))); /*Wait time to arrive*/
+    
 	SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;   /*Disable timer*/
-	SysTick->VAL = 0x00;                         /*Clear timer*/
+	SysTick->VAL  = 0x00;                        /*Clear timer*/
 }
 
-/*************************************************
+/*******************************************************************************
 Function:       void delay_ms(u16 nms)
 Description:    set time with millisecond precision
 Calls:          
@@ -101,18 +103,20 @@ Return:         none
 Others:         to use SysTick clock to delay time, an external 
                 8MHz crystal oscillator is required, the maximum
                 delay is 1864ms
-*************************************************/ 			
+*******************************************************************************/
 void delay_ms(u16 nms)
 {	 		  	  
 	u32 temp;		   
 	SysTick->LOAD = (u32)nms * g_fac_ms;         /*Load time, SysTick->LOAD is 24bit*/
-	SysTick->VAL = 0x00;                         /*Clear timer*/
+	SysTick->VAL  = 0x00;                        /*Clear timer*/
 	SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;    /*Start countdown*/
+    
 	do
 	{
 		temp = SysTick->CTRL;
 	}
-	while((temp & 0x01) && !(temp & (1 << 16))); /*Wait time to arrive*/
+	while ((temp & 0x01) && !(temp & (1 << 16))); /*Wait time to arrive*/
+    
 	SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;   /*Disable timer*/
-	SysTick->VAL = 0x00;                         /*Clear timer*/
+	SysTick->VAL  = 0x00;                        /*Clear timer*/
 } 

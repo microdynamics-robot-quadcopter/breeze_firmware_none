@@ -1,3 +1,22 @@
+/*******************************************************************************
+Copyright (C), 2016-2016, Team MicroDynamics. 
+
+Filename:    stm32f10x_system_battery.h
+Author:      maksyuki
+Version:     1.0
+Date:        2016.8.14
+Description: declare the battery operation function
+Others:      none
+Function List:
+             1. extern int Get_Temp(void);
+             2. extern int Get_Battery_AD(void);
+             3. extern void Battery_Check(void);
+             4. extern void Battery_Check_Init(void);
+             5. extern u16 Get_ADC(u8 ch);
+             6. extern u16 Get_ADC_Average(u8 ch, u8 times);
+History:     none
+*******************************************************************************/
+
 #ifndef __STM32F10X_SYSTEM_BATTERY_H__
 #define __STM32F10X_SYSTEM_BATTERY_H__
 

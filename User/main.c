@@ -1,13 +1,15 @@
 #include "stm32f10x_driver_sys.h"
 #include "stm32f10x_driver_pwm.h"
-#include "stm32f10x_system_delay.h"
 #include "stm32f10x_system_led.h"
+#include "stm32f10x_system_delay.h"
+#include "stm32f10x_system_battery.h"
 
 void Hardware_Init(void)
 {
     delay_init();
 	led_init();
     PWM_Init();
+    Battery_Check_Init();
 }
 
 int main(void)

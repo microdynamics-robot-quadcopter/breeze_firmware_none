@@ -29,5 +29,6 @@
 ..\build\output\main.o: ..\Libraries\FWLib\inc\stm32f10x_usart.h
 ..\build\output\main.o: ..\Libraries\FWLib\inc\stm32f10x_wwdg.h
 ..\build\output\main.o: ..\Libraries\FWLib\inc\misc.h
+..\build\output\main.o: ..\Drivers\Driver_PWM\stm32f10x_driver_pwm.h
 ..\build\output\main.o: ..\System\System_Delay\stm32f10x_system_delay.h
 ..\build\output\main.o: ..\System\System_Led\stm32f10x_system_led.h

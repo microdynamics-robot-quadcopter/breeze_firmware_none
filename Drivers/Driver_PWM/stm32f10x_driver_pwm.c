@@ -27,7 +27,7 @@ Output:         none
 Return:         none
 Others:         none
 *******************************************************************************/
-void PWM_Init(void)
+extern void PWM_Init(void)
 {
     uint16_t                 PrescalerValue = 0;    /*Control the frequency rate of PWM*/
     GPIO_InitTypeDef         GPIO_InitStructure;
@@ -87,10 +87,15 @@ Output:         none
 Return:         none
 Others:         none
 *******************************************************************************/
-void PWM_Flash(const u16 MOTO1_PWM, const u16 MOTO2_PWM, const u16 MOTO3_PWM, const u16 MOTO4_PWM)
+extern void PWM_Flash(const u16 MOTO1_PWM, const u16 MOTO2_PWM, const u16 MOTO3_PWM, const u16 MOTO4_PWM)
 {
     TIM_SetCompare1(TIM2, MOTO1_PWM);
 	TIM_SetCompare2(TIM2, MOTO2_PWM);
 	TIM_SetCompare3(TIM2, MOTO3_PWM);
 	TIM_SetCompare4(TIM2, MOTO4_PWM);
+}
+
+extern void PWM_test()
+{
+    PWM_Flash(100, 100, 100, 100);
 }

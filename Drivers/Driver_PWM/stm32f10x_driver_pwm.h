@@ -8,8 +8,8 @@ Date:        2016.8.4
 Description: declare the PWM operation function
 Others:      none
 Function List:
-             1. void PWM_Init(void); 
-             2. void PWM_Flash(const u16 MOTO1_PWM, const u16 MOTO2_PWM, const u16 MOTO3_PWM, const u16 MOTO4_PWM);
+             1. extern void PWM_Init(void); 
+             2. extern void PWM_Flash(const u16 MOTO1_PWM, const u16 MOTO2_PWM, const u16 MOTO3_PWM, const u16 MOTO4_PWM);
 History:     none
 *******************************************************************************/
 
@@ -18,7 +18,8 @@ History:     none
 
 #include "stm32f10x.h"
 
-void PWM_Init(void);
-void PWM_Flash(const u16 MOTO1_PWM, const u16 MOTO2_PWM, const u16 MOTO3_PWM, const u16 MOTO4_PWM);
+extern void PWM_Init(void);
+extern void PWM_Flash(const u16 MOTO1_PWM, const u16 MOTO2_PWM, const u16 MOTO3_PWM, const u16 MOTO4_PWM);
+extern void PWM_test(void);
 
 #endif

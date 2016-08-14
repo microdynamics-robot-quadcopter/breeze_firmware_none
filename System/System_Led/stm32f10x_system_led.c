@@ -8,14 +8,14 @@ Date:        2016.8.14
 Description: implement the led operation function
 Others:      none
 Function List:
-             1. void led_init(void); 
-             2. void led_test(void);
+             1. extern void led_init(void); 
+             2. extern void led_test(int flag);
 History:     none
 *******************************************************************************/
 
 #include "stm32f10x_system_led.h"
 
-void led_init(void)
+extern void led_init(void)
 {
     RCC->APB2ENR |= 1 << 2;      /*Enable PORTA clock*/
     RCC->APB2ENR |= 1 << 3;      /*Enable PORTB clock*/
@@ -36,10 +36,20 @@ void led_init(void)
     LedD_off;
 }
 
-void led_test(void)
+extern void led_test(int flag)
 {
-    LedA_on;
-    LedB_on;
-    LedC_on;
-    LedD_on;
+    if (flag == 1)
+    {
+        LedA_on;
+        LedB_on;
+        LedC_on;
+        LedD_on;
+    }
+    else
+    {
+        LedA_off;
+        LedB_off;
+        LedC_off;
+        LedD_off;
+    }
 }

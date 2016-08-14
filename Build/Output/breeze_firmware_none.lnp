@@ -31,6 +31,7 @@
 "..\build\output\stm32f10x_driver_spi.o"
 "..\build\output\stm32f10x_system_delay.o"
 "..\build\output\stm32f10x_system_led.o"
+"..\build\output\stm32f10x_system_nrf24l01.o"
 "..\build\output\main.o"
 "..\build\output\stm32f10x_it.o"
 --strict --scatter "..\Build\Output\breeze_firmware_none.sct"

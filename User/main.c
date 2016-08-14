@@ -3,11 +3,16 @@
 #include "stm32f10x_system_delay.h"
 #include "stm32f10x_system_led.h"
 
-int main(void)
+void Hardware_Init(void)
 {
     delay_init();
 	led_init();
     PWM_Init();
+}
+
+int main(void)
+{
+    Hardware_Init();
     PWM_test();
     while (1)
     {

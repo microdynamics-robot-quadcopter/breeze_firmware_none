@@ -13,8 +13,8 @@ Function List:
 History:     none
 *******************************************************************************/
 
-#ifndef __STM32F10X_SYSTEM_LED__
-#define __STM32F10X_SYSTEM_LED__
+#ifndef __STM32F10X_SYSTEM_LED_H__
+#define __STM32F10X_SYSTEM_LED_H__
 
 #include "stm32f10x.h"
 

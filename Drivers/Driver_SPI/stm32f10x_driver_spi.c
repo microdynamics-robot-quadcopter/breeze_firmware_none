@@ -1,6 +1,21 @@
+/*******************************************************************************
+Copyright (C), 2016-2016, Team MicroDynamics. 
+
+Filename:    stm32f10x_driver_spi.c
+Author:      maksyuki
+Version:     1.0
+Date:        2016.8.14
+Description: implement the spi bus operation function
+Others:      none
+Function List:
+             1. extern void SPI_INIT(void);
+             2. extern u8 SPI_RW(u8 data);
+History:     none
+*******************************************************************************/
+
 #include "stm32f10x_driver_spi.h"
 
-void SPI_INIT(void)
+extern void SPI_INIT(void)
 {
     SPI_InitTypeDef SPI_InitStructure; 
     GPIO_InitTypeDef GPIO_InitStructure;
@@ -42,7 +57,7 @@ void SPI_INIT(void)
     SPI_Cmd(SPI1, ENABLE);
 }
 
-u8 SPI_RW(u8 data) 
+extern u8 SPI_RW(u8 data) 
 { 
     while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET); 
     SPI_I2S_SendData(SPI1, data); 

@@ -14,7 +14,6 @@ void SPI_INIT(void)
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz; 
     GPIO_Init(GPIOA, &GPIO_InitStructure);
     
-    
     /*NRF_CE--PA12*/
     GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_12; 
     GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_Out_PP; 

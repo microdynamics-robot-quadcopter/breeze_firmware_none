@@ -9,13 +9,13 @@ void Hardware_Init(void)
     delay_init();
 	led_init();
     PWM_Init();
-    Battery_Check_Init();
+    //Battery_Check_Init();
 }
 
 int main(void)
 {
     Hardware_Init();
-    PWM_test();
+    // PWM_test();
     while (1)
     {
         led_test(1);

@@ -97,5 +97,5 @@ extern void PWM_Flash(const u16 MOTO1_PWM, const u16 MOTO2_PWM, const u16 MOTO3_
 
 extern void PWM_test()
 {
-    PWM_Flash(100, 100, 100, 100);
+    PWM_Flash(10, 10, 10, 10);
 }

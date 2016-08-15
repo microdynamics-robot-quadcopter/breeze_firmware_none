@@ -17,19 +17,19 @@ History:     none
 
 extern void led_init(void)
 {
-    RCC->APB2ENR |= 1 << 2;      /*Enable PORTA clock*/
-    RCC->APB2ENR |= 1 << 3;      /*Enable PORTB clock*/
+    RCC->APB2ENR |= 1<<2;        /*Enable PORTA clock*/
+    RCC->APB2ENR |= 1<<3;        /*Enable PORTB clock*/
 
-    RCC->APB2ENR |= 1 << 0;      /*Enable reset clock*/
+    RCC->APB2ENR |= 1<<0;        /*Enable reset clock*/
     GPIOB->CRL   &= 0XFFFF0F0F;  /*PB1,3 push-pull output*/
     GPIOB->CRL   |= 0X00003030;
-    GPIOB->ODR   |= 5 << 1;      /*PB1,3 pull-up*/
+    GPIOB->ODR   |= 5<<1;        /*PB1,3 pull-up*/
   
     GPIOA->CRH   &= 0XFFFF0FF0;  /*PA8,11 push-pull output*/
     GPIOA->CRH   |= 0X00003003;
-    GPIOA->ODR   |= 9 << 0;      /*PA8,11 pull-up*/
+    GPIOA->ODR   |= 9<<0;        /*PA8,11 pull-up*/
   
-    AFIO->MAPR   |= 2 << 24;
+    AFIO->MAPR   |= 2<<24;
     LedA_off;
     LedB_off;
     LedC_off;

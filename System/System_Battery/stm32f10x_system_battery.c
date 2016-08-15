@@ -75,8 +75,8 @@ extern void Battery_Check(void)
             {
 				//altCtrlMode=LANDING;
 				//rcData[0]=1500;rcData[1]=1500;rcData[2]=1500;rcData[3]=1500;
-			}
-		}
+            }
+        }
         else
         {
             Battery.BatteryOverDischargeCnt = 0;
@@ -135,7 +135,7 @@ extern void Battery_Check_Init(void)
     ADC1->SQR1 &= 0<<20;          /*1个转换在规则序列中 也就是只转换规则序列1*/
     
     //设置通道1的采样时间
-    ADC1->SMPR2 &= ~(7 << 3);     /*通道1采样时间清空*/
+    ADC1->SMPR2 &= ~(7<<3);       /*通道1采样时间清空*/
     ADC1->SMPR2 |= 7<<3;          /*通道1  239.5周期,提高采样时间可以提高精确度*/
 
     ADC1->SMPR1 &= ~(7<<18);      /*清除通道16原来的设置*/

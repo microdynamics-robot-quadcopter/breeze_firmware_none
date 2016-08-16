@@ -1,5 +1,5 @@
 /*******************************************************************************
-Copyright (C), 2016-2016, Team MicroDynamics. 
+Copyright (C), 2016-2016, Team MicroDynamics.
 
 Filename:    stm32f10x_system_led.h
 Author:      maksyuki
@@ -8,7 +8,7 @@ Date:        2016.8.14
 Description: declare the time led function
 Others:      none
 Function List:
-             1. extern void led_init(void); 
+             1. extern void led_init(void);
              2. extern void led_test(int flag);
 History:     none
 *******************************************************************************/
@@ -18,23 +18,23 @@ History:     none
 
 #include "stm32f10x.h"
 
-#define LedA_on    GPIO_SetBits(GPIOA, GPIO_Pin_11)
-#define LedA_off   GPIO_ResetBits(GPIOA, GPIO_Pin_11)
+#define LedA_On    GPIO_SetBits(GPIOA, GPIO_Pin_11)
+#define LedA_Off   GPIO_ResetBits(GPIOA, GPIO_Pin_11)
 
-#define LedB_on    GPIO_SetBits(GPIOA, GPIO_Pin_8)
-#define LedB_off   GPIO_ResetBits(GPIOA, GPIO_Pin_8)
+#define LedB_On    GPIO_SetBits(GPIOA, GPIO_Pin_8)
+#define LedB_Off   GPIO_ResetBits(GPIOA, GPIO_Pin_8)
 
-#define LedC_on    GPIO_SetBits(GPIOB, GPIO_Pin_1)
-#define LedC_off   GPIO_ResetBits(GPIOB, GPIO_Pin_1)
+#define LedC_On    GPIO_SetBits(GPIOB, GPIO_Pin_1)
+#define LedC_Off   GPIO_ResetBits(GPIOB, GPIO_Pin_1)
 
-#define LedD_on    GPIO_SetBits(GPIOB, GPIO_Pin_3)
-#define LedD_off   GPIO_ResetBits(GPIOB, GPIO_Pin_3)
+#define LedD_On    GPIO_SetBits(GPIOB, GPIO_Pin_3)
+#define LedD_Off   GPIO_ResetBits(GPIOB, GPIO_Pin_3)
 
-#define LEDB_troggle GPIO_WriteBit(GPIOA,GPIO_Pin_8, !GPIO_ReadOutputDataBit(GPIOA,GPIO_Pin_8))
-#define LEDC_troggle GPIO_WriteBit(GPIOB,GPIO_Pin_1, !GPIO_ReadOutputDataBit(GPIOB,GPIO_Pin_1))
-#define LEDA_troggle GPIO_WriteBit(GPIOA,GPIO_Pin_11, !GPIO_ReadOutputDataBit(GPIOA,GPIO_Pin_11))
+#define LEDC_troggle GPIO_WriteBit(GPIOB, GPIO_Pin_1, !GPIO_ReadOutputDataBit(GPIOB, GPIO_Pin_1))
+#define LEDB_troggle GPIO_WriteBit(GPIOA, GPIO_Pin_8, !GPIO_ReadOutputDataBit(GPIOA, GPIO_Pin_8))
+#define LEDA_troggle GPIO_WriteBit(GPIOA, GPIO_Pin_11, !GPIO_ReadOutputDataBit(GPIOA, GPIO_Pin_11))
 
-extern void led_init(void);    /*Initialize led */
+extern void led_init(void);     /*Initialize led*/
 extern void led_test(int flag);
 
 #endif

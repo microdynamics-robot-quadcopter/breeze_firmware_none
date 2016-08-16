@@ -16,6 +16,7 @@ int main(void)
 {
     Hardware_Init();   
     // PWM_test();
+    led_test(1);
     while (1)
     {
         led_test(1);

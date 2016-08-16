@@ -14,7 +14,7 @@ void Hardware_Init(void)
 
 int main(void)
 {
-    Hardware_Init();
+    Hardware_Init();   
     // PWM_test();
     while (1)
     {
@@ -24,4 +24,3 @@ int main(void)
         delay_ms(1000);
     }
 }
-

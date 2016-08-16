@@ -1,5 +1,5 @@
 /*******************************************************************************
-Copyright (C), 2016-2016, Team MicroDynamics. 
+Copyright (C), 2016-2016, Team MicroDynamics.
 
 Filename:    stm32f10x_system_delay.c
 Author:      maksyuki
@@ -8,9 +8,9 @@ Date:        2016.8.2
 Description: implement the time delay function
 Others:      none
 Function List:
-             1. extern void delay_init(void); 
-             2. extern void delay_ms(u16 nms);
-             3. extern void delay_us(u32 nus);
+             1. extern void delay_init(void);
+             2. extern void delay_us(u32 nus);
+             3. extern void delay_ms(u16 nms);
 History:     none
 *******************************************************************************/
 
@@ -24,8 +24,8 @@ History:     none
 *      0      - initial value
 *      Others - set value
 * Call relationship:
-*      only function delay_init(void) and delay_us(u32 nus) 
-*      in this modual can modify it 
+*      only function delay_init(void) and delay_us(u32 nus)
+*      in this modual can modify it
 *******************************************************************************/
 static u8 g_fac_us = 0;
 
@@ -36,8 +36,8 @@ static u8 g_fac_us = 0;
 *      0      - initial value
 *      Others - set value
 * Call relationship:
-*      only function delay_init(void) and delay_ms(u16 nms) 
-*      in this modual can modify it 
+*      only function delay_init(void) and delay_ms(u16 nms)
+*      in this modual can modify it
 *******************************************************************************/
 static u16 g_fac_ms = 0;
 
@@ -55,10 +55,10 @@ Others:         none
 *******************************************************************************/
 void delay_init(void)
 {
-	SysTick_CLKSourceConfig(SysTick_CLKSource_HCLK_Div8); /*Select external clock HCLK/8*/
-	g_fac_us = SystemCoreClock / 8000000;                 /*Clock time's 1/8*/  
+	SysTick_CLKSourceConfig(SysTick_CLKSource_HCLK_Div8);  /*Select external clock HCLK/8*/
+	g_fac_us = SystemCoreClock / 8000000;                  /*Clock time's 1/8*/
 	g_fac_ms = (u16)g_fac_us * 1000;
-}	
+}
 
 /*******************************************************************************
 Function:       void delay_us(u32 nus)
@@ -70,22 +70,22 @@ Table Updated:  none
 Input:          set value, the maximum value is [2^24/g_fac_us]
 Output:         none
 Return:         none
-Others:         to use SysTick clock to delay time, an external 
+Others:         to use SysTick clock to delay time, an external
                 8MHz crystal oscillator is required
 *******************************************************************************/ 								   
 void delay_us(u32 nus)
-{		
-	u32 temp;	    	 
-	SysTick->LOAD = nus * g_fac_us;	 
+{
+	u32 temp;
+	SysTick->LOAD = nus * g_fac_us;
 	SysTick->VAL  = 0x00;                        /*Clear timer*/
 	SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;    /*Start countdown*/
-    
+
 	do
 	{
         temp = SysTick->CTRL;
 	}
-	while ((temp & 0x01) && !(temp & (1 << 16))); /*Wait time to arrive*/
-    
+	while ((temp & 0x01) && !(temp & (1<<16)));  /*Wait time to arrive*/
+
 	SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;   /*Disable timer*/
 	SysTick->VAL  = 0x00;                        /*Clear timer*/
 }
@@ -105,18 +105,18 @@ Others:         to use SysTick clock to delay time, an external
                 delay is 1864ms
 *******************************************************************************/
 void delay_ms(u16 nms)
-{	 		  	  
-	u32 temp;		   
+{
+	u32 temp;
 	SysTick->LOAD = (u32)nms * g_fac_ms;         /*Load time, SysTick->LOAD is 24bit*/
 	SysTick->VAL  = 0x00;                        /*Clear timer*/
 	SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;    /*Start countdown*/
-    
+
 	do
 	{
 		temp = SysTick->CTRL;
 	}
-	while ((temp & 0x01) && !(temp & (1 << 16))); /*Wait time to arrive*/
-    
+	while ((temp & 0x01) && !(temp & (1<<16)));  /*Wait time to arrive*/
+
 	SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;   /*Disable timer*/
 	SysTick->VAL  = 0x00;                        /*Clear timer*/
-} 
+}

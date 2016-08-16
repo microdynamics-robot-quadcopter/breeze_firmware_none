@@ -29,6 +29,7 @@
 "..\build\output\stm32f10x_driver_iic.o"
 "..\build\output\stm32f10x_driver_pwm.o"
 "..\build\output\stm32f10x_driver_spi.o"
+"..\build\output\stm32f10x_driver_usart.o"
 "..\build\output\stm32f10x_system_led.o"
 "..\build\output\stm32f10x_system_delay.o"
 "..\build\output\stm32f10x_system_battery.o"

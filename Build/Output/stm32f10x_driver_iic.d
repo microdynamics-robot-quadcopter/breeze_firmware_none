@@ -28,5 +28,5 @@
 ..\build\output\stm32f10x_driver_iic.o: ..\Libraries\FWLib\inc\stm32f10x_usart.h
 ..\build\output\stm32f10x_driver_iic.o: ..\Libraries\FWLib\inc\stm32f10x_wwdg.h
 ..\build\output\stm32f10x_driver_iic.o: ..\Libraries\FWLib\inc\misc.h
-..\build\output\stm32f10x_driver_iic.o: ..\System\System_Delay\stm32f10x_system_delay.h
 ..\build\output\stm32f10x_driver_iic.o: ..\Drivers\Driver_IIC\stm32f10x_driver_iic.h
+..\build\output\stm32f10x_driver_iic.o: ..\Drivers\Driver_Delay\stm32f10x_driver_delay.h

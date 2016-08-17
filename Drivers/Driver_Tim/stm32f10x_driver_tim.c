@@ -25,7 +25,7 @@ void TIM4_Init(u16 arr, u16 psc)
     
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
     
-    TIM_DeInit(TIM4);
+    TIM_DeInit(TIM4); /*复位定时器4*/
     
     TIM_TimeBaseStructure.TIM_Period        = arr;
     TIM_TimeBaseStructure.TIM_Prescaler     = psc;
@@ -48,8 +48,8 @@ void TIM4_IRQHandler(void)
     if (TIM_GetITStatus(TIM4, TIM_IT_Update) != RESET)
     {
         TIM_ClearITPendingBit(TIM4, TIM_IT_Update);
-        loop20HZCnt++;
-        loop50HZCnt++;
-        loop100HZCnt++;
+//        loop20HZCnt++;
+//        loop50HZCnt++;
+//        loop100HZCnt++;
     }
 }

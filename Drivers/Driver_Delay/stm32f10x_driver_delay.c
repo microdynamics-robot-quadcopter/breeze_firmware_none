@@ -1,7 +1,7 @@
 /*******************************************************************************
 Copyright (C), 2016-2016, Team MicroDynamics.
 
-Filename:    stm32f10x_system_delay.c
+Filename:    stm32f10x_driver_delay.c
 Author:      maksyuki
 Version:     1.0
 Date:        2016.8.2
@@ -15,7 +15,7 @@ History:     none
 *******************************************************************************/
 
 #include "stm32f10x.h"
-#include "stm32f10x_system_delay.h"
+#include "stm32f10x_driver_delay.h"
 
 /*******************************************************************************
 * Global variable function:

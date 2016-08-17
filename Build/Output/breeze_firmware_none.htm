@@ -3,7 +3,7 @@
 <title>Static Call Graph - [..\Build\Output\breeze_firmware_none.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image ..\Build\Output\breeze_firmware_none.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060061: Last Updated: Wed Aug 17 18:05:56 2016
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060061: Last Updated: Wed Aug 17 21:27:55 2016
 <BR><P>
 <H3>Maximum Stack Usage =        128 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -452,8 +452,8 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 108<LI>Call Chain = Hardware_Init &rArr; usart_init &rArr; USART_Init &rArr; RCC_GetClocksFreq
 </UL>
 <BR>[Calls]<UL><LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NVIC_PriorityGroupConfig
-<LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_init
 <LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;led_init
+<LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_init
 <LI><a href="#[59]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart_init
 <LI><a href="#[58]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PWM_Init
 </UL>
@@ -544,7 +544,7 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f10x_md.o(.text)
 </UL>
-<P><STRONG><a name="[2b]"></a>TIM4_IRQHandler</STRONG> (Thumb, 52 bytes, Stack size 8 bytes, stm32f10x_driver_tim.o(i.TIM4_IRQHandler))
+<P><STRONG><a name="[2b]"></a>TIM4_IRQHandler</STRONG> (Thumb, 22 bytes, Stack size 8 bytes, stm32f10x_driver_tim.o(i.TIM4_IRQHandler))
 <BR><BR>[Stack]<UL><LI>Max Depth = 20<LI>Call Chain = TIM4_IRQHandler &rArr; TIM_GetITStatus
 </UL>
 <BR>[Calls]<UL><LI><a href="#[6b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM_GetITStatus
@@ -683,7 +683,7 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[4a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_exit_exit
 </UL>
 
-<P><STRONG><a name="[56]"></a>delay_init</STRONG> (Thumb, 50 bytes, Stack size 8 bytes, stm32f10x_system_delay.o(i.delay_init))
+<P><STRONG><a name="[56]"></a>delay_init</STRONG> (Thumb, 50 bytes, Stack size 8 bytes, stm32f10x_driver_delay.o(i.delay_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = delay_init
 </UL>
 <BR>[Calls]<UL><LI><a href="#[74]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysTick_CLKSourceConfig
@@ -691,7 +691,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Hardware_Init
 </UL>
 
-<P><STRONG><a name="[78]"></a>delay_ms</STRONG> (Thumb, 72 bytes, Stack size 0 bytes, stm32f10x_system_delay.o(i.delay_ms))
+<P><STRONG><a name="[78]"></a>delay_ms</STRONG> (Thumb, 72 bytes, Stack size 0 bytes, stm32f10x_driver_delay.o(i.delay_ms))
 <BR><BR>[Called By]<UL><LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 

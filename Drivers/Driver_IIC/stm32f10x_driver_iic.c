@@ -20,8 +20,8 @@ History:     none
 *******************************************************************************/
 
 #include "stm32f10x.h"
-#include "stm32f10x_system_delay.h"
 #include "stm32f10x_driver_iic.h"
+#include "stm32f10x_driver_delay.h"
 
 /*******************************************************************************
 Function:       void IIC_Init(void)

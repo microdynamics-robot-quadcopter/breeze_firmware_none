@@ -78,7 +78,6 @@ void usart_init(u32 bound)
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 
     /*USART1 NVIC配置*/
-    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
     NVIC_InitStructure.NVIC_IRQChannel                   = USART1_IRQn; /*指定USART1通道中断*/
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 3;           /*抢占优先级3*/
     NVIC_InitStructure.NVIC_IRQChannelSubPriority        = 3;           /*子优先级3*/

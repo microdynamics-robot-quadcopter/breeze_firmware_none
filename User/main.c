@@ -1,5 +1,6 @@
 #include "stm32f10x_driver_sys.h"
 #include "stm32f10x_driver_pwm.h"
+#include "stm32f10x_driver_tim.h"
 #include "stm32f10x_driver_usart.h"
 #include "stm32f10x_system_led.h"
 #include "stm32f10x_system_delay.h"
@@ -7,10 +8,12 @@
 
 void Hardware_Init(void)
 {
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
     delay_init();
 	led_init();
     PWM_Init();
     usart_init(115200);
+    
     //Battery_Check_Init();
 }
 

@@ -62,7 +62,10 @@ void usart_init(u32 bound)
     USART_InitTypeDef USART_InitStructure;   
     
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1 | RCC_APB2Periph_GPIOA, ENABLE);
-
+    
+    /*Reset the USART1*/
+    USART_DeInit(USART1);
+    
     /*USART1_TX  GPIOA.9*/
     GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_9;
     GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF_PP;
@@ -91,7 +94,7 @@ void usart_init(u32 bound)
     USART_InitStructure.USART_Mode                = USART_Mode_Rx | USART_Mode_Tx;   /*收发模式*/
 
     USART_Init(USART1, &USART_InitStructure);       /*初始化串口1*/
-    USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);  /*开启串口接受中断*/
+    USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);  /*开启串口接收中断*/
     USART_Cmd(USART1, ENABLE);                      /*使能串口1*/
 }
 

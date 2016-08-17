@@ -27,18 +27,25 @@ Project File Date:  08/14/2016
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 1 (build 61)', folder: 'E:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'breeze_firmware_none'
-compiling stm32f10x_system_led.c...
+compiling main.c...
+..\User\main.c(34): warning:  #223-D: function "printf" declared implicitly
+              printf("\n\nThis is the content you send!!!\n\n");
+..\User\main.c(48): warning:  #223-D: function "printf" declared implicitly
+                  printf("I am supermaker!!!\n\n");
+..\User\main.c(52): warning:  #223-D: function "printf" declared implicitly
+                  printf("This is 200 numbers\n\n");
+..\User\main.c: 3 warnings, 0 errors
 linking...
-Program Size: Code=3408 RO-data=268 RW-data=32 ZI-data=1832  
+Program Size: Code=4728 RO-data=268 RW-data=52 ZI-data=1836  
 FromELF: creating hex file...
-"..\Build\Output\breeze_firmware_none.axf" - 0 Error(s), 0 Warning(s).
+"..\Build\Output\breeze_firmware_none.axf" - 0 Error(s), 3 Warning(s).
 
 <h2>Collection of Component include folders:</h2>
   C:\Users\abcd\Documents\GitHub\breeze_firmware_none\Project\RTE
   E:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include
 
 <h2>Collection of Component Files used:</h2>
-Build Time Elapsed:  00:00:02
+Build Time Elapsed:  00:00:03
 </pre>
 </body>
 </html>

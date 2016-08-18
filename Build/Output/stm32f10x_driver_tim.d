@@ -29,3 +29,4 @@
 ..\build\output\stm32f10x_driver_tim.o: ..\Libraries\FWLib\inc\stm32f10x_usart.h
 ..\build\output\stm32f10x_driver_tim.o: ..\Libraries\FWLib\inc\stm32f10x_wwdg.h
 ..\build\output\stm32f10x_driver_tim.o: ..\Libraries\FWLib\inc\misc.h
+..\build\output\stm32f10x_driver_tim.o: ..\System\System_Led\stm32f10x_system_led.h

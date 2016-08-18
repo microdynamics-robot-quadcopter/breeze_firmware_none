@@ -8,8 +8,8 @@ Date:        2016.8.4
 Description: implement the PWM operation function
 Others:      none
 Function List:
-             1. void PWM_Init(void); 
-             2. void PWM_Flash(const u16 MOTO1_PWM, const u16 MOTO2_PWM, const u16 MOTO3_PWM, const u16 MOTO4_PWM);
+             1. extern void PWM_Init(void);
+             2. extern void PWM_MotoFlash(u16 MOTO1_PWM, u16 MOTO2_PWM, u16 MOTO3_PWM, u16 MOTO4_PWM);
 History:     none
 *******************************************************************************/
 
@@ -27,15 +27,15 @@ Output:         none
 Return:         none
 Others:         none
 *******************************************************************************/
-extern void PWM_Init(void)
+void PWM_Init(void)
 {
     uint16_t                 PrescalerValue = 0;    /*Control the frequency rate of PWM*/
     GPIO_InitTypeDef         GPIO_InitStructure;
     TIM_OCInitTypeDef        TIM_OCInitStructure;
     TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
     
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE); 
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
     
     /*Set GPIO function*/
     GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3;
@@ -76,7 +76,7 @@ extern void PWM_Init(void)
 }
 
 /*******************************************************************************
-Function:       void PWM_Flash(const u16 MOTO1_PWM, const u16 MOTO2_PWM, const u16 MOTO3_PWM, const u16 MOTO4_PWM)
+Function:       void PWM_MotorFlash(u16 MOTO1_PWM, u16 MOTO2_PWM, u16 MOTO3_PWM, u16 MOTO4_PWM)
 Description:    reflash the PWM output
 Calls:          
 Called By:      
@@ -87,15 +87,19 @@ Output:         none
 Return:         none
 Others:         none
 *******************************************************************************/
-extern void PWM_Flash(const u16 MOTO1_PWM, const u16 MOTO2_PWM, const u16 MOTO3_PWM, const u16 MOTO4_PWM)
+void PWM_MotorFlash(u16 MOTO1_PWM, u16 MOTO2_PWM, u16 MOTO3_PWM, u16 MOTO4_PWM)
 {
+    if (MOTO1_PWM < 0) MOTO1_PWM = 0;
+    if (MOTO2_PWM < 0) MOTO2_PWM = 0;
+    if (MOTO3_PWM < 0) MOTO3_PWM = 0;
+    if (MOTO4_PWM < 0) MOTO4_PWM = 0;
+    if (MOTO1_PWM > PWM_MAXVALUE) MOTO1_PWM = PWM_MAXVALUE;
+    if (MOTO2_PWM > PWM_MAXVALUE) MOTO2_PWM = PWM_MAXVALUE;
+    if (MOTO3_PWM > PWM_MAXVALUE) MOTO3_PWM = PWM_MAXVALUE;
+    if (MOTO4_PWM > PWM_MAXVALUE) MOTO4_PWM = PWM_MAXVALUE;
+    
     TIM_SetCompare1(TIM2, MOTO1_PWM);
 	TIM_SetCompare2(TIM2, MOTO2_PWM);
 	TIM_SetCompare3(TIM2, MOTO3_PWM);
 	TIM_SetCompare4(TIM2, MOTO4_PWM);
-}
-
-extern void PWM_test()
-{
-    PWM_Flash(10, 10, 10, 10);
 }

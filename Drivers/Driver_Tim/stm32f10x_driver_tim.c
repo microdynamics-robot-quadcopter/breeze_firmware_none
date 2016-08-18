@@ -13,9 +13,10 @@ History:     none
 *******************************************************************************/
 
 #include "stm32f10x_driver_tim.h"
+#include "stm32f10x_system_led.h"
 
-volatile uint8_t loop20HZCnt = 0;
-volatile uint8_t loop50HZCnt = 0;
+volatile uint8_t loop20HZCnt  = 0;
+volatile uint8_t loop50HZCnt  = 0;
 volatile uint8_t loop100HZCnt = 0;
 
 void TIM4_Init(u16 arr, u16 psc)
@@ -42,14 +43,13 @@ void TIM4_Init(u16 arr, u16 psc)
     TIM_Cmd(TIM4, ENABLE);
 }
 
-
 void TIM4_IRQHandler(void)
 {
     if (TIM_GetITStatus(TIM4, TIM_IT_Update) != RESET)
     {
         TIM_ClearITPendingBit(TIM4, TIM_IT_Update);
-//        loop20HZCnt++;
-//        loop50HZCnt++;
-//        loop100HZCnt++;
+        loop20HZCnt++;
+        loop50HZCnt++;
+        loop100HZCnt++;
     }
 }

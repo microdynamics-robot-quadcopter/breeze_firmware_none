@@ -23,26 +23,35 @@ History:     none
 #define __STM32F10X_DRIVER_IIC_H__
 
 #include "stm32f10x.h"
+#include "stm32f10x_driver_sys.h"
 
 /*the setting of IO interfaces direction*/
-#define SDA_IN()  {GPIOA->CRH &= 0XFFF0FFFF; GPIOA->CRH |= 8 << 16;}
-#define SDA_OUT() {GPIOA->CRH &= 0XFFF0FFFF; GPIOA->CRH |= 3 << 16;}
+//SCL-->PB6
+//SDA-->PB7
+#define SDA_IN()  {GPIOB->CRL &= 0X0FFFFFFF; GPIOB->CRL |= 0x80000000;}
+#define SDA_OUT() {GPIOB->CRL &= 0X0FFFFFFF; GPIOB->CRL |= 0x30000000;}
 
 /*IO interfaces operation*/ 
-#define IIC_SCL_H    GPIO_SetBits(GPIOA, GPIO_Pin_11)           /*SCL_H*/
-#define IIC_SCL_L    GPIO_ResetBits(GPIOA, GPIO_Pin_11)         /*SCL_L*/
-#define IIC_SDA_H    GPIO_SetBits(GPIOA, GPIO_Pin_12)           /*SDA_H*/
-#define IIC_SDA_L    GPIO_ResetBits(GPIOA, GPIO_Pin_12)         /*SDA_L*/
-#define READ_SDA  	 GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_12)  /*Input SDA*/
+#define IIC_SCL PBout(6)
+#define IIC_SDA PBout(7)
+#define READ_SDA PBin(7)
 
 /*IIC operation*/
-void IIC_Init(void);            /*Initialize IIC*/
-void IIC_Start(void);           /*Send start signal*/ 
-void IIC_Stop(void);            /*Send end signal*/
-void IIC_Send_Byte(u8 txd);     /*IIC sends one byte*/
-u8 IIC_Read_Byte(u8 ack);       /*IIC reads one byte*/
-u8 IIC_Wait_Ack(void);          /*IIC waits ACK signal*/
-void IIC_Ack(void);             /*IIC sends ACK signal*/
-void IIC_NAck(void);            /*IIC doesn't send ACK signal*/
+extern void IIC_Init(void);            /*Initialize IIC*/
+extern void IIC_Start(void);           /*Send start signal*/ 
+extern void IIC_Stop(void);            /*Send end signal*/
+extern void IIC_Send_Byte(u8 txd);     /*IIC sends one byte*/
+extern u8 IIC_Read_Byte(u8 ack);       /*IIC reads one byte*/
+extern u8 IIC_Wait_Ack(void);          /*IIC waits ACK signal*/
+extern void IIC_Ack(void);             /*IIC sends ACK signal*/
+extern void IIC_NAck(void);            /*IIC doesn't send ACK signal*/
+
+extern u8 I2C_ReadOneByte(u8 I2C_Addr, u8 addr);
+extern u8 IICReadBytes(u8 dev, u8 reg, u8 length, u8 *data);
+extern u8 IICWriteBytes(u8 dev, u8 reg, u8 length, u8 *data);
+extern u8 IICReadByte(u8 dev, u8 reg, u8 *data);
+extern u8 IICWriteByte(u8 dev, u8 reg, u8 data);
+extern u8 IICWriteBits(u8 dev, u8 reg, u8 bitStart, u8 length, u8 data);
+extern u8 IICWriteBit(u8 dev, u8 reg, u8 bitNum, u8 data);
 
 #endif

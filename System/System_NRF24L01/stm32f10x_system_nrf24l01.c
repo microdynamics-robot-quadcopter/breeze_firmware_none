@@ -1,4 +1,5 @@
 #include "stm32f10x_driver_spi.h"
+#include "stm32f10x_system_rpdata.h"
 #include "stm32f10x_system_nrf24l01.h"
 #include "stdio.h"
 
@@ -49,7 +50,7 @@ uint8_t NRF_Write_Reg(uint8_t reg, uint8_t val)
     uint8_t status;
     SPI_CSN_L();
     status = SPI_RW(reg);  
-    SPI_RW(val);          /*写数据*/
+    SPI_RW(val);            /*写数据*/
     SPI_CSN_H();            /*禁止该器件*/
     return status;
 }
@@ -155,9 +156,4 @@ u8 NRF24L01_Check(void)
 void NRF_Matching(void)
 {
     
-}
-
-void ReceiveDataFromNRF(void)
-{
-
 }

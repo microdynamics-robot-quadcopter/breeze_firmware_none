@@ -24,8 +24,12 @@ int main(void)
 //    u16 time = 0;
     Hardware_Init();   
     PWM_MotorFlash(200, 200, 200, 200);
+    while (1)
+    {
+        led_test(1);
+    }
     
-    //    while (1)
+//    while (1)
 //    {
 //        if (loop100HZCnt >= 10)
 //        {

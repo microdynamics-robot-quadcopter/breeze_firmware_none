@@ -27,17 +27,31 @@ Project File Date:  08/14/2016
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 1 (build 61)', folder: 'E:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'breeze_firmware_none'
-compiling stm32f10x_driver_iic.c...
-linking...
-Program Size: Code=4592 RO-data=268 RW-data=56 ZI-data=1832  
-FromELF: creating hex file...
-"..\Build\Output\breeze_firmware_none.axf" - 0 Error(s), 0 Warning(s).
+compiling stm32f10x_system_rpdata.c...
+..\System\System_RPData\stm32f10x_system_rpdata.c(41): error:  #20: identifier "x" is undefined
+      
+ONSTRAIN(rcData[PITCH], 1000, 2000);
+..\System\System_RPData\stm32f10x_system_rpdata.c(41): error:  #20: identifier "min" is undefined
+      
+ONSTRAIN(rcData[PITCH], 1000, 2000);
+..\System\System_RPData\stm32f10x_system_rpdata.c(41): error:  #20: identifier "max" is undefined
+      
+ONSTRAIN(rcData[PITCH], 1000, 2000);
+..\System\System_RPData\stm32f10x_system_rpdata.c(41): error:  #65: expected a ";"
+      
+ONSTRAIN(rcData[PITCH], 1000, 2000);
+..\System\System_RPData\stm32f10x_system_rpdata.c(42): error:  #65: expected a ";"
+      
+ONSTRAIN(rcData[PITCH], 1000, 2000);
+..\System\System_RPData\stm32f10x_system_rpdata.c: 0 warnings, 5 errors
+"..\Build\Output\breeze_firmware_none.axf" - 5 Error(s), 0 Warning(s).
 
 <h2>Collection of Component include folders:</h2>
   C:\Users\abcd\Documents\GitHub\breeze_firmware_none\Project\RTE
   E:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include
 
 <h2>Collection of Component Files used:</h2>
+Target not created.
 Build Time Elapsed:  00:00:02
 </pre>
 </body>

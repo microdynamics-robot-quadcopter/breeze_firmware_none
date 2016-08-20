@@ -9,7 +9,7 @@ Description: implement the PWM operation function
 Others:      none
 Function List:
              1. extern void PWM_Init(void);
-             2. extern void PWM_MotoFlash(u16 MOTO1_PWM, u16 MOTO2_PWM, u16 MOTO3_PWM, u16 MOTO4_PWM);
+             2. extern void PWM_MotoFlash(int16_t MOTO1_PWM, int16_t MOTO2_PWM, int16_t MOTO3_PWM, int16_t MOTO4_PWM);
 History:     none
 *******************************************************************************/
 
@@ -87,7 +87,7 @@ Output:         none
 Return:         none
 Others:         none
 *******************************************************************************/
-void PWM_MotorFlash(u16 MOTO1_PWM, u16 MOTO2_PWM, u16 MOTO3_PWM, u16 MOTO4_PWM)
+void PWM_MotorFlash(int16_t MOTO1_PWM, int16_t MOTO2_PWM, int16_t MOTO3_PWM, int16_t MOTO4_PWM)
 {
     if (MOTO1_PWM < 0) MOTO1_PWM = 0;
     if (MOTO2_PWM < 0) MOTO2_PWM = 0;

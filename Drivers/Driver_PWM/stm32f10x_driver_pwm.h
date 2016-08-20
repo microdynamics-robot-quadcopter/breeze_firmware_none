@@ -9,7 +9,7 @@ Description: declare the PWM operation function
 Others:      none
 Function List:
              1. extern void PWM_Init(void); 
-             2. extern void PWM_Flash(u16 MOTO1_PWM, u16 MOTO2_PWM, u16 MOTO3_PWM, u16 MOTO4_PWM);
+             2. extern void PWM_Flash(int16_t MOTO1_PWM, int16_t MOTO2_PWM, int16_t MOTO3_PWM, int16_t MOTO4_PWM);
 History:     none
 *******************************************************************************/
 
@@ -21,6 +21,6 @@ History:     none
 #define PWM_MAXVALUE 999
 
 extern void PWM_Init(void);
-extern void PWM_MotorFlash(u16 MOTO1_PWM, u16 MOTO2_PWM, u16 MOTO3_PWM, u16 MOTO4_PWM);
+extern void PWM_MotorFlash(int16_t MOTO1_PWM, int16_t MOTO2_PWM, int16_t MOTO3_PWM, int16_t MOTO4_PWM);
 
 #endif

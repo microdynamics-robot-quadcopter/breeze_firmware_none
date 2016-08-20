@@ -29,5 +29,6 @@
 ..\build\output\stm32f10x_system_nrf24l01.o: ..\Libraries\FWLib\inc\stm32f10x_usart.h
 ..\build\output\stm32f10x_system_nrf24l01.o: ..\Libraries\FWLib\inc\stm32f10x_wwdg.h
 ..\build\output\stm32f10x_system_nrf24l01.o: ..\Libraries\FWLib\inc\misc.h
+..\build\output\stm32f10x_system_nrf24l01.o: ..\System\System_RPData\stm32f10x_system_rpdata.h
 ..\build\output\stm32f10x_system_nrf24l01.o: ..\System\System_NRF24L01\stm32f10x_system_nrf24l01.h
 ..\build\output\stm32f10x_system_nrf24l01.o: E:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h

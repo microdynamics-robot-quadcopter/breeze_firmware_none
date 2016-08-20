@@ -73,6 +73,5 @@ extern uint8_t NRF24L01_RXDATA[RX_PLOAD_WIDTH];
 extern uint8_t NRF24L01_TXDATA[TX_PLOAD_WIDTH];
 
 extern void NRF_Matching(void);
-extern void ReceiveDataFromNRF(void);
 
 #endif

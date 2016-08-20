@@ -92,9 +92,15 @@ Section Cross References
     stm32f10x_driver_iic.o(i.I2C_ReadOneByte) refers to stm32f10x_driver_iic.o(i.IIC_Wait_Ack) for IIC_Wait_Ack
     stm32f10x_driver_iic.o(i.I2C_ReadOneByte) refers to stm32f10x_driver_iic.o(i.IIC_Read_Byte) for IIC_Read_Byte
     stm32f10x_driver_iic.o(i.I2C_ReadOneByte) refers to stm32f10x_driver_iic.o(i.IIC_Stop) for IIC_Stop
-    stm32f10x_driver_iic.o(i.IICWriteBit) refers to stm32f10x_driver_iic.o(i.IICreadByte) for IICreadByte
+    stm32f10x_driver_iic.o(i.IICReadByte) refers to stm32f10x_driver_iic.o(i.I2C_ReadOneByte) for I2C_ReadOneByte
+    stm32f10x_driver_iic.o(i.IICReadBytes) refers to stm32f10x_driver_iic.o(i.IIC_Start) for IIC_Start
+    stm32f10x_driver_iic.o(i.IICReadBytes) refers to stm32f10x_driver_iic.o(i.IIC_Send_Byte) for IIC_Send_Byte
+    stm32f10x_driver_iic.o(i.IICReadBytes) refers to stm32f10x_driver_iic.o(i.IIC_Wait_Ack) for IIC_Wait_Ack
+    stm32f10x_driver_iic.o(i.IICReadBytes) refers to stm32f10x_driver_iic.o(i.IIC_Read_Byte) for IIC_Read_Byte
+    stm32f10x_driver_iic.o(i.IICReadBytes) refers to stm32f10x_driver_iic.o(i.IIC_Stop) for IIC_Stop
+    stm32f10x_driver_iic.o(i.IICWriteBit) refers to stm32f10x_driver_iic.o(i.IICReadByte) for IICReadByte
     stm32f10x_driver_iic.o(i.IICWriteBit) refers to stm32f10x_driver_iic.o(i.IICWriteByte) for IICWriteByte
-    stm32f10x_driver_iic.o(i.IICWriteBits) refers to stm32f10x_driver_iic.o(i.IICreadByte) for IICreadByte
+    stm32f10x_driver_iic.o(i.IICWriteBits) refers to stm32f10x_driver_iic.o(i.IICReadByte) for IICReadByte
     stm32f10x_driver_iic.o(i.IICWriteBits) refers to stm32f10x_driver_iic.o(i.IICWriteByte) for IICWriteByte
     stm32f10x_driver_iic.o(i.IICWriteByte) refers to stm32f10x_driver_iic.o(i.IICWriteBytes) for IICWriteBytes
     stm32f10x_driver_iic.o(i.IICWriteBytes) refers to stm32f10x_driver_iic.o(i.IIC_Start) for IIC_Start
@@ -113,12 +119,6 @@ Section Cross References
     stm32f10x_driver_iic.o(i.IIC_Stop) refers to stm32f10x_driver_delay.o(i.delay_us) for delay_us
     stm32f10x_driver_iic.o(i.IIC_Wait_Ack) refers to stm32f10x_driver_delay.o(i.delay_us) for delay_us
     stm32f10x_driver_iic.o(i.IIC_Wait_Ack) refers to stm32f10x_driver_iic.o(i.IIC_Stop) for IIC_Stop
-    stm32f10x_driver_iic.o(i.IICreadByte) refers to stm32f10x_driver_iic.o(i.I2C_ReadOneByte) for I2C_ReadOneByte
-    stm32f10x_driver_iic.o(i.IICreadBytes) refers to stm32f10x_driver_iic.o(i.IIC_Start) for IIC_Start
-    stm32f10x_driver_iic.o(i.IICreadBytes) refers to stm32f10x_driver_iic.o(i.IIC_Send_Byte) for IIC_Send_Byte
-    stm32f10x_driver_iic.o(i.IICreadBytes) refers to stm32f10x_driver_iic.o(i.IIC_Wait_Ack) for IIC_Wait_Ack
-    stm32f10x_driver_iic.o(i.IICreadBytes) refers to stm32f10x_driver_iic.o(i.IIC_Read_Byte) for IIC_Read_Byte
-    stm32f10x_driver_iic.o(i.IICreadBytes) refers to stm32f10x_driver_iic.o(i.IIC_Stop) for IIC_Stop
     stm32f10x_driver_tim.o(i.TIM4_IRQHandler) refers to stm32f10x_tim.o(i.TIM_GetITStatus) for TIM_GetITStatus
     stm32f10x_driver_tim.o(i.TIM4_IRQHandler) refers to stm32f10x_tim.o(i.TIM_ClearITPendingBit) for TIM_ClearITPendingBit
     stm32f10x_driver_tim.o(i.TIM4_IRQHandler) refers to stm32f10x_driver_tim.o(.data) for loop20HZCnt
@@ -853,6 +853,8 @@ Removing Unused input sections from the image.
     Removing stm32f10x_wwdg.o(i.WWDG_SetPrescaler), (24 bytes).
     Removing stm32f10x_wwdg.o(i.WWDG_SetWindowValue), (40 bytes).
     Removing stm32f10x_driver_iic.o(i.I2C_ReadOneByte), (70 bytes).
+    Removing stm32f10x_driver_iic.o(i.IICReadByte), (22 bytes).
+    Removing stm32f10x_driver_iic.o(i.IICReadBytes), (104 bytes).
     Removing stm32f10x_driver_iic.o(i.IICWriteBit), (64 bytes).
     Removing stm32f10x_driver_iic.o(i.IICWriteBits), (106 bytes).
     Removing stm32f10x_driver_iic.o(i.IICWriteByte), (20 bytes).
@@ -865,8 +867,6 @@ Removing Unused input sections from the image.
     Removing stm32f10x_driver_iic.o(i.IIC_Start), (76 bytes).
     Removing stm32f10x_driver_iic.o(i.IIC_Stop), (76 bytes).
     Removing stm32f10x_driver_iic.o(i.IIC_Wait_Ack), (104 bytes).
-    Removing stm32f10x_driver_iic.o(i.IICreadByte), (22 bytes).
-    Removing stm32f10x_driver_iic.o(i.IICreadBytes), (104 bytes).
     Removing stm32f10x_driver_spi.o(i.SPI_INIT), (196 bytes).
     Removing stm32f10x_driver_spi.o(i.SPI_RW), (56 bytes).
     Removing stm32f10x_driver_usart.o(i.fputc), (28 bytes).

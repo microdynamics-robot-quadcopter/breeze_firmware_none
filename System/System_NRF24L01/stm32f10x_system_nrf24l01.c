@@ -9,7 +9,7 @@ uint8_t NRF24L01_TXDATA[RX_PLOAD_WIDTH];  /*nrf24l01需要发送的数据*/
 u8 RX_ADDRESS[RX_ADR_WIDTH] = {0x34, 0xc3, 0x10, 0x10, 0x00};   /*接收地址*/
 
 /*初始化*/
-extern void NRF24L01_INIT(void)
+void NRF24L01_INIT(void)
 {
     SPI_INIT();	
 	//check if NRF24L01 is in the SPI bus
@@ -20,7 +20,7 @@ extern void NRF24L01_INIT(void)
 }
 
 /*接收模式*/
-extern void SetRX_Mode(void)
+void SetRX_Mode(void)
 {
     SPI_CE_L();
     NRF_Write_Reg(FLUSH_RX, 0xff);                                                   /*清除TX FIFO寄存器*/		 
@@ -36,7 +36,7 @@ extern void SetRX_Mode(void)
 }
 
 //写数据包
-extern void NRF_TxPacket(uint8_t *tx_buf, uint8_t len)
+void NRF_TxPacket(uint8_t *tx_buf, uint8_t len)
 {
     SPI_CE_L();                                 /*StandBy I模式*/
     NRF_Write_Buf(WR_TX_PLOAD, tx_buf, len);    /*装载数据*/
@@ -44,7 +44,7 @@ extern void NRF_TxPacket(uint8_t *tx_buf, uint8_t len)
 }
 
 //写寄存器
-extern uint8_t NRF_Write_Reg(uint8_t reg, uint8_t val)
+uint8_t NRF_Write_Reg(uint8_t reg, uint8_t val)
 {
     uint8_t status;
     SPI_CSN_L();
@@ -55,7 +55,7 @@ extern uint8_t NRF_Write_Reg(uint8_t reg, uint8_t val)
 }
 
 //读寄存器
-extern uint8_t NRF_Read_Reg(uint8_t reg)
+uint8_t NRF_Read_Reg(uint8_t reg)
 {
     uint8_t reg_val;
     SPI_CSN_L();					 
@@ -66,7 +66,7 @@ extern uint8_t NRF_Read_Reg(uint8_t reg)
 }
 
 //读缓冲区
-extern uint8_t NRF_Read_Buf(uint8_t reg, uint8_t *pBuf, uint8_t len)
+uint8_t NRF_Read_Buf(uint8_t reg, uint8_t *pBuf, uint8_t len)
 {
     uint8_t i;
     uint8_t status;
@@ -83,7 +83,7 @@ extern uint8_t NRF_Read_Buf(uint8_t reg, uint8_t *pBuf, uint8_t len)
 }
 
 //写缓冲区
-extern uint8_t NRF_Write_Buf(uint8_t reg, uint8_t *pBuf, uint8_t len)
+uint8_t NRF_Write_Buf(uint8_t reg, uint8_t *pBuf, uint8_t len)
 {
     uint8_t i;
     uint8_t status;
@@ -100,7 +100,7 @@ extern uint8_t NRF_Write_Buf(uint8_t reg, uint8_t *pBuf, uint8_t len)
 }
 
 //查询中断
-extern void NRF_Irq(void)
+void NRF_Irq(void)
 {
     uint8_t status = NRF_Read_Reg(NRF_READ_REG + NRFRegSTATUS);
     if (status & (1 << RX_DR))                                       /*接收轮训标志位*/
@@ -113,7 +113,7 @@ extern void NRF_Irq(void)
 }
 
 /*接收函数*/
-extern u8 NRF24L01_RxPacket(u8 *rxbuf)
+u8 NRF24L01_RxPacket(u8 *rxbuf)
 {
     u8 status;		    							   
     //SPI2_SetSpeed(SPI_SPEED_4);                          /*spi速度为9Mhz(24L01的最大SPI时钟为10Mhz)*/  
@@ -129,7 +129,7 @@ extern u8 NRF24L01_RxPacket(u8 *rxbuf)
 	return 1;                                              /*没收到任何数据*/
 }
 
-extern u8 NRF24L01_Check(void)
+u8 NRF24L01_Check(void)
 {
     u8 i;
     u8 buf1[5] = {0xC2, 0xC2, 0xC2, 0xC2, 0xC2}; 
@@ -152,12 +152,12 @@ extern u8 NRF24L01_Check(void)
 }
 
 
-extern void NRF_Matching(void)
+void NRF_Matching(void)
 {
     
 }
 
-extern void ReceiveDataFromNRF(void)
+void ReceiveDataFromNRF(void)
 {
 
 }

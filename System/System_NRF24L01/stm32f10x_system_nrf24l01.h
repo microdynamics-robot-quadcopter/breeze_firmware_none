@@ -58,12 +58,14 @@ extern void SetRX_Mode(void);
 extern void SetTX_Mode(void);
 extern void NRF_TxPacket(uint8_t *tx_buf, uint8_t len);
 extern uint8_t NRF_RxPacket(uint8_t *rx_buf, uint8_t len);
+extern u8 NRF24L01_RxPacket(u8 *rxbuf);
 extern uint8_t NRF_Write_Reg(uint8_t reg, uint8_t value);
+extern uint8_t NRF_Write_Buf(uint8_t reg, uint8_t *pBuf, uint8_t len);
 extern uint8_t NRF_Read_Reg(uint8_t reg);
 extern uint8_t NRF_Read_Buf(uint8_t reg, uint8_t *pBuf, uint8_t len);
-extern uint8_t NRF_Write_Buf(uint8_t reg, uint8_t *pBuf, uint8_t len);
+
 extern void NRF_Irq(void);
-extern u8 NRF24L01_RxPacket(u8 *rxbuf);
+
 
 extern u8 NRF24L01_Check(void);
 

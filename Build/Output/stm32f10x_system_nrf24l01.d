@@ -1,5 +1,5 @@
 ..\build\output\stm32f10x_system_nrf24l01.o: ..\System\System_NRF24L01\stm32f10x_system_nrf24l01.c
-..\build\output\stm32f10x_system_nrf24l01.o: ..\Drivers\Driver_SPI\stm32f10x_driver_spi.h
+..\build\output\stm32f10x_system_nrf24l01.o: ..\User\stm32f10x_it.h
 ..\build\output\stm32f10x_system_nrf24l01.o: ..\Libraries\CMSIS\stm32f10x.h
 ..\build\output\stm32f10x_system_nrf24l01.o: ..\Libraries\CMSIS\core_cm3.h
 ..\build\output\stm32f10x_system_nrf24l01.o: E:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
@@ -29,6 +29,10 @@
 ..\build\output\stm32f10x_system_nrf24l01.o: ..\Libraries\FWLib\inc\stm32f10x_usart.h
 ..\build\output\stm32f10x_system_nrf24l01.o: ..\Libraries\FWLib\inc\stm32f10x_wwdg.h
 ..\build\output\stm32f10x_system_nrf24l01.o: ..\Libraries\FWLib\inc\misc.h
+..\build\output\stm32f10x_system_nrf24l01.o: ..\Drivers\Driver_SPI\stm32f10x_driver_spi.h
+..\build\output\stm32f10x_system_nrf24l01.o: ..\Drivers\Driver_Delay\stm32f10x_driver_delay.h
+..\build\output\stm32f10x_system_nrf24l01.o: ..\Drivers\Driver_EEPROM\stm32f10x_driver_eeprom.h
+..\build\output\stm32f10x_system_nrf24l01.o: ..\System\System_Led\stm32f10x_system_led.h
 ..\build\output\stm32f10x_system_nrf24l01.o: ..\System\System_RPData\stm32f10x_system_rpdata.h
 ..\build\output\stm32f10x_system_nrf24l01.o: ..\System\System_NRF24L01\stm32f10x_system_nrf24l01.h
 ..\build\output\stm32f10x_system_nrf24l01.o: E:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h

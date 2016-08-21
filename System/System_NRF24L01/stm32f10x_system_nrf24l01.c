@@ -1,4 +1,8 @@
+#include "stm32f10x_it.h"
 #include "stm32f10x_driver_spi.h"
+#include "stm32f10x_driver_delay.h"
+#include "stm32f10x_driver_eeprom.h"
+#include "stm32f10x_system_led.h"
 #include "stm32f10x_system_rpdata.h"
 #include "stm32f10x_system_nrf24l01.h"
 #include "stdio.h"
@@ -152,12 +156,55 @@ u8 NRF24L01_Check(void)
     else        {printf("NRF24L01 check failed...\r\n"); return 0;}  /*MCU与NRF不正常连接*/
 }
 
-//static uint8_t sta;
-//extern u8 RX_ADDRESS[RX_ADR_WIDTH];
-//extern void SaveParamsToEEPROM(void);
+static uint8_t sta;
+extern void SaveParamsToEEPROM(void);
 u8 NRFMatched = 0;
 
 void NRF_Matching(void)
 {
-    
+    static uint32_t nTs, nT;
+	static uint32_t writeOvertime = 2 * 1000000;// unit :us
+	
+    LedC_On;   //led3 always on when 2.4G matching
+    nTs = micros();
+
+    do
+    {
+        NRFMatched = 0;
+        nT = micros() - nTs;
+        
+        if (nT >= writeOvertime)
+        {
+            RX_ADDRESS[4] = table.NRFAddr[4];
+            break;	//exit when time out,and do not change original address
+        }
+
+        SetRX_Mode();                 // reset RX mode write RX panel address
+        delay_ms(4);									// delay is needed after reset NRF
+        sta = NRF_Read_Reg(NRF_READ_REG + NRFRegSTATUS);
+      
+        if ((sta & 0x0E ) == 0x00)
+        {
+            NRFMatched = 1;
+        }
+        else
+        {
+            RX_ADDRESS[4]++;		//search the next RX_ADDRESS
+            if (RX_ADDRESS[4] == 0xff )
+            {
+                RX_ADDRESS[4] = 0x00;
+            }
+        }
+
+    }
+    while ((sta & 0x0E ) == 0x0E);
+
+    SetRX_Mode();                       // reset RX mode
+
+	if ((NRFMatched == 1) && (RX_ADDRESS[4] != table.NRFAddr[4]))
+    {
+        SaveParamsToEEPROM();			//write eeprom when current addr != original addr
+    }
+
+    LedC_Off;		                    // matching end 
 }

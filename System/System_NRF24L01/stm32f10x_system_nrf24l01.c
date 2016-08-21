@@ -152,6 +152,10 @@ u8 NRF24L01_Check(void)
     else        {printf("NRF24L01 check failed...\r\n"); return 0;}  /*MCU与NRF不正常连接*/
 }
 
+//static uint8_t sta;
+//extern u8 RX_ADDRESS[RX_ADR_WIDTH];
+//extern void SaveParamsToEEPROM(void);
+u8 NRFMatched = 0;
 
 void NRF_Matching(void)
 {

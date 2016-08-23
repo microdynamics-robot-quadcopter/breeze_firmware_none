@@ -54,11 +54,11 @@ void STMFLASH_Write(u32 WriteAddr, u16 *pBuffer, u16 NumToWrite)
         return;  /*非法地址*/
     }
     FLASH_Unlock();  /*解锁*/
-    offaddr = WriteAddr - STM32_FLASH_BASE;  /*实际偏移地址*/
+    offaddr = WriteAddr - STM32_FLASH_BASE;   /*实际偏移地址*/
     secpos = offaddr / STM_SECTOR_SIZE;
     secoff = (offaddr % STM_SECTOR_SIZE) / 2; /*在扇区内的偏移(以2个字节为基本单位)*/
     secremain = STM_SECTOR_SIZE / 2 - secoff; /*扇区剩余空间大小*/
-    if (NumToWrite <= secremain)  /*不大于该扇区范围*/
+    if (NumToWrite <= secremain)              /*不大于该扇区范围*/
     {
         secremain = NumToWrite;
     }
@@ -66,7 +66,7 @@ void STMFLASH_Write(u32 WriteAddr, u16 *pBuffer, u16 NumToWrite)
     while (1)
     {
         STMFLASH_Read(secpos * STM_SECTOR_SIZE + STM32_FLASH_BASE, STMFLASH_BUF, STM_SECTOR_SIZE / 2);  /*读出整个扇区的内容*/
-        for (i = 0; i < secremain; i++)  /*校验数据*/
+        for (i = 0; i < secremain; i++)            /*校验数据*/
         {
             if (STMFLASH_BUF[secoff+i] != 0xffff)  /*需要擦除*/
             {
@@ -94,18 +94,18 @@ void STMFLASH_Write(u32 WriteAddr, u16 *pBuffer, u16 NumToWrite)
         }
         else
         {
-            secpos++;  /*扇区地址增1*/
-            secoff = 0;  /*偏移地址为0*/
-            pBuffer += secremain; /*指针偏移*/
-            WriteAddr += secremain; /*写地址偏移*/
-            NumToWrite -= secremain; /*字节(16位)数递减*/
+            secpos++;                                /*扇区地址增1*/
+            secoff = 0;                              /*偏移地址为0*/
+            pBuffer += secremain;                    /*指针偏移*/
+            WriteAddr += secremain;                  /*写地址偏移*/
+            NumToWrite -= secremain;                 /*字节(16位)数递减*/
             if (NumToWrite > (STM_SECTOR_SIZE / 2)) 
             {
-                secremain = STM_SECTOR_SIZE / 2;  /*下一个扇区还是写不完*/
+                secremain = STM_SECTOR_SIZE / 2;     /*下一个扇区还是写不完*/
             }
             else
             {
-                secremain = NumToWrite; /*下一个扇区可以写完*/
+                secremain = NumToWrite;              /*下一个扇区可以写完*/
             }
         }
     }

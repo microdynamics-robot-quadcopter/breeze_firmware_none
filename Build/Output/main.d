@@ -34,4 +34,3 @@
 ..\build\output\main.o: ..\Drivers\Driver_Delay\stm32f10x_driver_delay.h
 ..\build\output\main.o: ..\Drivers\Driver_USART\stm32f10x_driver_usart.h
 ..\build\output\main.o: ..\System\System_Led\stm32f10x_system_led.h
-..\build\output\main.o: ..\System\System_Battery\stm32f10x_system_battery.h

@@ -4,7 +4,7 @@
 #include "stm32f10x_driver_delay.h"
 #include "stm32f10x_driver_usart.h"
 #include "stm32f10x_system_led.h"
-#include "stm32f10x_system_battery.h"
+//#include "stm32f10x_system_battery.h"
 
 void Hardware_Init(void)
 {

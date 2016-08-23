@@ -164,7 +164,7 @@ void NRF_Matching(void)
 {
     static uint32_t nTs, nT;
 	static uint32_t writeOvertime = 2 * 1000000;// unit :us
-	
+
     LedC_On;   //led3 always on when 2.4G matching
     nTs = micros();
 
@@ -172,39 +172,38 @@ void NRF_Matching(void)
     {
         NRFMatched = 0;
         nT = micros() - nTs;
-        
+
         if (nT >= writeOvertime)
         {
             RX_ADDRESS[4] = table.NRFAddr[4];
             break;	//exit when time out,and do not change original address
         }
 
-        SetRX_Mode();                 // reset RX mode write RX panel address
-        delay_ms(4);									// delay is needed after reset NRF
+        SetRX_Mode();                                     /*reset RX mode write RX panel address*/
+        delay_ms(4);                                      /*delay is needed after reset NRF*/
         sta = NRF_Read_Reg(NRF_READ_REG + NRFRegSTATUS);
-      
-        if ((sta & 0x0E ) == 0x00)
+
+        if ((sta & 0x0E) == 0x00)
         {
             NRFMatched = 1;
         }
         else
         {
-            RX_ADDRESS[4]++;		//search the next RX_ADDRESS
-            if (RX_ADDRESS[4] == 0xff )
+            RX_ADDRESS[4]++;            /*search the next RX_ADDRESS*/
+            if (RX_ADDRESS[4] == 0xFF)
             {
                 RX_ADDRESS[4] = 0x00;
             }
         }
-
     }
-    while ((sta & 0x0E ) == 0x0E);
+    while ((sta & 0x0E) == 0x0E);
 
-    SetRX_Mode();                       // reset RX mode
+    SetRX_Mode();                       /*reset RX mode*/
 
 	if ((NRFMatched == 1) && (RX_ADDRESS[4] != table.NRFAddr[4]))
     {
-        SaveParamsToEEPROM();			//write eeprom when current addr != original addr
+        SaveParamsToEEPROM();           /*write eeprom when current addr != original addr*/
     }
 
-    LedC_Off;		                    // matching end 
+    LedC_Off;                           /*matching end*/
 }

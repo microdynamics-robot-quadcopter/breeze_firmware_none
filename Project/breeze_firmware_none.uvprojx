@@ -424,97 +424,17 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Drivers</GroupName>
+          <GroupName>CMSIS</GroupName>
           <Files>
             <File>
-              <FileName>stm32f10x_driver_sys.c</FileName>
+              <FileName>core_cm3.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Drivers\Driver_Sys\stm32f10x_driver_sys.c</FilePath>
+              <FilePath>..\Libraries\CMSIS\core_cm3.c</FilePath>
             </File>
             <File>
-              <FileName>stm32f10x_driver_iic.c</FileName>
+              <FileName>system_stm32f10x.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Drivers\Driver_IIC\stm32f10x_driver_iic.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f10x_driver_spi.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Drivers\Driver_SPI\stm32f10x_driver_spi.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f10x_driver_tim.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Drivers\Driver_Tim\stm32f10x_driver_tim.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f10x_driver_pwm.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Drivers\Driver_PWM\stm32f10x_driver_pwm.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f10x_driver_flash.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Drivers\Driver_Flash\stm32f10x_driver_flash.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f10x_driver_usart.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Drivers\Driver_USART\stm32f10x_driver_usart.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f10x_driver_delay.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Drivers\Driver_Delay\stm32f10x_driver_delay.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f10x_driver_eeprom.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Drivers\Driver_EEPROM\stm32f10x_driver_eeprom.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>User</GroupName>
-          <Files>
-            <File>
-              <FileName>main.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\User\main.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f10x_it.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\User\stm32f10x_it.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>System</GroupName>
-          <Files>
-            <File>
-              <FileName>stm32f10x_system_led.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\System\System_Led\stm32f10x_system_led.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f10x_system_imu.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\System\System_IMU\stm32f10x_system_imu.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f10x_system_rpdata.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\System\System_RPData\stm32f10x_system_rpdata.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f10x_system_control.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\System\System_Control\stm32f10x_system_control.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f10x_system_nrf24l01.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\System\System_NRF24L01\stm32f10x_system_nrf24l01.c</FilePath>
+              <FilePath>..\Libraries\CMSIS\system_stm32f10x.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -639,17 +559,97 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>CMSIS</GroupName>
+          <GroupName>User</GroupName>
           <Files>
             <File>
-              <FileName>core_cm3.c</FileName>
+              <FileName>main.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Libraries\CMSIS\core_cm3.c</FilePath>
+              <FilePath>..\User\main.c</FilePath>
             </File>
             <File>
-              <FileName>system_stm32f10x.c</FileName>
+              <FileName>stm32f10x_it.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Libraries\CMSIS\system_stm32f10x.c</FilePath>
+              <FilePath>..\User\stm32f10x_it.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Drivers</GroupName>
+          <Files>
+            <File>
+              <FileName>stm32f10x_driver_sys.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\Driver_Sys\stm32f10x_driver_sys.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_driver_iic.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\Driver_IIC\stm32f10x_driver_iic.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_driver_spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\Driver_SPI\stm32f10x_driver_spi.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_driver_tim.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\Driver_Tim\stm32f10x_driver_tim.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_driver_pwm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\Driver_PWM\stm32f10x_driver_pwm.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_driver_flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\Driver_Flash\stm32f10x_driver_flash.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_driver_usart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\Driver_USART\stm32f10x_driver_usart.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_driver_delay.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\Driver_Delay\stm32f10x_driver_delay.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_driver_eeprom.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\Driver_EEPROM\stm32f10x_driver_eeprom.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>System</GroupName>
+          <Files>
+            <File>
+              <FileName>stm32f10x_system_led.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\System\System_Led\stm32f10x_system_led.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_system_imu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\System\System_IMU\stm32f10x_system_imu.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_system_rpdata.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\System\System_RPData\stm32f10x_system_rpdata.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_system_control.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\System\System_Control\stm32f10x_system_control.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_system_nrf24l01.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\System\System_NRF24L01\stm32f10x_system_nrf24l01.c</FilePath>
             </File>
           </Files>
         </Group>

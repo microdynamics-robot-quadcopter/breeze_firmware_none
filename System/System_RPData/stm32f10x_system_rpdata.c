@@ -1,5 +1,8 @@
 #include "stm32f10x_system_rpdata.h"
 #include "stm32f10x_system_nrf24l01.h"
+#include "stm32f10x_driver_pwm.h"
+#include "stm32f10x_driver_usart.h"
+#include "stdio.h"
 
 NRF_GetData NRF_Data;
 uint8_t  appCmdFlag = 0;
@@ -35,7 +38,7 @@ void ReceiveDataFromNRF(void)
     }
 }
 
-void PrcessDataFromNRF(void)
+void ProcessDataFromNRF(void)
 {
     CONSTRAIN(rcData[PITCH], 1000, 2000);
 	CONSTRAIN(rcData[YAW], 1000, 2000);
@@ -43,10 +46,17 @@ void PrcessDataFromNRF(void)
     CONSTRAIN(rcData[THROTTLE], 1000, 2000);
     
     NRF_Data.throttle = rcData[THROTTLE] - 1000;
-	NRF_Data.yaw = YAW_RATE_MAX * dbScaleLinear((rcData[YAW] - 1500),500,APP_YAW_DB);
-	NRF_Data.pitch = Angle_Max * dbScaleLinear((rcData[PITCH] - 1500),500,APP_PR_DB);
-	NRF_Data.roll= Angle_Max * dbScaleLinear((rcData[ROLL] - 1500),500,APP_PR_DB);
+	NRF_Data.yaw = YAW_RATE_MAX * dbScaleLinear((rcData[YAW] - 1500), 500, APP_YAW_DB);
+	NRF_Data.pitch = Angle_Max * dbScaleLinear((rcData[PITCH] - 1500), 500, APP_PR_DB);
+	NRF_Data.roll= Angle_Max * dbScaleLinear((rcData[ROLL] - 1500), 500, APP_PR_DB);
     
+    printf("This is the value of the armState:\n");
+    printf("%d\n", armState);
+    
+    if (armState == REQ_ARM)
+    {
+        PWM_MotorFlash(200, 200, 200, 200);
+    }
 //    switch (armState)
 //    {
 //        case REQ_ARM:

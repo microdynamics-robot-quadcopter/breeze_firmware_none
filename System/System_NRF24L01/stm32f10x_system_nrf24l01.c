@@ -165,7 +165,10 @@ void NRF_Matching(void)
     static uint32_t nTs, nT;
 	static uint32_t writeOvertime = 2 * 1000000;// unit :us
 
+    LedA_On;
+    LedB_On;
     LedC_On;   //led3 always on when 2.4G matching
+    LedD_On;
     nTs = micros();
 
     do
@@ -204,6 +207,9 @@ void NRF_Matching(void)
     {
         SaveParamsToEEPROM();           /*write eeprom when current addr != original addr*/
     }
-
+    
+    LedA_Off;
+    LedB_Off;
     LedC_Off;                           /*matching end*/
+    LedD_Off;
 }

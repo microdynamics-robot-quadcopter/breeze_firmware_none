@@ -3,7 +3,10 @@
 #include "stm32f10x_driver_tim.h"
 #include "stm32f10x_driver_delay.h"
 #include "stm32f10x_driver_usart.h"
+#include "stm32f10x_driver_eeprom.h"
 #include "stm32f10x_system_led.h"
+#include "stm32f10x_system_rpdata.h"
+#include "stm32f10x_system_nrf24l01.h"
 //#include "stm32f10x_system_battery.h"
 
 void Hardware_Init(void)
@@ -14,6 +17,8 @@ void Hardware_Init(void)
     PWM_Init();
     usart_init(115200);
     TIM4_Init(4999, 7199);
+    LoadParamsFromEEPROM();
+    NRF24L01_INIT();
     //Battery_Check_Init();
 }
 
@@ -23,10 +28,13 @@ int main(void)
 //    u8 i;
 //    u16 time = 0;
     Hardware_Init();   
-    PWM_MotorFlash(200, 200, 200, 200);
+    //PWM_MotorFlash(200, 200, 200, 200);
+   
     while (1)
     {
-        led_test(1);
+        //led_test(1);
+        NRF_Irq();
+        ProcessDataFromNRF();
     }
     
 //    while (1)

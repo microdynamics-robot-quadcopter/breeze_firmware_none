@@ -66,7 +66,6 @@ extern uint8_t NRF_Read_Buf(uint8_t reg, uint8_t *pBuf, uint8_t len);
 
 extern void NRF_Irq(void);
 
-
 extern u8 NRF24L01_Check(void);
 
 extern u8 NRFMatched;

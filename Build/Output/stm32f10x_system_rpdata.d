@@ -30,3 +30,6 @@
 ..\build\output\stm32f10x_system_rpdata.o: ..\Libraries\FWLib\inc\stm32f10x_wwdg.h
 ..\build\output\stm32f10x_system_rpdata.o: ..\Libraries\FWLib\inc\misc.h
 ..\build\output\stm32f10x_system_rpdata.o: ..\System\System_NRF24L01\stm32f10x_system_nrf24l01.h
+..\build\output\stm32f10x_system_rpdata.o: ..\Drivers\Driver_PWM\stm32f10x_driver_pwm.h
+..\build\output\stm32f10x_system_rpdata.o: ..\Drivers\Driver_USART\stm32f10x_driver_usart.h
+..\build\output\stm32f10x_system_rpdata.o: E:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h

@@ -33,4 +33,7 @@
 ..\build\output\main.o: ..\Drivers\Driver_Tim\stm32f10x_driver_tim.h
 ..\build\output\main.o: ..\Drivers\Driver_Delay\stm32f10x_driver_delay.h
 ..\build\output\main.o: ..\Drivers\Driver_USART\stm32f10x_driver_usart.h
+..\build\output\main.o: ..\Drivers\Driver_EEPROM\stm32f10x_driver_eeprom.h
 ..\build\output\main.o: ..\System\System_Led\stm32f10x_system_led.h
+..\build\output\main.o: ..\System\System_RPData\stm32f10x_system_rpdata.h
+..\build\output\main.o: ..\System\System_NRF24L01\stm32f10x_system_nrf24l01.h

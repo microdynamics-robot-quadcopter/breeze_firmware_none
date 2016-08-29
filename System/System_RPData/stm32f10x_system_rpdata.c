@@ -17,10 +17,10 @@ void ReceiveDataFromNRF(void)
         switch (NRF24L01_RXDATA[4])
         {
             case MSP_SET_4CON:
-                rcData[THROTTLE] = NRF24L01_RXDATA[5] + (NRF24L01_RXDATA[6] << 8);
-                rcData[YAW] = NRF24L01_RXDATA[7] + (NRF24L01_RXDATA[8] << 8);
-                rcData[PITCH] = NRF24L01_RXDATA[9] + (NRF24L01_RXDATA[10] << 8);
-                rcData[ROLL] = NRF24L01_RXDATA[11] + (NRF24L01_RXDATA[12] << 8);
+                rcData[THROTTLE] = NRF24L01_RXDATA[5]  + (NRF24L01_RXDATA[6] << 8);
+                rcData[YAW]      = NRF24L01_RXDATA[7]  + (NRF24L01_RXDATA[8] << 8);
+                rcData[PITCH]    = NRF24L01_RXDATA[9]  + (NRF24L01_RXDATA[10] << 8);
+                rcData[ROLL]     = NRF24L01_RXDATA[11] + (NRF24L01_RXDATA[12] << 8);
             break;
             
             case MSP_ARM_IT:
@@ -56,6 +56,11 @@ void ProcessDataFromNRF(void)
     if (armState == REQ_ARM)
     {
         PWM_MotorFlash(200, 200, 200, 200);
+    }
+    
+    if (armState == REQ_DISARM)
+    {
+        PWM_MotorFlash(0, 0, 0, 0);
     }
 //    switch (armState)
 //    {

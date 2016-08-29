@@ -46,9 +46,9 @@ void ProcessDataFromNRF(void)
     CONSTRAIN(rcData[THROTTLE], 1000, 2000);
     
     NRF_Data.throttle = rcData[THROTTLE] - 1000;
-	NRF_Data.yaw = YAW_RATE_MAX * dbScaleLinear((rcData[YAW] - 1500), 500, APP_YAW_DB);
-	NRF_Data.pitch = Angle_Max * dbScaleLinear((rcData[PITCH] - 1500), 500, APP_PR_DB);
-	NRF_Data.roll= Angle_Max * dbScaleLinear((rcData[ROLL] - 1500), 500, APP_PR_DB);
+	NRF_Data.yaw   = YAW_RATE_MAX * dbScaleLinear((rcData[YAW] - 1500), 500, APP_YAW_DB);
+	NRF_Data.pitch = Angle_Max    * dbScaleLinear((rcData[PITCH] - 1500), 500, APP_PR_DB);
+	NRF_Data.roll  = Angle_Max    * dbScaleLinear((rcData[ROLL] - 1500), 500, APP_PR_DB);
     
     printf("This is the value of the armState:\n");
     printf("%d\n", armState);

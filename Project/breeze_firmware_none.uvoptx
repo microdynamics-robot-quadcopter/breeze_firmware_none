@@ -771,6 +771,18 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
+      <PathWithFileName>..\System\System_MS5611\stm32f10x_system_ms5611.c</PathWithFileName>
+      <FilenameWithoutPath>stm32f10x_system_ms5611.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>6</GroupNumber>
+      <FileNumber>43</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
       <PathWithFileName>..\System\System_NRF24L01\stm32f10x_system_nrf24l01.c</PathWithFileName>
       <FilenameWithoutPath>stm32f10x_system_nrf24l01.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>

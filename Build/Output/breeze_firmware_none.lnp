@@ -40,6 +40,7 @@
 "..\build\output\stm32f10x_system_imu.o"
 "..\build\output\stm32f10x_system_rpdata.o"
 "..\build\output\stm32f10x_system_control.o"
+"..\build\output\stm32f10x_system_ms5611.o"
 "..\build\output\stm32f10x_system_nrf24l01.o"
 --strict --scatter "..\Build\Output\breeze_firmware_none.sct"
 --summary_stderr --info summarysizes --map --xref --callgraph --symbols

@@ -18,24 +18,36 @@
 #define MS5611_OSR_2048       0x06    /*conversion time 4.6ms resolution 0.018mbar*/
 #define MS5611_OSR_4096       0x08    /*conversion time 9.1ms resolution 0.012mbar*/
 
-/*by adding ints from 0 to 6 we can read all the prom configuration values*/
+/*by adding ints from 0 to 6 we can read all the PROM configuration values*/
 /*C1 will be at 0xA2 and all the subsequent are multiples of 2*/
 #define MS5611_PROM_BASE_ADDR 0xA2
-#define MS5611_PROM_REG_COUNT 6       /*number of registers in the prom*/
-#define MS5611_PROM_REG_SIZE  2       /*size in bytes of a prom registry*/
+#define MS5611_PROM_REG_COUNT 6       /*number of registers in the PROM*/
+#define MS5611_PROM_REG_SIZE  2       /*size in bytes of a PROM registry*/
 
 #define MSLP                  101325  /*mean Sea Level Pressure = 1013.25 hPA (1hPa = 100Pa = 1mbar)*/
 
+/*Temperature in 1C            */
+/*Pressure    in 0.01mbar = Pa */
+/*Altitude    in m             */
 extern volatile float MS5611_Pressure;
 extern volatile float MS5611_Altitude;
 extern volatile float MS5611_Temperature;
-extern uint8_t Baro_Alt_Updated;      /*气压计高度更新完成标志*/
 extern uint8_t PaOffsetInited;
+extern uint8_t Baro_Alt_Updated;          /*气压计高度更新完成标志*/
 
+extern void MS5611_Reset(void);
+extern void MS5611_ReadPROM(void);
 extern void MS5611_TempPush(float val);
 extern void MS5611_PressPush(float val);
 extern void MS5611_AltPush(float val);
 
+extern float MS5611_GetAvg(float *buff, int size);
+extern void MS5611_StartConversion(uint8_t cmd);
+extern uint32_t MS5611_GetConversion(void);
+
+extern void MS5611_GetPressure(void);
+extern float MS5611_GetAltitude(void);
+extern void MS5611_GetTemperature(void);
 
 extern void MS5611_Init(void);
 extern void MS5611_Thread(void);

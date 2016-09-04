@@ -1119,14 +1119,14 @@ Removing Unused input sections from the image.
     Removing stm32f10x_system_ms5611.o(i.MS5611_Reset), (32 bytes).
     Removing stm32f10x_system_ms5611.o(i.MS5611_StartConversion), (34 bytes).
     Removing stm32f10x_system_ms5611.o(i.MS5611_TempPush), (40 bytes).
-    Removing stm32f10x_system_ms5611.o(i.MS5611_Thread), (184 bytes).
+    Removing stm32f10x_system_ms5611.o(i.MS5611_Thread), (192 bytes).
     Removing stm32f10x_system_ms5611.o(i.WaitBaroInitOffset), (64 bytes).
     Removing stm32f10x_system_ms5611.o(.bss), (132 bytes).
     Removing stm32f10x_system_ms5611.o(.data), (92 bytes).
     Removing stm32f10x_system_nrf24l01.o(i.NRF24L01_RxPacket), (52 bytes).
     Removing stm32f10x_system_nrf24l01.o(i.NRF_TxPacket), (44 bytes).
 
-469 unused section(s) (total 19417 bytes) removed from the image.
+469 unused section(s) (total 19425 bytes) removed from the image.
 
 ==============================================================================
 

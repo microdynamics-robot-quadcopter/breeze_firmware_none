@@ -1,5 +1,5 @@
 ..\build\output\stm32f10x_system_ms5611.o: ..\System\System_MS5611\stm32f10x_system_ms5611.c
-..\build\output\stm32f10x_system_ms5611.o: ..\System\System_MS5611\stm32f10x_system_ms5611.h
+..\build\output\stm32f10x_system_ms5611.o: ..\Drivers\Driver_IIC\stm32f10x_driver_iic.h
 ..\build\output\stm32f10x_system_ms5611.o: ..\Libraries\CMSIS\stm32f10x.h
 ..\build\output\stm32f10x_system_ms5611.o: ..\Libraries\CMSIS\core_cm3.h
 ..\build\output\stm32f10x_system_ms5611.o: E:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
@@ -29,3 +29,8 @@
 ..\build\output\stm32f10x_system_ms5611.o: ..\Libraries\FWLib\inc\stm32f10x_usart.h
 ..\build\output\stm32f10x_system_ms5611.o: ..\Libraries\FWLib\inc\stm32f10x_wwdg.h
 ..\build\output\stm32f10x_system_ms5611.o: ..\Libraries\FWLib\inc\misc.h
+..\build\output\stm32f10x_system_ms5611.o: ..\Drivers\Driver_Sys\stm32f10x_driver_sys.h
+..\build\output\stm32f10x_system_ms5611.o: ..\Drivers\Driver_Delay\stm32f10x_driver_delay.h
+..\build\output\stm32f10x_system_ms5611.o: ..\System\System_MS5611\stm32f10x_system_ms5611.h
+..\build\output\stm32f10x_system_ms5611.o: ..\User\stm32f10x_it.h
+..\build\output\stm32f10x_system_ms5611.o: E:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h

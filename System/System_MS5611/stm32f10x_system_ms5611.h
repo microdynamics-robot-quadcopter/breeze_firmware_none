@@ -32,6 +32,11 @@ extern volatile float MS5611_Temperature;
 extern uint8_t Baro_Alt_Updated;      /*气压计高度更新完成标志*/
 extern uint8_t PaOffsetInited;
 
+extern void MS5611_TempPush(float val);
+extern void MS5611_PressPush(float val);
+extern void MS5611_AltPush(float val);
+
+
 extern void MS5611_Init(void);
 extern void MS5611_Thread(void);
 extern uint8_t WaitBaroInitOffset(void);

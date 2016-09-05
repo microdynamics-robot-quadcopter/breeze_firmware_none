@@ -288,7 +288,7 @@ uint8_t MPU6050_WriteMemoryBlock(const uint8_t *data, uint16_t dataSize, uint8_t
             MPU6050_SetMemoryStartAddress(address);
             IICReadBytes(DevAddr, MPU6050_RA_MEM_R_W, chunkSize, verifyBuffer);
 
-			for (j = 0; j < chunkSize; j++)
+            for (j = 0; j < chunkSize; j++)
             {
                 if (tprogBuffer[j] != verifyBuffer[j])
                 {

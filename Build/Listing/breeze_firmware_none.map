@@ -364,6 +364,82 @@ Section Cross References
     stm32f10x_system_nrf24l01.o(i.SetRX_Mode) refers to stm32f10x_system_nrf24l01.o(i.NRF_Write_Buf) for NRF_Write_Buf
     stm32f10x_system_nrf24l01.o(i.SetRX_Mode) refers to stm32f10x_gpio.o(i.GPIO_SetBits) for GPIO_SetBits
     stm32f10x_system_nrf24l01.o(i.SetRX_Mode) refers to stm32f10x_system_nrf24l01.o(.data) for RX_ADDRESS
+    stm32f10x_system_mpu6050.o(i.MPU6050_Check) refers to stm32f10x_system_mpu6050.o(i.MPU6050_TestConnection) for MPU6050_TestConnection
+    stm32f10x_system_mpu6050.o(i.MPU6050_Check) refers to noretval__2printf.o(.text) for __2printf
+    stm32f10x_system_mpu6050.o(i.MPU6050_GetDeviceID) refers to stm32f10x_driver_iic.o(i.IICReadBytes) for IICReadBytes
+    stm32f10x_system_mpu6050.o(i.MPU6050_GetDeviceID) refers to stm32f10x_system_mpu6050.o(.bss) for buffer
+    stm32f10x_system_mpu6050.o(i.MPU6050_GetFIFOBytes) refers to stm32f10x_driver_iic.o(i.IICReadBytes) for IICReadBytes
+    stm32f10x_system_mpu6050.o(i.MPU6050_GetFIFOCount) refers to stm32f10x_driver_iic.o(i.IICReadBytes) for IICReadBytes
+    stm32f10x_system_mpu6050.o(i.MPU6050_GetFIFOCount) refers to stm32f10x_system_mpu6050.o(.bss) for buffer
+    stm32f10x_system_mpu6050.o(i.MPU6050_GetIntStatus) refers to stm32f10x_driver_iic.o(i.I2C_ReadOneByte) for I2C_ReadOneByte
+    stm32f10x_system_mpu6050.o(i.MPU6050_GetOTPBankValid) refers to stm32f10x_driver_iic.o(i.I2C_ReadOneByte) for I2C_ReadOneByte
+    stm32f10x_system_mpu6050.o(i.MPU6050_GetXGyroOffset) refers to stm32f10x_driver_iic.o(i.IICReadBytes) for IICReadBytes
+    stm32f10x_system_mpu6050.o(i.MPU6050_GetXGyroOffset) refers to stm32f10x_system_mpu6050.o(.bss) for buffer
+    stm32f10x_system_mpu6050.o(i.MPU6050_GetXGyroOffsetTC) refers to stm32f10x_driver_iic.o(i.I2C_ReadOneByte) for I2C_ReadOneByte
+    stm32f10x_system_mpu6050.o(i.MPU6050_GetYGyroOffset) refers to stm32f10x_driver_iic.o(i.IICReadBytes) for IICReadBytes
+    stm32f10x_system_mpu6050.o(i.MPU6050_GetYGyroOffset) refers to stm32f10x_system_mpu6050.o(.bss) for buffer
+    stm32f10x_system_mpu6050.o(i.MPU6050_GetYGyroOffsetTC) refers to stm32f10x_driver_iic.o(i.I2C_ReadOneByte) for I2C_ReadOneByte
+    stm32f10x_system_mpu6050.o(i.MPU6050_GetZGyroOffset) refers to stm32f10x_driver_iic.o(i.IICReadBytes) for IICReadBytes
+    stm32f10x_system_mpu6050.o(i.MPU6050_GetZGyroOffset) refers to stm32f10x_system_mpu6050.o(.bss) for buffer
+    stm32f10x_system_mpu6050.o(i.MPU6050_GetZGyroOffsetTC) refers to stm32f10x_driver_iic.o(i.I2C_ReadOneByte) for I2C_ReadOneByte
+    stm32f10x_system_mpu6050.o(i.MPU6050_Init) refers to stm32f10x_driver_iic.o(i.IICWriteByte) for IICWriteByte
+    stm32f10x_system_mpu6050.o(i.MPU6050_Init) refers to stm32f10x_driver_delay.o(i.delay_ms) for delay_ms
+    stm32f10x_system_mpu6050.o(i.MPU6050_Init) refers to stm32f10x_system_mpu6050.o(i.MPU6050_SetFullScaleGyroRange) for MPU6050_SetFullScaleGyroRange
+    stm32f10x_system_mpu6050.o(i.MPU6050_IsDRY) refers to stm32f10x_gpio.o(i.GPIO_ReadInputDataBit) for GPIO_ReadInputDataBit
+    stm32f10x_system_mpu6050.o(i.MPU6050_ReadAcc) refers to stm32f10x_driver_iic.o(i.IICReadBytes) for IICReadBytes
+    stm32f10x_system_mpu6050.o(i.MPU6050_ReadGyro) refers to stm32f10x_driver_iic.o(i.IICReadBytes) for IICReadBytes
+    stm32f10x_system_mpu6050.o(i.MPU6050_ReadMemoryBlock) refers to stm32f10x_system_mpu6050.o(i.MPU6050_SetMemoryBank) for MPU6050_SetMemoryBank
+    stm32f10x_system_mpu6050.o(i.MPU6050_ReadMemoryBlock) refers to stm32f10x_system_mpu6050.o(i.MPU6050_SetMemoryStartAddress) for MPU6050_SetMemoryStartAddress
+    stm32f10x_system_mpu6050.o(i.MPU6050_ReadMemoryBlock) refers to stm32f10x_driver_iic.o(i.IICWriteBytes) for IICWriteBytes
+    stm32f10x_system_mpu6050.o(i.MPU6050_ReadMemoryByte) refers to stm32f10x_driver_iic.o(i.IICReadBytes) for IICReadBytes
+    stm32f10x_system_mpu6050.o(i.MPU6050_ReadMemoryByte) refers to stm32f10x_system_mpu6050.o(.bss) for buffer
+    stm32f10x_system_mpu6050.o(i.MPU6050_Reset) refers to stm32f10x_driver_iic.o(i.IICWriteBit) for IICWriteBit
+    stm32f10x_system_mpu6050.o(i.MPU6050_ResetDMP) refers to stm32f10x_driver_iic.o(i.IICWriteBit) for IICWriteBit
+    stm32f10x_system_mpu6050.o(i.MPU6050_ResetFIFO) refers to stm32f10x_driver_iic.o(i.IICWriteBit) for IICWriteBit
+    stm32f10x_system_mpu6050.o(i.MPU6050_ResetIICMaster) refers to stm32f10x_driver_iic.o(i.IICWriteBit) for IICWriteBit
+    stm32f10x_system_mpu6050.o(i.MPU6050_SetAccOffset) refers to stm32f10x_driver_iic.o(i.IICWriteBytes) for IICWriteBytes
+    stm32f10x_system_mpu6050.o(i.MPU6050_SetClockSource) refers to stm32f10x_driver_iic.o(i.IICWriteBits) for IICWriteBits
+    stm32f10x_system_mpu6050.o(i.MPU6050_SetDLPFMode) refers to stm32f10x_driver_iic.o(i.IICWriteBits) for IICWriteBits
+    stm32f10x_system_mpu6050.o(i.MPU6050_SetDMPConfig1) refers to stm32f10x_driver_iic.o(i.IICWriteByte) for IICWriteByte
+    stm32f10x_system_mpu6050.o(i.MPU6050_SetDMPConfig2) refers to stm32f10x_driver_iic.o(i.IICWriteByte) for IICWriteByte
+    stm32f10x_system_mpu6050.o(i.MPU6050_SetDMPEnabled) refers to stm32f10x_driver_iic.o(i.IICWriteBit) for IICWriteBit
+    stm32f10x_system_mpu6050.o(i.MPU6050_SetExternalFrameSync) refers to stm32f10x_driver_iic.o(i.IICWriteBits) for IICWriteBits
+    stm32f10x_system_mpu6050.o(i.MPU6050_SetFIFOEnabled) refers to stm32f10x_driver_iic.o(i.IICWriteBit) for IICWriteBit
+    stm32f10x_system_mpu6050.o(i.MPU6050_SetFullScaleAccelRange) refers to stm32f10x_driver_iic.o(i.IICWriteBits) for IICWriteBits
+    stm32f10x_system_mpu6050.o(i.MPU6050_SetFullScaleGyroRange) refers to stm32f10x_driver_iic.o(i.IICWriteBits) for IICWriteBits
+    stm32f10x_system_mpu6050.o(i.MPU6050_SetGyroOffset) refers to stm32f10x_driver_iic.o(i.IICWriteBytes) for IICWriteBytes
+    stm32f10x_system_mpu6050.o(i.MPU6050_SetIICBypassEnabled) refers to stm32f10x_driver_iic.o(i.IICWriteBit) for IICWriteBit
+    stm32f10x_system_mpu6050.o(i.MPU6050_SetIICMasterModeEnabled) refers to stm32f10x_driver_iic.o(i.IICWriteBit) for IICWriteBit
+    stm32f10x_system_mpu6050.o(i.MPU6050_SetIntEnabled) refers to stm32f10x_driver_iic.o(i.IICWriteByte) for IICWriteByte
+    stm32f10x_system_mpu6050.o(i.MPU6050_SetMemoryBank) refers to stm32f10x_driver_iic.o(i.IICWriteByte) for IICWriteByte
+    stm32f10x_system_mpu6050.o(i.MPU6050_SetMemoryStartAddress) refers to stm32f10x_driver_iic.o(i.IICWriteByte) for IICWriteByte
+    stm32f10x_system_mpu6050.o(i.MPU6050_SetMotionDetectionDuration) refers to stm32f10x_driver_iic.o(i.IICWriteByte) for IICWriteByte
+    stm32f10x_system_mpu6050.o(i.MPU6050_SetMotionDetectionThreshold) refers to stm32f10x_driver_iic.o(i.IICWriteByte) for IICWriteByte
+    stm32f10x_system_mpu6050.o(i.MPU6050_SetOTPBankValid) refers to stm32f10x_driver_iic.o(i.IICWriteBit) for IICWriteBit
+    stm32f10x_system_mpu6050.o(i.MPU6050_SetRate) refers to stm32f10x_driver_iic.o(i.IICWriteByte) for IICWriteByte
+    stm32f10x_system_mpu6050.o(i.MPU6050_SetSlaveAddress) refers to stm32f10x_driver_iic.o(i.IICWriteByte) for IICWriteByte
+    stm32f10x_system_mpu6050.o(i.MPU6050_SetSleepEnabled) refers to stm32f10x_driver_iic.o(i.IICWriteBit) for IICWriteBit
+    stm32f10x_system_mpu6050.o(i.MPU6050_SetXGyroOffset) refers to stm32f10x_driver_iic.o(i.IICWriteBytes) for IICWriteBytes
+    stm32f10x_system_mpu6050.o(i.MPU6050_SetXGyroOffset) refers to stm32f10x_system_mpu6050.o(.bss) for buffer
+    stm32f10x_system_mpu6050.o(i.MPU6050_SetXGyroOffsetTC) refers to stm32f10x_driver_iic.o(i.IICWriteBits) for IICWriteBits
+    stm32f10x_system_mpu6050.o(i.MPU6050_SetYGyroOffset) refers to stm32f10x_driver_iic.o(i.IICWriteBytes) for IICWriteBytes
+    stm32f10x_system_mpu6050.o(i.MPU6050_SetYGyroOffset) refers to stm32f10x_system_mpu6050.o(.bss) for buffer
+    stm32f10x_system_mpu6050.o(i.MPU6050_SetYGyroOffsetTC) refers to stm32f10x_driver_iic.o(i.IICWriteBits) for IICWriteBits
+    stm32f10x_system_mpu6050.o(i.MPU6050_SetZGyroOffset) refers to stm32f10x_driver_iic.o(i.IICWriteBytes) for IICWriteBytes
+    stm32f10x_system_mpu6050.o(i.MPU6050_SetZGyroOffset) refers to stm32f10x_system_mpu6050.o(.bss) for buffer
+    stm32f10x_system_mpu6050.o(i.MPU6050_SetZGyroOffsetTC) refers to stm32f10x_driver_iic.o(i.IICWriteBits) for IICWriteBits
+    stm32f10x_system_mpu6050.o(i.MPU6050_SetZeroMotionDetectionDuration) refers to stm32f10x_driver_iic.o(i.IICWriteByte) for IICWriteByte
+    stm32f10x_system_mpu6050.o(i.MPU6050_SetZeroMotionDetectionThreshold) refers to stm32f10x_driver_iic.o(i.IICWriteByte) for IICWriteByte
+    stm32f10x_system_mpu6050.o(i.MPU6050_TestConnection) refers to stm32f10x_system_mpu6050.o(i.MPU6050_GetDeviceID) for MPU6050_GetDeviceID
+    stm32f10x_system_mpu6050.o(i.MPU6050_WriteDMPConfigurationSet) refers to stm32f10x_system_mpu6050.o(i.MPU6050_WriteMemoryBlock) for MPU6050_WriteMemoryBlock
+    stm32f10x_system_mpu6050.o(i.MPU6050_WriteDMPConfigurationSet) refers to stm32f10x_driver_iic.o(i.IICWriteByte) for IICWriteByte
+    stm32f10x_system_mpu6050.o(i.MPU6050_WriteMemoryBlock) refers to stm32f10x_system_mpu6050.o(i.MPU6050_SetMemoryBank) for MPU6050_SetMemoryBank
+    stm32f10x_system_mpu6050.o(i.MPU6050_WriteMemoryBlock) refers to stm32f10x_system_mpu6050.o(i.MPU6050_SetMemoryStartAddress) for MPU6050_SetMemoryStartAddress
+    stm32f10x_system_mpu6050.o(i.MPU6050_WriteMemoryBlock) refers to stm32f10x_driver_iic.o(i.IICWriteBytes) for IICWriteBytes
+    stm32f10x_system_mpu6050.o(i.MPU6050_WriteMemoryBlock) refers to stm32f10x_driver_iic.o(i.IICReadBytes) for IICReadBytes
+    stm32f10x_system_mpu6050.o(i.MPU6050_WriteMemoryBlock) refers to stm32f10x_system_mpu6050.o(.bss) for verifyBuffer
+    stm32f10x_system_mpu6050.o(i.MPU6050_WriteProgDMPConfigurationSet) refers to stm32f10x_system_mpu6050.o(i.MPU6050_WriteDMPConfigurationSet) for MPU6050_WriteDMPConfigurationSet
+    stm32f10x_system_mpu6050.o(i.MPU6050_WriteProgMemoryBlock) refers to stm32f10x_system_mpu6050.o(i.MPU6050_WriteMemoryBlock) for MPU6050_WriteMemoryBlock
     use_no_semi_2.o(.text) refers (Special) to use_no_semi.o(.text) for __use_no_semihosting_swi
     llsdiv.o(.text) refers to lludivv7m.o(.text) for __aeabi_uldivmod
     __2printf.o(.text) refers to _printf_char_file.o(.text) for _printf_char_file
@@ -1125,8 +1201,67 @@ Removing Unused input sections from the image.
     Removing stm32f10x_system_ms5611.o(.data), (92 bytes).
     Removing stm32f10x_system_nrf24l01.o(i.NRF24L01_RxPacket), (52 bytes).
     Removing stm32f10x_system_nrf24l01.o(i.NRF_TxPacket), (44 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_Check), (88 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_GetDeviceID), (24 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_GetFIFOBytes), (20 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_GetFIFOCount), (32 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_GetIntStatus), (12 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_GetOTPBankValid), (18 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_GetXGyroOffset), (36 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_GetXGyroOffsetTC), (20 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_GetYGyroOffset), (36 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_GetYGyroOffsetTC), (20 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_GetZGyroOffset), (36 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_GetZGyroOffsetTC), (20 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_Init), (76 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_IsDRY), (24 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_ReadAcc), (66 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_ReadGyro), (66 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_ReadMemoryBlock), (116 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_ReadMemoryByte), (24 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_Reset), (16 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_ResetDMP), (16 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_ResetFIFO), (16 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_ResetIICMaster), (16 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_SetAccOffset), (54 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_SetClockSource), (20 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_SetDLPFMode), (20 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_SetDMPConfig1), (16 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_SetDMPConfig2), (16 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_SetDMPEnabled), (18 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_SetExternalFrameSync), (20 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_SetFIFOEnabled), (18 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_SetFullScaleAccelRange), (20 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_SetFullScaleGyroRange), (20 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_SetGyroOffset), (54 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_SetIICBypassEnabled), (18 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_SetIICMasterModeEnabled), (18 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_SetIntEnabled), (16 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_SetMemoryBank), (36 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_SetMemoryStartAddress), (16 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_SetMotionDetectionDuration), (16 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_SetMotionDetectionThreshold), (16 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_SetOTPBankValid), (18 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_SetRate), (16 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_SetSlaveAddress), (32 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_SetSleepEnabled), (18 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_SetXGyroOffset), (32 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_SetXGyroOffsetTC), (22 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_SetYGyroOffset), (32 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_SetYGyroOffsetTC), (22 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_SetZGyroOffset), (32 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_SetZGyroOffsetTC), (22 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_SetZeroMotionDetectionDuration), (16 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_SetZeroMotionDetectionThreshold), (16 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_TestConnection), (18 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_WriteDMPConfigurationSet), (130 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_WriteMemoryBlock), (192 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_WriteProgDMPConfigurationSet), (18 bytes).
+    Removing stm32f10x_system_mpu6050.o(i.MPU6050_WriteProgMemoryBlock), (38 bytes).
+    Removing stm32f10x_system_mpu6050.o(.bss), (178 bytes).
+    Removing stm32f10x_system_mpu6050.o(.data), (6 bytes).
 
-469 unused section(s) (total 19425 bytes) removed from the image.
+528 unused section(s) (total 21493 bytes) removed from the image.
 
 ==============================================================================
 
@@ -1850,71 +1985,71 @@ Memory Map of the image
     Base Addr    Size         Type   Attr      Idx    E Section Name        Object
 
     0x08000000   0x000000ec   Data   RO            3    RESET               startup_stm32f10x_md.o
-    0x080000ec   0x00000008   Code   RO         3903  * !!!main             c_w.l(__main.o)
-    0x080000f4   0x00000034   Code   RO         4210    !!!scatter          c_w.l(__scatter.o)
-    0x08000128   0x0000001a   Code   RO         4212    !!handler_copy      c_w.l(__scatter_copy.o)
+    0x080000ec   0x00000008   Code   RO         4249  * !!!main             c_w.l(__main.o)
+    0x080000f4   0x00000034   Code   RO         4556    !!!scatter          c_w.l(__scatter.o)
+    0x08000128   0x0000001a   Code   RO         4558    !!handler_copy      c_w.l(__scatter_copy.o)
     0x08000142   0x00000002   PAD
-    0x08000144   0x0000001c   Code   RO         4214    !!handler_zi        c_w.l(__scatter_zi.o)
-    0x08000160   0x00000000   Code   RO         3900    .ARM.Collect$$_printf_percent$$00000000  c_w.l(_printf_percent.o)
-    0x08000160   0x00000006   Code   RO         3899    .ARM.Collect$$_printf_percent$$00000009  c_w.l(_printf_d.o)
-    0x08000166   0x00000004   Code   RO         3980    .ARM.Collect$$_printf_percent$$00000017  c_w.l(_printf_percent_end.o)
-    0x0800016a   0x00000002   Code   RO         4077    .ARM.Collect$$libinit$$00000000  c_w.l(libinit.o)
-    0x0800016c   0x00000000   Code   RO         4089    .ARM.Collect$$libinit$$00000002  c_w.l(libinit2.o)
-    0x0800016c   0x00000000   Code   RO         4091    .ARM.Collect$$libinit$$00000004  c_w.l(libinit2.o)
-    0x0800016c   0x00000000   Code   RO         4094    .ARM.Collect$$libinit$$0000000A  c_w.l(libinit2.o)
-    0x0800016c   0x00000000   Code   RO         4096    .ARM.Collect$$libinit$$0000000C  c_w.l(libinit2.o)
-    0x0800016c   0x00000000   Code   RO         4098    .ARM.Collect$$libinit$$0000000E  c_w.l(libinit2.o)
-    0x0800016c   0x00000000   Code   RO         4101    .ARM.Collect$$libinit$$00000011  c_w.l(libinit2.o)
-    0x0800016c   0x00000000   Code   RO         4103    .ARM.Collect$$libinit$$00000013  c_w.l(libinit2.o)
-    0x0800016c   0x00000000   Code   RO         4105    .ARM.Collect$$libinit$$00000015  c_w.l(libinit2.o)
-    0x0800016c   0x00000000   Code   RO         4107    .ARM.Collect$$libinit$$00000017  c_w.l(libinit2.o)
-    0x0800016c   0x00000000   Code   RO         4109    .ARM.Collect$$libinit$$00000019  c_w.l(libinit2.o)
-    0x0800016c   0x00000000   Code   RO         4111    .ARM.Collect$$libinit$$0000001B  c_w.l(libinit2.o)
-    0x0800016c   0x00000000   Code   RO         4113    .ARM.Collect$$libinit$$0000001D  c_w.l(libinit2.o)
-    0x0800016c   0x00000000   Code   RO         4115    .ARM.Collect$$libinit$$0000001F  c_w.l(libinit2.o)
-    0x0800016c   0x00000000   Code   RO         4117    .ARM.Collect$$libinit$$00000021  c_w.l(libinit2.o)
-    0x0800016c   0x00000000   Code   RO         4119    .ARM.Collect$$libinit$$00000023  c_w.l(libinit2.o)
-    0x0800016c   0x00000000   Code   RO         4121    .ARM.Collect$$libinit$$00000025  c_w.l(libinit2.o)
-    0x0800016c   0x00000000   Code   RO         4125    .ARM.Collect$$libinit$$0000002C  c_w.l(libinit2.o)
-    0x0800016c   0x00000000   Code   RO         4127    .ARM.Collect$$libinit$$0000002E  c_w.l(libinit2.o)
-    0x0800016c   0x00000000   Code   RO         4129    .ARM.Collect$$libinit$$00000030  c_w.l(libinit2.o)
-    0x0800016c   0x00000000   Code   RO         4131    .ARM.Collect$$libinit$$00000032  c_w.l(libinit2.o)
-    0x0800016c   0x00000002   Code   RO         4132    .ARM.Collect$$libinit$$00000033  c_w.l(libinit2.o)
-    0x0800016e   0x00000002   Code   RO         4162    .ARM.Collect$$libshutdown$$00000000  c_w.l(libshutdown.o)
-    0x08000170   0x00000000   Code   RO         4176    .ARM.Collect$$libshutdown$$00000002  c_w.l(libshutdown2.o)
-    0x08000170   0x00000000   Code   RO         4178    .ARM.Collect$$libshutdown$$00000004  c_w.l(libshutdown2.o)
-    0x08000170   0x00000000   Code   RO         4181    .ARM.Collect$$libshutdown$$00000007  c_w.l(libshutdown2.o)
-    0x08000170   0x00000000   Code   RO         4184    .ARM.Collect$$libshutdown$$0000000A  c_w.l(libshutdown2.o)
-    0x08000170   0x00000000   Code   RO         4186    .ARM.Collect$$libshutdown$$0000000C  c_w.l(libshutdown2.o)
-    0x08000170   0x00000000   Code   RO         4189    .ARM.Collect$$libshutdown$$0000000F  c_w.l(libshutdown2.o)
-    0x08000170   0x00000002   Code   RO         4190    .ARM.Collect$$libshutdown$$00000010  c_w.l(libshutdown2.o)
-    0x08000172   0x00000000   Code   RO         3971    .ARM.Collect$$rtentry$$00000000  c_w.l(__rtentry.o)
-    0x08000172   0x00000000   Code   RO         4026    .ARM.Collect$$rtentry$$00000002  c_w.l(__rtentry2.o)
-    0x08000172   0x00000006   Code   RO         4038    .ARM.Collect$$rtentry$$00000004  c_w.l(__rtentry4.o)
-    0x08000178   0x00000000   Code   RO         4028    .ARM.Collect$$rtentry$$00000009  c_w.l(__rtentry2.o)
-    0x08000178   0x00000004   Code   RO         4029    .ARM.Collect$$rtentry$$0000000A  c_w.l(__rtentry2.o)
-    0x0800017c   0x00000000   Code   RO         4031    .ARM.Collect$$rtentry$$0000000C  c_w.l(__rtentry2.o)
-    0x0800017c   0x00000008   Code   RO         4032    .ARM.Collect$$rtentry$$0000000D  c_w.l(__rtentry2.o)
-    0x08000184   0x00000002   Code   RO         4082    .ARM.Collect$$rtexit$$00000000  c_w.l(rtexit.o)
-    0x08000186   0x00000000   Code   RO         4136    .ARM.Collect$$rtexit$$00000002  c_w.l(rtexit2.o)
-    0x08000186   0x00000004   Code   RO         4137    .ARM.Collect$$rtexit$$00000003  c_w.l(rtexit2.o)
-    0x0800018a   0x00000006   Code   RO         4138    .ARM.Collect$$rtexit$$00000004  c_w.l(rtexit2.o)
+    0x08000144   0x0000001c   Code   RO         4560    !!handler_zi        c_w.l(__scatter_zi.o)
+    0x08000160   0x00000000   Code   RO         4246    .ARM.Collect$$_printf_percent$$00000000  c_w.l(_printf_percent.o)
+    0x08000160   0x00000006   Code   RO         4245    .ARM.Collect$$_printf_percent$$00000009  c_w.l(_printf_d.o)
+    0x08000166   0x00000004   Code   RO         4326    .ARM.Collect$$_printf_percent$$00000017  c_w.l(_printf_percent_end.o)
+    0x0800016a   0x00000002   Code   RO         4423    .ARM.Collect$$libinit$$00000000  c_w.l(libinit.o)
+    0x0800016c   0x00000000   Code   RO         4435    .ARM.Collect$$libinit$$00000002  c_w.l(libinit2.o)
+    0x0800016c   0x00000000   Code   RO         4437    .ARM.Collect$$libinit$$00000004  c_w.l(libinit2.o)
+    0x0800016c   0x00000000   Code   RO         4440    .ARM.Collect$$libinit$$0000000A  c_w.l(libinit2.o)
+    0x0800016c   0x00000000   Code   RO         4442    .ARM.Collect$$libinit$$0000000C  c_w.l(libinit2.o)
+    0x0800016c   0x00000000   Code   RO         4444    .ARM.Collect$$libinit$$0000000E  c_w.l(libinit2.o)
+    0x0800016c   0x00000000   Code   RO         4447    .ARM.Collect$$libinit$$00000011  c_w.l(libinit2.o)
+    0x0800016c   0x00000000   Code   RO         4449    .ARM.Collect$$libinit$$00000013  c_w.l(libinit2.o)
+    0x0800016c   0x00000000   Code   RO         4451    .ARM.Collect$$libinit$$00000015  c_w.l(libinit2.o)
+    0x0800016c   0x00000000   Code   RO         4453    .ARM.Collect$$libinit$$00000017  c_w.l(libinit2.o)
+    0x0800016c   0x00000000   Code   RO         4455    .ARM.Collect$$libinit$$00000019  c_w.l(libinit2.o)
+    0x0800016c   0x00000000   Code   RO         4457    .ARM.Collect$$libinit$$0000001B  c_w.l(libinit2.o)
+    0x0800016c   0x00000000   Code   RO         4459    .ARM.Collect$$libinit$$0000001D  c_w.l(libinit2.o)
+    0x0800016c   0x00000000   Code   RO         4461    .ARM.Collect$$libinit$$0000001F  c_w.l(libinit2.o)
+    0x0800016c   0x00000000   Code   RO         4463    .ARM.Collect$$libinit$$00000021  c_w.l(libinit2.o)
+    0x0800016c   0x00000000   Code   RO         4465    .ARM.Collect$$libinit$$00000023  c_w.l(libinit2.o)
+    0x0800016c   0x00000000   Code   RO         4467    .ARM.Collect$$libinit$$00000025  c_w.l(libinit2.o)
+    0x0800016c   0x00000000   Code   RO         4471    .ARM.Collect$$libinit$$0000002C  c_w.l(libinit2.o)
+    0x0800016c   0x00000000   Code   RO         4473    .ARM.Collect$$libinit$$0000002E  c_w.l(libinit2.o)
+    0x0800016c   0x00000000   Code   RO         4475    .ARM.Collect$$libinit$$00000030  c_w.l(libinit2.o)
+    0x0800016c   0x00000000   Code   RO         4477    .ARM.Collect$$libinit$$00000032  c_w.l(libinit2.o)
+    0x0800016c   0x00000002   Code   RO         4478    .ARM.Collect$$libinit$$00000033  c_w.l(libinit2.o)
+    0x0800016e   0x00000002   Code   RO         4508    .ARM.Collect$$libshutdown$$00000000  c_w.l(libshutdown.o)
+    0x08000170   0x00000000   Code   RO         4522    .ARM.Collect$$libshutdown$$00000002  c_w.l(libshutdown2.o)
+    0x08000170   0x00000000   Code   RO         4524    .ARM.Collect$$libshutdown$$00000004  c_w.l(libshutdown2.o)
+    0x08000170   0x00000000   Code   RO         4527    .ARM.Collect$$libshutdown$$00000007  c_w.l(libshutdown2.o)
+    0x08000170   0x00000000   Code   RO         4530    .ARM.Collect$$libshutdown$$0000000A  c_w.l(libshutdown2.o)
+    0x08000170   0x00000000   Code   RO         4532    .ARM.Collect$$libshutdown$$0000000C  c_w.l(libshutdown2.o)
+    0x08000170   0x00000000   Code   RO         4535    .ARM.Collect$$libshutdown$$0000000F  c_w.l(libshutdown2.o)
+    0x08000170   0x00000002   Code   RO         4536    .ARM.Collect$$libshutdown$$00000010  c_w.l(libshutdown2.o)
+    0x08000172   0x00000000   Code   RO         4317    .ARM.Collect$$rtentry$$00000000  c_w.l(__rtentry.o)
+    0x08000172   0x00000000   Code   RO         4372    .ARM.Collect$$rtentry$$00000002  c_w.l(__rtentry2.o)
+    0x08000172   0x00000006   Code   RO         4384    .ARM.Collect$$rtentry$$00000004  c_w.l(__rtentry4.o)
+    0x08000178   0x00000000   Code   RO         4374    .ARM.Collect$$rtentry$$00000009  c_w.l(__rtentry2.o)
+    0x08000178   0x00000004   Code   RO         4375    .ARM.Collect$$rtentry$$0000000A  c_w.l(__rtentry2.o)
+    0x0800017c   0x00000000   Code   RO         4377    .ARM.Collect$$rtentry$$0000000C  c_w.l(__rtentry2.o)
+    0x0800017c   0x00000008   Code   RO         4378    .ARM.Collect$$rtentry$$0000000D  c_w.l(__rtentry2.o)
+    0x08000184   0x00000002   Code   RO         4428    .ARM.Collect$$rtexit$$00000000  c_w.l(rtexit.o)
+    0x08000186   0x00000000   Code   RO         4482    .ARM.Collect$$rtexit$$00000002  c_w.l(rtexit2.o)
+    0x08000186   0x00000004   Code   RO         4483    .ARM.Collect$$rtexit$$00000003  c_w.l(rtexit2.o)
+    0x0800018a   0x00000006   Code   RO         4484    .ARM.Collect$$rtexit$$00000004  c_w.l(rtexit2.o)
     0x08000190   0x00000040   Code   RO            4    .text               startup_stm32f10x_md.o
-    0x080001d0   0x00000002   Code   RO         3867    .text               c_w.l(use_no_semi_2.o)
+    0x080001d0   0x00000002   Code   RO         4213    .text               c_w.l(use_no_semi_2.o)
     0x080001d2   0x00000002   PAD
-    0x080001d4   0x00000018   Code   RO         3873    .text               c_w.l(noretval__2printf.o)
-    0x080001ec   0x00000068   Code   RO         3875    .text               c_w.l(__printf.o)
-    0x08000254   0x00000078   Code   RO         3877    .text               c_w.l(_printf_dec.o)
-    0x080002cc   0x00000006   Code   RO         3901    .text               c_w.l(heapauxi.o)
-    0x080002d2   0x00000002   Code   RO         3969    .text               c_w.l(use_no_semi.o)
-    0x080002d4   0x000000b2   Code   RO         3976    .text               c_w.l(_printf_intcommon.o)
+    0x080001d4   0x00000018   Code   RO         4219    .text               c_w.l(noretval__2printf.o)
+    0x080001ec   0x00000068   Code   RO         4221    .text               c_w.l(__printf.o)
+    0x08000254   0x00000078   Code   RO         4223    .text               c_w.l(_printf_dec.o)
+    0x080002cc   0x00000006   Code   RO         4247    .text               c_w.l(heapauxi.o)
+    0x080002d2   0x00000002   Code   RO         4315    .text               c_w.l(use_no_semi.o)
+    0x080002d4   0x000000b2   Code   RO         4322    .text               c_w.l(_printf_intcommon.o)
     0x08000386   0x00000002   PAD
-    0x08000388   0x00000024   Code   RO         3978    .text               c_w.l(_printf_char_file.o)
-    0x080003ac   0x00000030   Code   RO         4049    .text               c_w.l(_printf_char_common.o)
-    0x080003dc   0x00000008   Code   RO         4051    .text               c_w.l(ferror.o)
-    0x080003e4   0x00000008   Code   RO         4061    .text               c_w.l(libspace.o)
-    0x080003ec   0x0000004a   Code   RO         4064    .text               c_w.l(sys_stackheap_outer.o)
-    0x08000436   0x00000012   Code   RO         4070    .text               c_w.l(exit.o)
+    0x08000388   0x00000024   Code   RO         4324    .text               c_w.l(_printf_char_file.o)
+    0x080003ac   0x00000030   Code   RO         4395    .text               c_w.l(_printf_char_common.o)
+    0x080003dc   0x00000008   Code   RO         4397    .text               c_w.l(ferror.o)
+    0x080003e4   0x00000008   Code   RO         4407    .text               c_w.l(libspace.o)
+    0x080003ec   0x0000004a   Code   RO         4410    .text               c_w.l(sys_stackheap_outer.o)
+    0x08000436   0x00000012   Code   RO         4416    .text               c_w.l(exit.o)
     0x08000448   0x00000004   Code   RO         3158    i.BusFault_Handler  stm32f10x_it.o
     0x0800044c   0x00000002   Code   RO         3159    i.DebugMon_Handler  stm32f10x_it.o
     0x0800044e   0x00000002   PAD
@@ -2022,32 +2157,32 @@ Memory Map of the image
     0x080021c0   0x00000010   Code   RO         3109    i.main              main.o
     0x080021d0   0x00000044   Code   RO         3169    i.micros            stm32f10x_it.o
     0x08002214   0x000000a8   Code   RO         3455    i.usart_init        stm32f10x_driver_usart.o
-    0x080022bc   0x00000062   Code   RO         3905    x$fpl$d2f           fz_ws.l(d2f.o)
+    0x080022bc   0x00000062   Code   RO         4251    x$fpl$d2f           fz_ws.l(d2f.o)
     0x0800231e   0x00000002   PAD
-    0x08002320   0x00000154   Code   RO         3923    x$fpl$dmul          fz_ws.l(dmul.o)
-    0x08002474   0x0000009c   Code   RO         3981    x$fpl$dnaninf       fz_ws.l(dnaninf.o)
-    0x08002510   0x0000000c   Code   RO         3983    x$fpl$dretinf       fz_ws.l(dretinf.o)
-    0x0800251c   0x00000056   Code   RO         3925    x$fpl$f2d           fz_ws.l(f2d.o)
+    0x08002320   0x00000154   Code   RO         4269    x$fpl$dmul          fz_ws.l(dmul.o)
+    0x08002474   0x0000009c   Code   RO         4327    x$fpl$dnaninf       fz_ws.l(dnaninf.o)
+    0x08002510   0x0000000c   Code   RO         4329    x$fpl$dretinf       fz_ws.l(dretinf.o)
+    0x0800251c   0x00000056   Code   RO         4271    x$fpl$f2d           fz_ws.l(f2d.o)
     0x08002572   0x00000002   PAD
-    0x08002574   0x000000c4   Code   RO         3927    x$fpl$fadd          fz_ws.l(faddsub_clz.o)
-    0x08002638   0x00000018   Code   RO         3987    x$fpl$fcmpinf       fz_ws.l(fcmpi.o)
-    0x08002650   0x00000184   Code   RO         3934    x$fpl$fdiv          fz_ws.l(fdiv.o)
-    0x080027d4   0x00000068   Code   RO         3937    x$fpl$feqf          fz_ws.l(feqf.o)
-    0x0800283c   0x00000036   Code   RO         3939    x$fpl$ffix          fz_ws.l(ffix.o)
+    0x08002574   0x000000c4   Code   RO         4273    x$fpl$fadd          fz_ws.l(faddsub_clz.o)
+    0x08002638   0x00000018   Code   RO         4333    x$fpl$fcmpinf       fz_ws.l(fcmpi.o)
+    0x08002650   0x00000184   Code   RO         4280    x$fpl$fdiv          fz_ws.l(fdiv.o)
+    0x080027d4   0x00000068   Code   RO         4283    x$fpl$feqf          fz_ws.l(feqf.o)
+    0x0800283c   0x00000036   Code   RO         4285    x$fpl$ffix          fz_ws.l(ffix.o)
     0x08002872   0x00000002   PAD
-    0x08002874   0x0000003e   Code   RO         3943    x$fpl$ffixu         fz_ws.l(ffixu.o)
+    0x08002874   0x0000003e   Code   RO         4289    x$fpl$ffixu         fz_ws.l(ffixu.o)
     0x080028b2   0x00000002   PAD
-    0x080028b4   0x00000030   Code   RO         3948    x$fpl$fflt          fz_ws.l(fflt_clz.o)
-    0x080028e4   0x00000026   Code   RO         3947    x$fpl$ffltu         fz_ws.l(fflt_clz.o)
+    0x080028b4   0x00000030   Code   RO         4294    x$fpl$fflt          fz_ws.l(fflt_clz.o)
+    0x080028e4   0x00000026   Code   RO         4293    x$fpl$ffltu         fz_ws.l(fflt_clz.o)
     0x0800290a   0x00000002   PAD
-    0x0800290c   0x00000068   Code   RO         3989    x$fpl$fleqf         fz_ws.l(fleqf.o)
-    0x08002974   0x0000008c   Code   RO         3991    x$fpl$fnaninf       fz_ws.l(fnaninf.o)
-    0x08002a00   0x0000000a   Code   RO         3993    x$fpl$fretinf       fz_ws.l(fretinf.o)
-    0x08002a0a   0x00000062   Code   RO         3957    x$fpl$frleqf        fz_ws.l(frleqf.o)
-    0x08002a6c   0x000000ea   Code   RO         3929    x$fpl$fsub          fz_ws.l(faddsub_clz.o)
-    0x08002b56   0x00000000   Code   RO         3997    x$fpl$usenofp       fz_ws.l(usenofp.o)
+    0x0800290c   0x00000068   Code   RO         4335    x$fpl$fleqf         fz_ws.l(fleqf.o)
+    0x08002974   0x0000008c   Code   RO         4337    x$fpl$fnaninf       fz_ws.l(fnaninf.o)
+    0x08002a00   0x0000000a   Code   RO         4339    x$fpl$fretinf       fz_ws.l(fretinf.o)
+    0x08002a0a   0x00000062   Code   RO         4303    x$fpl$frleqf        fz_ws.l(frleqf.o)
+    0x08002a6c   0x000000ea   Code   RO         4275    x$fpl$fsub          fz_ws.l(faddsub_clz.o)
+    0x08002b56   0x00000000   Code   RO         4343    x$fpl$usenofp       fz_ws.l(usenofp.o)
     0x08002b56   0x00000002   PAD
-    0x08002b58   0x00000020   Data   RO         4208    Region$$Table       anon$$obj.o
+    0x08002b58   0x00000020   Data   RO         4554    Region$$Table       anon$$obj.o
 
 
     Execution Region RW_IRAM1 (Base: 0x20000000, Size: 0x00000ec0, Max: 0x00005000, ABSOLUTE)
@@ -2071,7 +2206,7 @@ Memory Map of the image
     0x2000068c   0x00000010   Zero   RW         3629    .bss                stm32f10x_system_rpdata.o
     0x2000069c   0x00000180   Zero   RW         3661    .bss                stm32f10x_system_control.o
     0x2000081c   0x00000040   Zero   RW         3787    .bss                stm32f10x_system_nrf24l01.o
-    0x2000085c   0x00000060   Zero   RW         4062    .bss                c_w.l(libspace.o)
+    0x2000085c   0x00000060   Zero   RW         4408    .bss                c_w.l(libspace.o)
     0x200008bc   0x00000004   PAD
     0x200008c0   0x00000200   Zero   RW            2    HEAP                startup_stm32f10x_md.o
     0x20000ac0   0x00000400   Zero   RW            1    STACK               startup_stm32f10x_md.o

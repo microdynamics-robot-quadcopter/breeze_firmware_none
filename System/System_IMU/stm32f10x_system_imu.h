@@ -60,13 +60,13 @@ typedef struct
 #define M_PI_F                               3.1415926
 #define CONSTANTS_ONE_G                      9.80665f   /*m/s^2*/
 #define CONSTANTS_AIR_DENSITY_SEA_LEVEL_15C  1.225f     /*kg/m^3*/
-#define CONSTANTS_AIR_GAS_CONST              287.1f     /*J/(kg * K)*/
+#define CONSTANTS_AIR_GAS_CONST              287.1f     /*j/(kg*k)*/
 #define CONSTANTS_ABSOLUTE_NULL_CELSIUS      -273.15f
-#define CONSTANTS_RADIUS_OF_EARTH            6371000    /*meters (m)*/
+#define CONSTANTS_RADIUS_OF_EARTH            6371000    /*m*/
 
-extern volatile float accFilted[3], gyroFilted[3];
+extern volatile float AccFilted[3], GyroFilted[3];
 extern float DCMbg[3][3], DCMgb[3][3];
-extern float accZoffsetTemp;
+extern float AccZOffsetTemp;
 
 extern float IMU_Pitch;
 extern float IMU_Roll;
@@ -81,6 +81,6 @@ extern uint8_t IMU_Check(void);
 extern uint8_t IMU_Calibrate(void);
 extern void IMU_ReadSensorHandle(void);
 
-static void eular2DCM(float DCM[3][3], float roll, float pitch, float yaw);
+static void eular2DCM(float DCM[3][3], float pitch, float yaw, float roll);
 
 #endif

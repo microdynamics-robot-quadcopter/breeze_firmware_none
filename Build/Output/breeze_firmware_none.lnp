@@ -43,6 +43,7 @@
 "..\build\output\stm32f10x_system_ms5611.o"
 "..\build\output\stm32f10x_system_nrf24l01.o"
 "..\build\output\stm32f10x_system_mpu6050.o"
+"..\build\output\stm32f10x_algorithm_filter.o"
 --strict --scatter "..\Build\Output\breeze_firmware_none.sct"
 --summary_stderr --info summarysizes --map --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers

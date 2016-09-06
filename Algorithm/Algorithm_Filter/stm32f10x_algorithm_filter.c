@@ -67,8 +67,8 @@ static float  _a22;
 static float  _b02;
 static float  _b12;
 static float  _b22;
-static float  _delay_element_12;        /*buffered sample -1*/
-static float  _delay_element_22;        /*buffered sample -2*/
+static float  _delay_element_12;  /*buffered sample -1*/
+static float  _delay_element_22;  /*buffered sample -2*/
 
 void LPF2pSetCutoffFreq_2(float sample_freq, float cutoff_freq)
 {
@@ -81,6 +81,7 @@ void LPF2pSetCutoffFreq_2(float sample_freq, float cutoff_freq)
     c   = 1.0f + 2.0f * cosf(M_PI_F / 4.0f) * ohm + ohm * ohm;
 
     _cutoff_freq2 = cutoff_freq;
+
     if (_cutoff_freq2 > 0.0f)
     {
         _b02 = ohm * ohm / c;
@@ -139,6 +140,7 @@ void LPF2pSetCutoffFreq_3(float sample_freq, float cutoff_freq)
     c   = 1.0f + 2.0f * cosf(M_PI_F / 4.0f) * ohm + ohm * ohm;
 
     _cutoff_freq3 = cutoff_freq;
+    
     if (_cutoff_freq3 > 0.0f) 
     {
         _b03 = ohm * ohm / c;

@@ -373,7 +373,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER, STM32F10X_MD</Define>
               <Undefine></Undefine>
-              <IncludePath>..\User;..\Drivers\Driver_Sys;..\Drivers\Driver_IIC;..\Drivers\Driver_Tim;..\Drivers\Driver_SPI;..\Drivers\Driver_Flash;..\Drivers\Driver_PWM;..\Drivers\Driver_Delay;..\Drivers\Driver_USART;..\Drivers\Driver_EEPROM;..\System\System_Led;..\System\System_IMU;..\System\System_Control;..\System\System_RPData;..\System\System_MS5611;..\System\System_MPU6050;..\System\System_NRF24L01;..\Libraries\FWLib\inc;..\Libraries\CMSIS</IncludePath>
+              <IncludePath>..\User;..\Drivers\Driver_Sys;..\Drivers\Driver_IIC;..\Drivers\Driver_Tim;..\Drivers\Driver_SPI;..\Drivers\Driver_Flash;..\Drivers\Driver_PWM;..\Drivers\Driver_Delay;..\Drivers\Driver_USART;..\Drivers\Driver_EEPROM;..\System\System_Led;..\System\System_IMU;..\System\System_Control;..\System\System_RPData;..\System\System_MS5611;..\System\System_MPU6050;..\System\System_NRF24L01;..\Algorithm\Algorithm_Filter;..\Libraries\FWLib\inc;..\Libraries\CMSIS</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -660,6 +660,16 @@
               <FileName>stm32f10x_system_mpu6050.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\System\System_MPU6050\stm32f10x_system_mpu6050.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Algorithm</GroupName>
+          <Files>
+            <File>
+              <FileName>stm32f10x_algorithm_filter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Algorithm\Algorithm_Filter\stm32f10x_algorithm_filter.c</FilePath>
             </File>
           </Files>
         </Group>

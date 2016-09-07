@@ -29,3 +29,6 @@
 ..\build\output\stm32f10x_system_imu.o: ..\Libraries\FWLib\inc\stm32f10x_usart.h
 ..\build\output\stm32f10x_system_imu.o: ..\Libraries\FWLib\inc\stm32f10x_wwdg.h
 ..\build\output\stm32f10x_system_imu.o: ..\Libraries\FWLib\inc\misc.h
+..\build\output\stm32f10x_system_imu.o: ..\System\System_MPU6050\stm32f10x_system_mpu6050.h
+..\build\output\stm32f10x_system_imu.o: ..\Algorithm\Algorithm_Filter\stm32f10x_algorithm_filter.h
+..\build\output\stm32f10x_system_imu.o: ..\User\stm32f10x_it.h

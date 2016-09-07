@@ -1,5 +1,6 @@
 #include "stm32f10x_system_imu.h"
 #include "stm32f10x_algorithm_filter.h"
+#include "stm32f10x.h"
 #include "math.h"
 
 static float  _cutoff_freq1; 
@@ -70,7 +71,7 @@ static float  _b22;
 static float  _delay_element_12;  /*buffered sample -1*/
 static float  _delay_element_22;  /*buffered sample -2*/
 
-void LPF2pSetCutoffFreq_2(float sample_freq, float cutoff_freq)
+void LPF2pSetCutOffFreq_2(float sample_freq, float cutoff_freq)
 {
     float fr  = 0;
     float ohm = 0;
@@ -129,7 +130,7 @@ static float  _b23;
 static float  _delay_element_13;  /*buffered sample -1*/
 static float  _delay_element_23;  /*buffered sample -2*/
 
-void LPF2pSetCutoffFreq_3(float sample_freq, float cutoff_freq)
+void LPF2pSetCutOffFreq_3(float sample_freq, float cutoff_freq)
 {
     float fr  = 0;  
     float ohm = 0;
@@ -189,7 +190,7 @@ static float  _b24;
 static float  _delay_element_14;  /*buffered sample -1*/
 static float  _delay_element_24;  /*buffered sample -2*/
 
-void LPF2pSetCutoffFreq_4(float sample_freq, float cutoff_freq)
+void LPF2pSetCutOffFreq_4(float sample_freq, float cutoff_freq)
 {
     float fr  = 0;
     float ohm = 0;
@@ -248,7 +249,7 @@ static float  _b25;
 static float  _delay_element_15;  /*buffered sample -1*/
 static float  _delay_element_25;  /*buffered sample -2*/
 
-void LPF2pSetCutoffFreq_5(float sample_freq, float cutoff_freq)
+void LPF2pSetCutOffFreq_5(float sample_freq, float cutoff_freq)
 {
     float fr  = 0;
     float ohm = 0;
@@ -307,7 +308,7 @@ static float  _b26;
 static float  _delay_element_16;  /*buffered sample -1*/
 static float  _delay_element_26;  /*buffered sample -2*/
 
-void LPF2pSetCutoffFreq_6(float sample_freq, float cutoff_freq)
+void LPF2pSetCutOffFreq_6(float sample_freq, float cutoff_freq)
 {
     float fr  = 0;
     float ohm = 0;

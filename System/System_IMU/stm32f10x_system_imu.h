@@ -81,6 +81,6 @@ extern uint8_t IMU_Check(void);
 extern uint8_t IMU_Calibrate(void);
 extern void IMU_ReadSensorHandle(void);
 
-static void eular2DCM(float DCM[3][3], float pitch, float yaw, float roll);
+static void EularToDCM(float DCM[3][3], float pitch, float yaw, float roll);
 
 #endif

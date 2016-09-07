@@ -2,13 +2,14 @@
 #include "stm32f10x_system_mpu6050.h"
 #include "stm32f10x_algorithm_filter.h"
 #include "stm32f10x_it.h"
+#include "math.h"
 
 imu_t imu = {0};
 uint8_t imuCaliFlag = 0;
 
 void IMU_Init(void)
 {
-    imu.ready    = 0;
+    imu.ready    = 0;  /*需要先校准陀螺*/
     imu.caliPass = 1;
     LPF2pSetCutOffFreq_1(IMU_SAMPLE_RATE, IMU_FILTER_CUTOFF_FREQ);
     LPF2pSetCutOffFreq_2(IMU_SAMPLE_RATE, IMU_FILTER_CUTOFF_FREQ);
@@ -20,7 +21,7 @@ void IMU_Init(void)
 
 /*should place to a level surface and keep it stop for 1~2 second*/
 /*return 1 when finish*/
-uint8_t IMU_Calibrate(void)
+uint8_t IMU_Calibrate(void)  /*检测时间为3s*/
 {
     static float AccSum[3]     = {0, 0, 0};
     static float GyroSum[3]    = {0, 0, 0};
@@ -107,9 +108,9 @@ void IMU_ReadSensorHandle(void)
 uint8_t IMU_Check(void)
 {
     uint32_t AccZSum = 0;
-    float AccZb = 0;
-    uint8_t i;
+    float AccZb      = 0;
     
+    uint8_t i;
     for (i = 0; i < CHECK_CNT; i++)
     {
         MPU6050_ReadAcc(imu.accADC);
@@ -117,7 +118,7 @@ uint8_t IMU_Check(void)
     }
     imu.accRaw[2] = (float) (AccZSum / (float) CHECK_CNT) * ACC_SCALE * CONSTANTS_ONE_G;
     AccZb = imu.accRaw[2] - imu.accOffset[2];
-    
+
     if ((AccZb > CONSTANTS_ONE_G - ACCZ_ERR_MAX) && (AccZb < CONSTANTS_ONE_G + ACCZ_ERR_MAX))
     {
         imu.caliPass = 1;
@@ -129,3 +130,36 @@ uint8_t IMU_Check(void)
     return imu.caliPass;
 }
 
+/*
+in standard sequence , roll-pitch-yaw , x-y-z
+angle in rad
+get DCM for ground to body
+*/
+static void EularToDCM(float DCM[3][3], float pitch, float yaw, float roll)
+{
+    float cosx, cosy, cosz, sinx, siny, sinz;
+    float coszcosx, coszcosy, sinzcosx, coszsinx, sinzsinx;
+
+    cosx = cosf(roll * M_PI_F / 180.0f);
+    sinx = sinf(roll * M_PI_F / 1800.0f);
+    cosy = cosf(pitch * M_PI_F / 180.0f);
+    siny = sinf(pitch * M_PI_F / 180.0f);
+    cosz = cosf(yaw * M_PI_F / 180.0f);
+    sinz = sinf(yaw * M_PI_F / 180.0f);
+    
+    coszcosx = cosz * cosx;
+    coszcosy = cosz * cosy;
+    sinzcosx = sinz * cosx;
+    coszsinx = cosz * sinx;
+    sinzsinx = sinz * sinx;
+    
+    DCM[0][0] = coszcosy;
+    DCM[0][1] = cosy * sinz;
+    DCM[0][2] = -siny;
+    DCM[1][0] = -sinzcosx + (coszsinx * siny);
+    DCM[1][1] = coszcosx + (sinzsinx * siny);
+    DCM[1][2] = sinx * cosy;
+    DCM[2][0] = (sinzsinx) + (coszcosx * siny);
+    DCM[2][1] = -(coszsinx) + (sinzcosx * siny);
+    DCM[2][2] = cosy * cosx;
+}

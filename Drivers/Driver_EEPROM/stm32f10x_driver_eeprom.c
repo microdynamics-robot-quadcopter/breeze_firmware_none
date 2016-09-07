@@ -1,8 +1,8 @@
 #include "stm32f10x_driver_flash.h"
 #include "stm32f10x_driver_eeprom.h"
-#include "stm32f10x_system_imu.h"
 #include "stm32f10x_system_control.h"
 #include "stm32f10x_system_nrf24l01.h"
+#include "stm32f10x_algorithm_imu.h"
 
 #define TABLE_ADDRESS (STM32_FLASH_BASE + STM32_FLASH_OFFEST + 0)
 

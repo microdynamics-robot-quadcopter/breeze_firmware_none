@@ -1,4 +1,4 @@
-#include "stm32f10x_system_imu.h"
+#include "stm32f10x_algorithm_imu.h"
 #include "stm32f10x_algorithm_filter.h"
 #include "stm32f10x.h"
 #include "math.h"

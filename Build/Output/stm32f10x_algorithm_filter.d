@@ -1,5 +1,5 @@
 ..\build\output\stm32f10x_algorithm_filter.o: ..\Algorithm\Algorithm_Filter\stm32f10x_algorithm_filter.c
-..\build\output\stm32f10x_algorithm_filter.o: ..\System\System_IMU\stm32f10x_system_imu.h
+..\build\output\stm32f10x_algorithm_filter.o: ..\Algorithm\Algorithm_IMU\stm32f10x_algorithm_imu.h
 ..\build\output\stm32f10x_algorithm_filter.o: ..\Libraries\CMSIS\stm32f10x.h
 ..\build\output\stm32f10x_algorithm_filter.o: ..\Libraries\CMSIS\core_cm3.h
 ..\build\output\stm32f10x_algorithm_filter.o: E:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h

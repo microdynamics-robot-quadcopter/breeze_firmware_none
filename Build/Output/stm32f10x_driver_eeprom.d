@@ -30,6 +30,6 @@
 ..\build\output\stm32f10x_driver_eeprom.o: ..\Libraries\FWLib\inc\stm32f10x_wwdg.h
 ..\build\output\stm32f10x_driver_eeprom.o: ..\Libraries\FWLib\inc\misc.h
 ..\build\output\stm32f10x_driver_eeprom.o: ..\Drivers\Driver_EEPROM\stm32f10x_driver_eeprom.h
-..\build\output\stm32f10x_driver_eeprom.o: ..\System\System_Control\stm32f10x_system_control.h
 ..\build\output\stm32f10x_driver_eeprom.o: ..\System\System_NRF24L01\stm32f10x_system_nrf24l01.h
 ..\build\output\stm32f10x_driver_eeprom.o: ..\Algorithm\Algorithm_IMU\stm32f10x_algorithm_imu.h
+..\build\output\stm32f10x_driver_eeprom.o: ..\Algorithm\Algorithm_Control\stm32f10x_algorithm_control.h

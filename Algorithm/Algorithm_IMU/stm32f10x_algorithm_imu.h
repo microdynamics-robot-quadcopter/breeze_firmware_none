@@ -16,7 +16,7 @@
 #define GYRO_CALC_TIME   3000000l       /*us*/
 
 typedef float  quad[4];
-typedef float  vector3f[3];	            /*不可作为返回值，指针*/
+typedef float  vector3f[3];             /*不可作为返回值，指针*/
 typedef float  matrix3f[3][3];
 
 typedef struct mat3_tt
@@ -39,9 +39,9 @@ typedef struct
     int16_t accADC[3];
     int16_t gyroADC[3];
     int16_t magADC[3];
-    float 	accRaw[3];      /*m/s^2*/
-    float 	gyroRaw[3];     /*rad/s */
-    float 	magRaw[3];
+    float   accRaw[3];      /*m/s^2*/
+    float   gyroRaw[3];     /*rad/s */
+    float   magRaw[3];
     float   accOffset[3];   /*m/s^2*/
     float   gyroOffset[3];
     float   accb[3];        /*filted, in body frame*/
@@ -51,10 +51,10 @@ typedef struct
     float   q[4];
     float   roll;           /*deg*/
     float   pitch;
-    float 	yaw;
+    float   yaw;
     float   rollRad;        /*rad*/
     float   pitchRad;
-    float 	yawRad;
+    float   yawRad;
 }imu_t;
 
 #define M_PI_F                               3.1415926

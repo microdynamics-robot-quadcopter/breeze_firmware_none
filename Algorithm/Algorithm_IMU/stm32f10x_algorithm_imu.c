@@ -188,7 +188,7 @@ static uint8_t bFilterInit = 0;
 /*该函数是经典的Carmack求平方根算法，效率极高，使用魔数0x5f375a86*/
 static float InvSqrt(float num)
 {
-    volatile long i;
+    volatile long  i;
     volatile float x;
     volatile float y;
     volatile const float f = 1.5f;
@@ -211,11 +211,11 @@ static void NonLinearSO3AHRSInit(float ax, float ay, float az, float mx, float m
     float magX, magY;
     float initialHdg, cosHeading, sinHeading;
 
-    initialRoll = atan2(-ay, -az);
+    initialRoll  = atan2(-ay, -az);
     initialPitch = atan2(ax, -az);
 
-    cosRoll = cosf(initialRoll);
-    sinRoll = sinf(initialRoll);
+    cosRoll  = cosf(initialRoll);
+    sinRoll  = sinf(initialRoll);
     cosPitch = cosf(initialPitch);
     sinPitch = sinf(initialPitch);
 
@@ -224,11 +224,11 @@ static void NonLinearSO3AHRSInit(float ax, float ay, float az, float mx, float m
 
     initialHdg = atan2f(-magY, magX);
 
-    cosRoll = cosf(initialRoll * 0.5f);
-    sinRoll = sinf(initialRoll * 0.5f);
+    cosRoll    = cosf(initialRoll * 0.5f);
+    sinRoll    = sinf(initialRoll * 0.5f);
 
-    cosPitch = cosf(initialPitch * 0.5f);
-    sinPitch = sinf(initialPitch * 0.5f);
+    cosPitch   = cosf(initialPitch * 0.5f);
+    sinPitch   = sinf(initialPitch * 0.5f);
 
     cosHeading = cosf(initialHdg * 0.5f);
     sinHeading = sinf(initialHdg * 0.5f);
@@ -409,9 +409,9 @@ void IMU_SO3Thread(void)
 
     /*Initialization*/
     float Rot_matrix[9] = {1.f,  0.0f,  0.0f, 0.0f,  1.f,  0.0f, 0.0f,  0.0f,  1.f };  /**< init: identity matrix */
-    float acc[3]        = {0.0f, 0.0f, 0.0f};      /*m/s^2*/
+    float acc[3]        = {0.0f, 0.0f, 0.0f};   /*m/s^2*/
     float mag[3]        = {0.0f, 0.0f, 0.0f};
-    float gyro[3]       = {0.0f, 0.0f, 0.0f};     /*rad/s*/
+    float gyro[3]       = {0.0f, 0.0f, 0.0f};   /*rad/s*/
 
     /*need to calc gyro offset before imu start working*/
     static float gyro_offsets_sum[3] = {0.0f, 0.0f, 0.0f};  /*gyro_offsets[3] = {0.0f, 0.0f, 0.0f}*/
@@ -437,9 +437,9 @@ void IMU_SO3Thread(void)
 
         if (now > startTime + GYRO_CALC_TIME)
         {
-            imu.gyroOffset[0] = gyro_offsets_sum[0] / offset_count;
-            imu.gyroOffset[1] = gyro_offsets_sum[1] / offset_count;
-            imu.gyroOffset[2] = gyro_offsets_sum[2] / offset_count;
+            imu.gyroOffset[0]   = gyro_offsets_sum[0] / offset_count;
+            imu.gyroOffset[1]   = gyro_offsets_sum[1] / offset_count;
+            imu.gyroOffset[2]   = gyro_offsets_sum[2] / offset_count;
             offset_count        = 0;
             gyro_offsets_sum[0] = 0;
             gyro_offsets_sum[1] = 0;
@@ -467,12 +467,12 @@ void IMU_SO3Thread(void)
         /*Convert q->R, This R converts inertial frame to body frame.*/
         Rot_matrix[0] = q0q0 + q1q1 - q2q2 - q3q3;  /*11*/
         Rot_matrix[1] = 2.f * (q1 * q2 + q0 * q3);  /*12*/
-        Rot_matrix[2] = 2.f * (q1 * q3 - q0 * q2);	/*13*/
-        Rot_matrix[3] = 2.f * (q1 * q2 - q0 * q3);	/*21*/
+        Rot_matrix[2] = 2.f * (q1 * q3 - q0 * q2);  /*13*/
+        Rot_matrix[3] = 2.f * (q1 * q2 - q0 * q3);  /*21*/
         Rot_matrix[4] = q0q0 - q1q1 + q2q2 - q3q3;  /*22*/
-        Rot_matrix[5] = 2.f * (q2 * q3 + q0 * q1);	/*23*/
-        Rot_matrix[6] = 2.f * (q1 * q3 + q0 * q2);	/*31*/
-        Rot_matrix[7] = 2.f * (q2 * q3 - q0 * q1);	/*32*/
+        Rot_matrix[5] = 2.f * (q2 * q3 + q0 * q1);  /*23*/
+        Rot_matrix[6] = 2.f * (q1 * q3 + q0 * q2);  /*31*/
+        Rot_matrix[7] = 2.f * (q2 * q3 - q0 * q1);  /*32*/
         Rot_matrix[8] = q0q0 - q1q1 - q2q2 + q3q3;  /*33*/
 
         /*1-2-3 Representation.*/

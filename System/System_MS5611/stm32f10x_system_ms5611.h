@@ -51,6 +51,6 @@ extern void MS5611_GetTemperature(void);
 
 extern void MS5611_Init(void);
 extern void MS5611_Thread(void);
-extern uint8_t WaitBaroInitOffset(void);
+extern uint8_t MS5611_WaitBaroInitOffset(void);
 
 #endif

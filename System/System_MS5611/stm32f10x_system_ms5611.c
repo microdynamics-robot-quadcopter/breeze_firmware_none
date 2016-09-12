@@ -307,7 +307,7 @@ void MS5611_Thread(void)
     }
 }
 
-uint8_t WaitBaroInitOffset(void)
+uint8_t MS5611_WaitBaroInitOffset(void)
 {
     uint32_t now = 0;
     uint32_t starttime = 0;

@@ -82,5 +82,10 @@ extern uint8_t IMU_Calibrate(void);
 extern void IMU_ReadSensorHandle(void);
 
 static void EularToDCM(float DCM[3][3], float pitch, float yaw, float roll);
+static float InvSqrt(float num);
+
+static void NonLinearSO3AHRSInit(float ax, float ay, float az, float mx, float my, float mz);
+static void NonLinearSO3AHRSUpDate(float gx, float gy, float gz, float ax, float ay, float az, float mx, float my, float mz, float twokp, float twopi, float dt);
+extern void MPU_SO3Thread(void);
 
 #endif

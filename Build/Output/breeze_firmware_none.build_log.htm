@@ -31,17 +31,23 @@ compiling stm32f10x_algorithm_imu.c...
 ..\Algorithm\Algorithm_IMU\stm32f10x_algorithm_imu.c(138): warning:  #177-D: function "EularToDCM" was declared but never referenced
   static void EularToDCM(float DCM[3][3], float pitch, float yaw, float roll)
 ..\Algorithm\Algorithm_IMU\stm32f10x_algorithm_imu.c: 1 warning, 0 errors
+compiling stm32f10x_system_ms5611.c...
+..\System\System_MS5611\stm32f10x_system_ms5611.c(54): warning:  #550-D: variable "PressBuffer" was set but never used
+  static float PressBuffer[BUFFER_SIZE];
+..\System\System_MS5611\stm32f10x_system_ms5611.c: 1 warning, 0 errors
+compiling stm32f10x_driver_eeprom.c...
+compiling stm32f10x_algorithm_filter.c...
 linking...
 Program Size: Code=10860 RO-data=268 RW-data=96 ZI-data=3728  
 FromELF: creating hex file...
-"..\Build\Output\breeze_firmware_none.axf" - 0 Error(s), 1 Warning(s).
+"..\Build\Output\breeze_firmware_none.axf" - 0 Error(s), 2 Warning(s).
 
 <h2>Collection of Component include folders:</h2>
   C:\Users\abcd\Documents\GitHub\breeze_firmware_none\Project\RTE
   E:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include
 
 <h2>Collection of Component Files used:</h2>
-Build Time Elapsed:  00:00:14
+Build Time Elapsed:  00:00:03
 </pre>
 </body>
 </html>

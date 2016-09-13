@@ -254,7 +254,7 @@ static void NonLinearSO3AHRSInit(float ax, float ay, float az, float mx, float m
 /*函数名：NonlinearSO3AHRSupdate()*/
 /*描述：姿态解算融合，是Crazepony和核心算法*/
 /*使用的是Mahony互补滤波算法，没有使用Kalman滤波算法*/
-/*改算法是直接参考pixhawk飞控的算法，可以在Github上看到出处*/
+/*该 算法是直接参考pixhawk飞控的算法，可以在Github上看到出处*/
 /*https://github.com/hsteinhaus/PX4Firmware/blob/master/src/modules/attitude_estimator_so3/attitude_estimator_so3_main.cpp*/
 static void NonLinearSO3AHRSUpdate(float gx, float gy, float gz, float ax, float ay, float az, float mx, float my, float mz, float twoKp, float twoKi, float dt) 
 {
@@ -268,7 +268,7 @@ static void NonLinearSO3AHRSUpdate(float gx, float gy, float gz, float ax, float
     /*WARNING : in case air reboot, this can cause problem. But this is very unlikely happen*/
     if (bFilterInit == 0)
     {
-        NonLinearSO3AHRSInit(ax,ay,az,mx,my,mz);
+        NonLinearSO3AHRSInit(ax, ay, az, mx, my, mz);
         bFilterInit = 1;
     }
     	
@@ -464,7 +464,7 @@ void IMU_SO3Thread(void)
     NonLinearSO3AHRSUpdate(gyro[0], gyro[1], gyro[2], -acc[0], -acc[1], -acc[2], mag[0], mag[1], mag[2],
                            so3_comp_params_Kp, so3_comp_params_Ki, dt);
 
-        /*Convert q->R, This R converts inertial frame to body frame.*/
+    /*Convert q->R, This R converts inertial frame to body frame.*/
     Rot_matrix[0] = q0q0 + q1q1 - q2q2 - q3q3;  /*11*/
     Rot_matrix[1] = 2.f * (q1 * q2 + q0 * q3);  /*12*/
     Rot_matrix[2] = 2.f * (q1 * q3 - q0 * q2);  /*13*/

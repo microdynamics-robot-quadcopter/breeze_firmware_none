@@ -51,6 +51,50 @@ typedef struct
     u16 ReadBuf[10];   /*读取Flash的临时数组*/
 }Parameter_Typedef;
 
+/*传感器*/
+typedef struct int16_xyz
+{
+    int16_t X;
+    int16_t Y;
+    int16_t Z;
+}S_INT16_XYZ;
+
+typedef union 
+{
+    int16_t D[3];
+    S_INT16_XYZ V;
+}U_INT16_XYZ;
+
+/*IMU*/
+typedef struct float_xyz
+{
+    float X;
+    float Y;
+    float Z;
+}S_FLOAT_XYZ;
+
+typedef union 
+{
+    float D[3];
+    S_FLOAT_XYZ V;
+}U_FLOAT_XYZ;
+
+typedef struct float_angle
+{
+    float Roll;
+    float Pitch;
+    float Yaw;
+}S_FLOAT_ANGLE;
+
+extern S_FLOAT_XYZ ACC_F, GYRO_F;      /*当次转换结果ACC单位为G,GYRO单位为度/秒*/
+extern S_FLOAT_XYZ GYRO_I[3];          /*陀螺仪积分*/
+extern S_FLOAT_XYZ DIF_ACC;            /*差分加速度*/
+extern S_FLOAT_XYZ EXP_ANGLE;          /*期望角度*/
+extern S_FLOAT_XYZ DIF_ANGLE;          /*期望角度与实际角度差*/
+extern S_FLOAT_ANGLE Q_ANGLE;          /*四元数计算出的角度*/
+extern S_INT16_XYZ ACC_AVG, GYRO_AVG;  /*滑动窗口滤波后的ACC平均值和处理后的gyro值*/
+extern S_FLOAT_ANGLE Q_ANGLE;
+
 extern void Controler(void);
 extern void PID_INIT(void);
 extern void PID_Calculate(void);

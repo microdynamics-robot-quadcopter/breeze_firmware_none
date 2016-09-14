@@ -1,6 +1,8 @@
+#include "stm32f10x_driver_pwm.h"
 #include "stm32f10x_system_rpdata.h"
 #include "stm32f10x_system_battery.h"
 #include "stm32f10x_algorithm_imu.h"
+#include "stm32f10x_algorithm_bar.h"
 #include "stm32f10x_algorithm_control.h"
 #include "stm32f10x_it.h"
 #include "math.h"
@@ -35,9 +37,9 @@ PID_Typedef alt_vel_PID;
 float gyroxGloble = 0;
 float gyroyGloble = 0;
 
-//S_FLOAT_XYZ DIF_ACC;      /*实际去期望相差的加速度*/
-//S_FLOAT_XYZ EXP_ANGLE;    /*期望角度*/
-//S_FLOAT_XYZ DIF_ANGLE;    /*实际与期望相差的角度*/
+S_FLOAT_XYZ DIF_ACC;      /*实际去期望相差的加速度*/
+S_FLOAT_XYZ EXP_ANGLE;    /*期望角度*/
+S_FLOAT_XYZ DIF_ANGLE;    /*实际与期望相差的角度*/
 
 float headHold       = 0;
 uint32_t ctrlPrd     = 0;
@@ -155,7 +157,7 @@ void CtrlAttiRate(void)
 #define ALT_FEED_FORWARD  0.5f
 #define THR_MAX           1.0f  /*max thrust*/
 #define ALT_LIMIT         2.0f  /*限高 3.5*/
-#define TILT_MAX          (Angle_Max * M_PI_F / 180.0 )
+#define TILT_MAX          (ANGLE_MAX * M_PI_F / 180.0 )
 
 const float ALT_CTRL_Z_DB = 0.1f;
 
@@ -297,7 +299,7 @@ void CtrlAlti(void)
     alt = -nav.z;
 
     /*get desired move rate from stick*/
-    manThr      = RC_DATA.THROTTLE / 1000.0f;
+    manThr      = NRF_Data.throttle / 1000.0f;
     spZMoveRate = -dbScaleLinear(manThr - 0.5f, 0.5f, ALT_CTRL_Z_DB);  /*scale to -1~1 . NED frame*/
     spZMoveRate = spZMoveRate * ALT_VEL_MAX;                           /*scale to vel min max*/
 
@@ -366,8 +368,8 @@ void CtrlAlti(void)
     /*与动力分配相关	testing*/
     satXY = 0;
     satZ  = 0;
-    thrustXYSp[0] = sinf(RC_DATA.ROOL * M_PI_F /180.0f);    /*目标角度转加速度*/
-    thrustXYSp[1] = sinf(RC_DATA.PITCH * M_PI_F /180.0f);   /*归一化*/
+    thrustXYSp[0] = sinf(NRF_Data.roll * M_PI_F /180.0f);    /*目标角度转加速度*/
+    thrustXYSp[1] = sinf(NRF_Data.pitch * M_PI_F /180.0f);   /*归一化*/
     thrustXYSpLen = sqrtf(thrustXYSp[0] * thrustXYSp[0] + thrustXYSp[1] * thrustXYSp[1]);
 
     /*limit tilt max*/
@@ -445,12 +447,12 @@ void CtrlAlti(void)
 /*描述：输出PWM，控制电机，本函数会被主循环中100Hz循环调用*/
 void CtrlMotor(void)
 {
-    float cosTilt = imu.accb[2] / ONE_G;
+    float cosTilt = imu.accb[2] / CONSTANTS_ONE_G;
 
     if (altCtrlMode == MANUAL)
     {
-        DIF_ACC.Z = imu.accb[2] - ONE_G;
-        Thro      = RC_DATA.THROTTLE;
+        DIF_ACC.Z = imu.accb[2] - CONSTANTS_ONE_G;
+        Thro      = NRF_Data.throttle;
         cosTilt   = imu.DCMgb[2][2];
         Thro      = Thro / cosTilt;
     }
@@ -471,10 +473,10 @@ void CtrlMotor(void)
 
    	if (FLY_ENABLE != 0)
     {
-        MotorPwmFlash(Motor[0], Motor[1], Motor[2], Motor[3]);
+        PWM_MotorFlash(Motor[0], Motor[1], Motor[2], Motor[3]);
     }
     else
     {
-        MotorPwmFlash(0,0,0,0);
+        PWM_MotorFlash(0, 0, 0, 0);
     }
 }

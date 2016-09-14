@@ -6,14 +6,14 @@
 #ifdef  HIGH_FREQ_CTRL
 #define IMU_SAMPLE_RATE         200.0f
 #else
-#define IMU_SAMPLE_RATE         100.0f  /*1000.0f/(float)DMP_CALC_PRD*/
+#define IMU_SAMPLE_RATE         100.0f    /*1000.0f/(float)DMP_CALC_PRD*/
 #endif
 
 #define IMU_FILTER_CUTOFF_FREQ	30.0f
 
 /*校准时间*/
-#define ACC_CALC_TIME    3000           /*ms*/
-#define GYRO_CALC_TIME   3000000l       /*us*/
+#define ACC_CALC_TIME           3000      /*ms*/
+#define GYRO_CALC_TIME          3000000l  /*us*/
 
 typedef float  quad[4];
 typedef float  vector3f[3];             /*不可作为返回值，指针*/
@@ -40,8 +40,8 @@ typedef struct
     int16_t gyroADC[3];
     int16_t magADC[3];
     float   accRaw[3];      /*m/s^2*/
-    float   gyroRaw[3];     /*rad/s */
     float   magRaw[3];
+    float   gyroRaw[3];     /*rad/s */
     float   accOffset[3];   /*m/s^2*/
     float   gyroOffset[3];
     float   accb[3];        /*filted, in body frame*/
@@ -49,12 +49,12 @@ typedef struct
     float   gyro[3];
     float   DCMgb[3][3];
     float   q[4];
+    float   yaw;
     float   roll;           /*deg*/
     float   pitch;
-    float   yaw;
+    float   yawRad;
     float   rollRad;        /*rad*/
     float   pitchRad;
-    float   yawRad;
 }imu_t;
 
 #define M_PI_F                               3.1415926

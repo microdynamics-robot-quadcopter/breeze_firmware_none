@@ -1,10 +1,12 @@
-#include "stm32f10x_system_rpdata.h"
-#include "stm32f10x_system_nrf24l01.h"
 #include "stm32f10x_driver_pwm.h"
 #include "stm32f10x_driver_usart.h"
+#include "stm32f10x_system_rpdata.h"
+#include "stm32f10x_system_nrf24l01.h"
+#include "stm32f10x_algorithm_imu.h"
 #include "stdio.h"
 
 NRF_GetData NRF_Data;
+uint8_t  FLY_ENABLE = 0;
 uint8_t  appCmdFlag = 0;
 uint8_t  flyLogApp = 0;
 uint8_t  armState = DISARMED;
@@ -47,8 +49,8 @@ void ProcessDataFromNRF(void)
     
     NRF_Data.throttle = rcData[THROTTLE] - 1000;
 	NRF_Data.yaw   = YAW_RATE_MAX * dbScaleLinear((rcData[YAW] - 1500), 500, APP_YAW_DB);
-	NRF_Data.pitch = Angle_Max    * dbScaleLinear((rcData[PITCH] - 1500), 500, APP_PR_DB);
-	NRF_Data.roll  = Angle_Max    * dbScaleLinear((rcData[ROLL] - 1500), 500, APP_PR_DB);
+	NRF_Data.pitch = ANGLE_MAX    * dbScaleLinear((rcData[PITCH] - 1500), 500, APP_PR_DB);
+	NRF_Data.roll  = ANGLE_MAX    * dbScaleLinear((rcData[ROLL] - 1500), 500, APP_PR_DB);
     
     printf("This is the value of the armState:\n");
     printf("%d\n", armState);

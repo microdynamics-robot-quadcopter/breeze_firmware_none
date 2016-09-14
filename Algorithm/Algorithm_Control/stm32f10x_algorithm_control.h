@@ -5,7 +5,7 @@
 
 
 #define  SLOW_THRO     200              /*怠速转速*/
-#define  Angle_Max     40.0             /*定义飞机最大倾斜角度*/
+#define  ANGLE_MAX     40.0             /*定义飞机最大倾斜角度*/
 #define  YAW_RATE_MAX  180.0f / M_PI_F  /*deg/s*/
 
 //纠正姿态误差，可以用来抵抗重心偏移等带来的初始不平衡
@@ -14,6 +14,8 @@
 //定高部分
 #define LAND_SPEED   1.2f  /*m/s^2*/
 #define ALT_VEL_MAX  4.0f
+
+#define YAW_CORRECT
 
 enum {CLIMB_RATE = 0, MANUAL, LANDING};
 extern uint8_t altCtrlMode;
@@ -25,7 +27,7 @@ extern uint8_t isAltLimit;
 extern float   thrustZSp;
 extern float   thrustZInt;
 
-// PID结构体
+/*PID结构体*/
 typedef struct
 {
     float P;
@@ -42,18 +44,17 @@ typedef struct
     float Output;
 }PID_Typedef;
 
-
-//写入Flash参数结构体
+/*写入Flash参数结构体*/
 typedef struct
 {
     u16 WriteBuf[10];  /*写入flash的临时数组*/
     u16 ReadBuf[10];   /*读取Flash的临时数组*/
 }Parameter_Typedef;
 
-
 extern void Controler(void);
 extern void PID_INIT(void);
 extern void PID_Calculate(void);
+static void PID_Postion_Cal(PID_Typedef * PID,float target,float measure,int32_t dertT);
 
 extern void CtrlAttiAng(void);
 extern void CtrlAttiRate(void);
@@ -80,7 +81,6 @@ extern PID_Typedef roll_angle_PID;   /*roll角度环的PID*/
 
 extern PID_Typedef alt_PID;
 extern PID_Typedef alt_vel_PID;
-
 
 extern float gyroxGloble;
 extern float gyroyGloble;

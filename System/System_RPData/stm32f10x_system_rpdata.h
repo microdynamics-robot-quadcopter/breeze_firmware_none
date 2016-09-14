@@ -1,10 +1,10 @@
-#ifndef __STM32F10X_SYSTEM_H__
-#define __STM32F10X_SYSTEM_H__
+#ifndef __STM32F10X_SYSTEM_RPDATA_H__
+#define __STM32F10X_SYSTEM_RPDATA_H__
 
 #include "stm32f10x.h"
 
 enum {DISARMED = 0, REQ_ARM, ARMED, REQ_DISARM};
-enum {ROLL, PITCH, YAW, THROTTLE};
+//enum {ROLL, PITCH, YAW, THROTTLE};
 
 #define MSP_SET_THRO        1
 #define MSP_SET_YAW         2
@@ -24,12 +24,13 @@ enum {ROLL, PITCH, YAW, THROTTLE};
 #define MSP_FLY_STATE       16
 #define MSP_ACC_CALI        205
 
-#define APP_YAW_DB  70 //dead band 
-#define APP_PR_DB   50    
+#define APP_YAW_DB  70  /*dead band*/
+#define APP_PR_DB   50
 
-#define M_PI_F 3.1415926
-#define  YAW_RATE_MAX  180.0f / M_PI_F      //deg/s 
-#define  Angle_Max  40.0                    //定义飞机最大倾斜角度
+#define  M_PI_F        3.1415926
+#define  ANGLE_MAX     40.0             /*定义飞机最大倾斜角度*/
+#define  YAW_RATE_MAX  180.0f / M_PI_F  /*deg/s*/
+
 
 #define CONSTRAIN(x, min, max) {if (x < min) x = min; if (x > max) x = max;}
 
@@ -40,8 +41,10 @@ typedef struct NRF
     float roll;
     float throttle;
 }NRF_GetData;
+
 extern NRF_GetData NRF_Data;
-    
+extern uint8_t FLY_ENABLE;
+
 extern uint8_t  appCmdFlag;
 extern uint8_t  flyLogApp;
 extern uint8_t  armState;

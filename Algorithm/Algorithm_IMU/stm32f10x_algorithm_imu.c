@@ -71,10 +71,8 @@ uint8_t IMU_Calibrate(void)  /*检测时间为3s*/
             calibrating = 0;
             ret = 1;
         }
-    }
-    
+    }    
     return ret;
-    
 }
 
 #define SENSOR_MAX_G 8.0f
@@ -191,9 +189,9 @@ static float InvSqrt(float num)
     volatile long  i;
     volatile float x;
     volatile float y;
-    volatile const float f = 1.5f;
+    volatile const float f = 1.5F;
     
-    x = num * 0.5f;
+    x = num * 0.5F;
     y = num;
     i = *((long*) &y);
     i = 0x5F375A86 - (i >> 1);
@@ -254,7 +252,7 @@ static void NonLinearSO3AHRSInit(float ax, float ay, float az, float mx, float m
 /*函数名：NonlinearSO3AHRSupdate()*/
 /*描述：姿态解算融合，是Crazepony和核心算法*/
 /*使用的是Mahony互补滤波算法，没有使用Kalman滤波算法*/
-/*该 算法是直接参考pixhawk飞控的算法，可以在Github上看到出处*/
+/*改算法是直接参考pixhawk飞控的算法，可以在Github上看到出处*/
 /*https://github.com/hsteinhaus/PX4Firmware/blob/master/src/modules/attitude_estimator_so3/attitude_estimator_so3_main.cpp*/
 static void NonLinearSO3AHRSUpdate(float gx, float gy, float gz, float ax, float ay, float az, float mx, float my, float mz, float twoKp, float twoKi, float dt) 
 {
@@ -399,35 +397,35 @@ static void NonLinearSO3AHRSUpdate(float gx, float gy, float gz, float ax, float
 void IMU_SO3Thread(void)
 {
     /*! Time constant*/
-    float dt = 0.01f;                           /*s*/
-    static uint32_t tPrev = 0, startTime = 0;   /*us*/
-    uint32_t now;
+    float dt = 0.01f;                            /*s*/
+    static uint32_t PreTime = 0, StartTime = 0;  /*us*/
+    uint32_t NowTime;
     uint8_t i;
 
     /*output euler angles*/
-    float euler[3] = {0.0f, 0.0f, 0.0f};        /*rad*/
+    float euler[3] = {0.0f, 0.0f, 0.0f};         /*rad*/
 
     /*Initialization*/
     float Rot_matrix[9] = {1.f,  0.0f,  0.0f, 0.0f,  1.f,  0.0f, 0.0f,  0.0f,  1.f };  /**< init: identity matrix */
-    float acc[3]        = {0.0f, 0.0f, 0.0f};   /*m/s^2*/
+    float acc[3]        = {0.0f, 0.0f, 0.0f};    /*m/s^2*/
     float mag[3]        = {0.0f, 0.0f, 0.0f};
-    float gyro[3]       = {0.0f, 0.0f, 0.0f};   /*rad/s*/
+    float gyro[3]       = {0.0f, 0.0f, 0.0f};    /*rad/s*/
 
     /*need to calc gyro offset before imu start working*/
     static float gyro_offsets_sum[3] = {0.0f, 0.0f, 0.0f};  /*gyro_offsets[3] = {0.0f, 0.0f, 0.0f}*/
     static uint16_t offset_count = 0;
 
-    now = micros();
-    dt = (tPrev > 0) ? (now - tPrev) / 1000000.0f : 0;
-    tPrev = now;
+    NowTime = micros();
+    dt = (PreTime > 0) ? (NowTime - PreTime) / 1000000.0f : 0;
+    PreTime = NowTime;
 
     IMU_ReadSensorHandle();
 
-    if (!imu.ready)
+    if (!imu.ready)  /*为了标定陀螺*/
     {
-        if (startTime == 0)
+        if (StartTime == 0)
         {
-            startTime = now;
+            StartTime = NowTime;
         }
 		
         gyro_offsets_sum[0] += imu.gyroRaw[0];
@@ -435,7 +433,7 @@ void IMU_SO3Thread(void)
         gyro_offsets_sum[2] += imu.gyroRaw[2];
         offset_count++;
 
-        if (now > startTime + GYRO_CALC_TIME)
+        if (NowTime > StartTime + GYRO_CALC_TIME)
         {
             imu.gyroOffset[0]   = gyro_offsets_sum[0] / offset_count;
             imu.gyroOffset[1]   = gyro_offsets_sum[1] / offset_count;
@@ -446,7 +444,7 @@ void IMU_SO3Thread(void)
             gyro_offsets_sum[2] = 0;
 
             imu.ready = 1;
-            startTime = 0;
+            StartTime = 0;
         }
         return;
     }
@@ -455,9 +453,9 @@ void IMU_SO3Thread(void)
     gyro[1] = imu.gyro[1] - imu.gyroOffset[1];
     gyro[2] = imu.gyro[2] - imu.gyroOffset[2];
 
-    acc[0] = -imu.accb[0];
-    acc[1] = -imu.accb[1];
-    acc[2] = -imu.accb[2];
+    acc[0]  = -imu.accb[0];
+    acc[1]  = -imu.accb[1];
+    acc[2]  = -imu.accb[2];
 
     /*NOTE : Accelerometer is reversed.*/
     /*Because proper mount of PX4 will give you a reversed accelerometer readings.*/

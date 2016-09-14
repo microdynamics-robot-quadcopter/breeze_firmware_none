@@ -29,6 +29,7 @@
 ..\build\output\stm32f10x_algorithm_control.o: ..\Libraries\FWLib\inc\stm32f10x_usart.h
 ..\build\output\stm32f10x_algorithm_control.o: ..\Libraries\FWLib\inc\stm32f10x_wwdg.h
 ..\build\output\stm32f10x_algorithm_control.o: ..\Libraries\FWLib\inc\misc.h
+..\build\output\stm32f10x_algorithm_control.o: ..\System\System_Battery\stm32f10x_system_battery.h
 ..\build\output\stm32f10x_algorithm_control.o: ..\Algorithm\Algorithm_IMU\stm32f10x_algorithm_imu.h
 ..\build\output\stm32f10x_algorithm_control.o: ..\Algorithm\Algorithm_Control\stm32f10x_algorithm_control.h
 ..\build\output\stm32f10x_algorithm_control.o: ..\User\stm32f10x_it.h

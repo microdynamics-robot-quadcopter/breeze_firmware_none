@@ -28,20 +28,33 @@ Project File Date:  09/07/2016
 *** Using Compiler 'V5.06 update 1 (build 61)', folder: 'E:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'breeze_firmware_none'
 compiling stm32f10x_algorithm_control.c...
-..\Algorithm\Algorithm_Control\stm32f10x_algorithm_control.c(132): warning:  #1-D: last line of file ends without a newline
-  uint8_t altCtrlMode;					//normal=0  CLIMB rate, normal .  tobe tested
-..\Algorithm\Algorithm_Control\stm32f10x_algorithm_control.c: 1 warning, 0 errors
-linking...
-Program Size: Code=10860 RO-data=268 RW-data=96 ZI-data=3728  
-FromELF: creating hex file...
-"..\Build\Output\breeze_firmware_none.axf" - 0 Error(s), 1 Warning(s).
+..\Algorithm\Algorithm_Control\stm32f10x_algorithm_control.c(283): error:  #20: identifier "nav" is undefined
+  	alt=-nav.z;
+..\Algorithm\Algorithm_Control\stm32f10x_algorithm_control.c(285): error:  #20: identifier "RC_DATA" is undefined
+  	manThr=RC_DATA.THROTTLE / 1000.0f;
+..\Algorithm\Algorithm_Control\stm32f10x_algorithm_control.c(349): error:  #20: identifier "Angle_Max" is undefined
+  		thrustXYMax=-thrustZSp * tanf(
+ILT_MAX);
+..\Algorithm\Algorithm_Control\stm32f10x_algorithm_control.c(417): error:  #20: identifier "ONE_G" is undefined
+  		float  cosTilt = imu.accb[2] / ONE_G;
+..\Algorithm\Algorithm_Control\stm32f10x_algorithm_control.c(421): error:  #20: identifier "DIF_ACC" is undefined
+  			DIF_ACC.Z =  imu.accb[2] - ONE_G;
+..\Algorithm\Algorithm_Control\stm32f10x_algorithm_control.c(422): error:  #20: identifier "RC_DATA" is undefined
+  			Thro = RC_DATA.THROTTLE;
+..\Algorithm\Algorithm_Control\stm32f10x_algorithm_control.c(438): warning:  #223-D: function "MotorPwmFlash" declared implicitly
+  			MotorPwmFlash(Motor[0],Motor[1],Motor[2],Motor[3]);   
+..\Algorithm\Algorithm_Control\stm32f10x_algorithm_control.c(441): warning:  #1-D: last line of file ends without a newline
+  }
+..\Algorithm\Algorithm_Control\stm32f10x_algorithm_control.c: 2 warnings, 6 errors
+"..\Build\Output\breeze_firmware_none.axf" - 6 Error(s), 2 Warning(s).
 
 <h2>Collection of Component include folders:</h2>
   C:\Users\abcd\Documents\GitHub\breeze_firmware_none\Project\RTE
   E:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include
 
 <h2>Collection of Component Files used:</h2>
-Build Time Elapsed:  00:00:02
+Target not created.
+Build Time Elapsed:  00:00:01
 </pre>
 </body>
 </html>

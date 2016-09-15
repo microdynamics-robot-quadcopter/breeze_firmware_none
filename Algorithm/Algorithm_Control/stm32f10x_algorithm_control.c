@@ -190,7 +190,7 @@ float EstimateHoverThru(void)
     float hoverHru = -0.55f;
 
     /*电池电压检测*/
-    Battery.ADVal   = Get_Battery_AD();
+    Battery.ADVal   = Battery_GetAD();
     Battery.RealVal = Battery.Factor * (Battery.ADVal / 4096.0) * Battery.ADRefVal;  /*实际电压值计算*/
 
     if (Battery.RealVal > 4.05)
@@ -228,7 +228,7 @@ float EstimateMinThru(void)
     float minThru = -0.55f;
 
     /*电池电压检测*/
-    Battery.ADVal   = Get_Battery_AD();
+    Battery.ADVal   = Battery_GetAD();
     Battery.RealVal = Battery.Factor * (Battery.ADVal / 4096.0) * Battery.ADRefVal;  /*实际电压值计算*/
 
     if (Battery.RealVal > 4.05)

@@ -19,7 +19,7 @@ void Hardware_Init(void)
     TIM4_Init(4999, 7199);
     LoadParamsFromEEPROM();
     NRF24L01_INIT();
-    //Battery_Check_Init();
+    //Battery_CheckInit();
 }
 
 int main(void)

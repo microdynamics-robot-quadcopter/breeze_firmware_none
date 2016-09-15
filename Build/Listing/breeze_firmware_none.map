@@ -238,7 +238,7 @@ Section Cross References
     stm32f10x_system_led.o(i.led_init) refers to stm32f10x_gpio.o(i.GPIO_ResetBits) for GPIO_ResetBits
     stm32f10x_system_led.o(i.led_test) refers to stm32f10x_gpio.o(i.GPIO_SetBits) for GPIO_SetBits
     stm32f10x_system_led.o(i.led_test) refers to stm32f10x_gpio.o(i.GPIO_ResetBits) for GPIO_ResetBits
-    stm32f10x_system_battery.o(i.Battery_Check) refers to stm32f10x_system_battery.o(i.Get_Battery_AD) for Get_Battery_AD
+    stm32f10x_system_battery.o(i.Battery_Check) refers to stm32f10x_system_battery.o(i.Battery_GetAD) for Battery_GetAD
     stm32f10x_system_battery.o(i.Battery_Check) refers to f2d.o(x$fpl$f2d) for __aeabi_f2d
     stm32f10x_system_battery.o(i.Battery_Check) refers to dflt_clz.o(x$fpl$dflt) for __aeabi_i2d
     stm32f10x_system_battery.o(i.Battery_Check) refers to ddiv.o(x$fpl$ddiv) for __aeabi_ddiv
@@ -248,21 +248,21 @@ Section Cross References
     stm32f10x_system_battery.o(i.Battery_Check) refers to drleqf.o(x$fpl$drleqf) for __aeabi_cdrcmple
     stm32f10x_system_battery.o(i.Battery_Check) refers to stm32f10x_system_battery.o(.bss) for Battery
     stm32f10x_system_battery.o(i.Battery_Check) refers to stm32f10x_system_rpdata.o(.data) for FLY_ENABLE
-    stm32f10x_system_battery.o(i.Battery_Check_Init) refers to fdiv.o(x$fpl$fdiv) for __aeabi_fdiv
-    stm32f10x_system_battery.o(i.Battery_Check_Init) refers to noretval__2printf.o(.text) for __2printf
-    stm32f10x_system_battery.o(i.Battery_Check_Init) refers to stm32f10x_system_battery.o(.bss) for Battery
-    stm32f10x_system_battery.o(i.Get_ADC_Average) refers to stm32f10x_system_battery.o(i.Get_ADC) for Get_ADC
-    stm32f10x_system_battery.o(i.Get_Battery_AD) refers to stm32f10x_system_battery.o(i.Get_ADC_Average) for Get_ADC_Average
-    stm32f10x_system_battery.o(i.Get_Temp) refers to stm32f10x_system_battery.o(i.Get_ADC) for Get_ADC
-    stm32f10x_system_battery.o(i.Get_Temp) refers to fflt_clz.o(x$fpl$ffltu) for __aeabi_ui2f
-    stm32f10x_system_battery.o(i.Get_Temp) refers to f2d.o(x$fpl$f2d) for __aeabi_f2d
-    stm32f10x_system_battery.o(i.Get_Temp) refers to dmul.o(x$fpl$dmul) for __aeabi_dmul
-    stm32f10x_system_battery.o(i.Get_Temp) refers to d2f.o(x$fpl$d2f) for __aeabi_d2f
-    stm32f10x_system_battery.o(i.Get_Temp) refers to daddsub_clz.o(x$fpl$drsb) for __aeabi_drsub
-    stm32f10x_system_battery.o(i.Get_Temp) refers to ddiv.o(x$fpl$ddiv) for __aeabi_ddiv
-    stm32f10x_system_battery.o(i.Get_Temp) refers to daddsub_clz.o(x$fpl$dadd) for __aeabi_dadd
-    stm32f10x_system_battery.o(i.Get_Temp) refers to fmul.o(x$fpl$fmul) for __aeabi_fmul
-    stm32f10x_system_battery.o(i.Get_Temp) refers to ffix.o(x$fpl$ffix) for __aeabi_f2iz
+    stm32f10x_system_battery.o(i.Battery_CheckInit) refers to fdiv.o(x$fpl$fdiv) for __aeabi_fdiv
+    stm32f10x_system_battery.o(i.Battery_CheckInit) refers to noretval__2printf.o(.text) for __2printf
+    stm32f10x_system_battery.o(i.Battery_CheckInit) refers to stm32f10x_system_battery.o(.bss) for Battery
+    stm32f10x_system_battery.o(i.Battery_GetAD) refers to stm32f10x_system_battery.o(i.Battery_GetADCAverage) for Battery_GetADCAverage
+    stm32f10x_system_battery.o(i.Battery_GetADCAverage) refers to stm32f10x_system_battery.o(i.Battery_GetADC) for Battery_GetADC
+    stm32f10x_system_battery.o(i.Battery_GetTemp) refers to stm32f10x_system_battery.o(i.Battery_GetADC) for Battery_GetADC
+    stm32f10x_system_battery.o(i.Battery_GetTemp) refers to fflt_clz.o(x$fpl$ffltu) for __aeabi_ui2f
+    stm32f10x_system_battery.o(i.Battery_GetTemp) refers to f2d.o(x$fpl$f2d) for __aeabi_f2d
+    stm32f10x_system_battery.o(i.Battery_GetTemp) refers to dmul.o(x$fpl$dmul) for __aeabi_dmul
+    stm32f10x_system_battery.o(i.Battery_GetTemp) refers to d2f.o(x$fpl$d2f) for __aeabi_d2f
+    stm32f10x_system_battery.o(i.Battery_GetTemp) refers to daddsub_clz.o(x$fpl$drsb) for __aeabi_drsub
+    stm32f10x_system_battery.o(i.Battery_GetTemp) refers to ddiv.o(x$fpl$ddiv) for __aeabi_ddiv
+    stm32f10x_system_battery.o(i.Battery_GetTemp) refers to daddsub_clz.o(x$fpl$dadd) for __aeabi_dadd
+    stm32f10x_system_battery.o(i.Battery_GetTemp) refers to fmul.o(x$fpl$fmul) for __aeabi_fmul
+    stm32f10x_system_battery.o(i.Battery_GetTemp) refers to ffix.o(x$fpl$ffix) for __aeabi_f2iz
     stm32f10x_system_rpdata.o(i.ProcessDataFromNRF) refers to _printf_percent.o(.ARM.Collect$$_printf_percent$$00000000) for _printf_percent
     stm32f10x_system_rpdata.o(i.ProcessDataFromNRF) refers to _printf_d.o(.ARM.Collect$$_printf_percent$$00000009) for _printf_d
     stm32f10x_system_rpdata.o(i.ProcessDataFromNRF) refers to _printf_dec.o(.text) for _printf_int_dec
@@ -765,7 +765,7 @@ Section Cross References
     stm32f10x_algorithm_control.o(i.ControlMotor) refers to stm32f10x_algorithm_control.o(.bss) for DIF_ACC
     stm32f10x_algorithm_control.o(i.ControlMotor) refers to stm32f10x_system_rpdata.o(.bss) for NRF_Data
     stm32f10x_algorithm_control.o(i.ControlMotor) refers to stm32f10x_system_rpdata.o(.data) for FLY_ENABLE
-    stm32f10x_algorithm_control.o(i.EstimateHoverThru) refers to stm32f10x_system_battery.o(i.Get_Battery_AD) for Get_Battery_AD
+    stm32f10x_algorithm_control.o(i.EstimateHoverThru) refers to stm32f10x_system_battery.o(i.Battery_GetAD) for Battery_GetAD
     stm32f10x_algorithm_control.o(i.EstimateHoverThru) refers to f2d.o(x$fpl$f2d) for __aeabi_f2d
     stm32f10x_algorithm_control.o(i.EstimateHoverThru) refers to dflt_clz.o(x$fpl$dflt) for __aeabi_i2d
     stm32f10x_algorithm_control.o(i.EstimateHoverThru) refers to ddiv.o(x$fpl$ddiv) for __aeabi_ddiv
@@ -773,7 +773,7 @@ Section Cross References
     stm32f10x_algorithm_control.o(i.EstimateHoverThru) refers to d2f.o(x$fpl$d2f) for __aeabi_d2f
     stm32f10x_algorithm_control.o(i.EstimateHoverThru) refers to drleqf.o(x$fpl$drleqf) for __aeabi_cdrcmple
     stm32f10x_algorithm_control.o(i.EstimateHoverThru) refers to stm32f10x_system_battery.o(.bss) for Battery
-    stm32f10x_algorithm_control.o(i.EstimateMinThru) refers to stm32f10x_system_battery.o(i.Get_Battery_AD) for Get_Battery_AD
+    stm32f10x_algorithm_control.o(i.EstimateMinThru) refers to stm32f10x_system_battery.o(i.Battery_GetAD) for Battery_GetAD
     stm32f10x_algorithm_control.o(i.EstimateMinThru) refers to f2d.o(x$fpl$f2d) for __aeabi_f2d
     stm32f10x_algorithm_control.o(i.EstimateMinThru) refers to dflt_clz.o(x$fpl$dflt) for __aeabi_i2d
     stm32f10x_algorithm_control.o(i.EstimateMinThru) refers to ddiv.o(x$fpl$ddiv) for __aeabi_ddiv
@@ -1747,11 +1747,11 @@ Removing Unused input sections from the image.
     Removing stm32f10x_driver_eeprom.o(.data), (1 bytes).
     Removing stm32f10x_system_led.o(i.led_test), (88 bytes).
     Removing stm32f10x_system_battery.o(i.Battery_Check), (292 bytes).
-    Removing stm32f10x_system_battery.o(i.Battery_Check_Init), (416 bytes).
-    Removing stm32f10x_system_battery.o(i.Get_ADC), (68 bytes).
-    Removing stm32f10x_system_battery.o(i.Get_ADC_Average), (36 bytes).
-    Removing stm32f10x_system_battery.o(i.Get_Battery_AD), (12 bytes).
-    Removing stm32f10x_system_battery.o(i.Get_Temp), (168 bytes).
+    Removing stm32f10x_system_battery.o(i.Battery_CheckInit), (416 bytes).
+    Removing stm32f10x_system_battery.o(i.Battery_GetAD), (12 bytes).
+    Removing stm32f10x_system_battery.o(i.Battery_GetADC), (68 bytes).
+    Removing stm32f10x_system_battery.o(i.Battery_GetADCAverage), (36 bytes).
+    Removing stm32f10x_system_battery.o(i.Battery_GetTemp), (168 bytes).
     Removing stm32f10x_system_battery.o(.bss), (32 bytes).
     Removing stm32f10x_system_ms5611.o(i.MS5611_AltPush), (40 bytes).
     Removing stm32f10x_system_ms5611.o(i.MS5611_GetAltitude), (256 bytes).

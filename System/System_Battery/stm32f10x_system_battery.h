@@ -8,12 +8,12 @@ Date:        2016.8.14
 Description: declare the battery operation function
 Others:      none
 Function List:
-             1. extern int Get_Temp(void);
-             2. extern int Get_Battery_AD(void);
+             1. extern int  Battery_GetAD(void);
+             2. extern int  Battery_GetTemp(void);
              3. extern void Battery_Check(void);
-             4. extern void Battery_Check_Init(void);
-             5. extern u16 Get_ADC(u8 ch);
-             6. extern u16 Get_ADC_Average(u8 ch, u8 times);
+             4. extern void Battery_CheckInit(void);
+             5. extern u16  Battery_GetADC(u8 ch);
+             6. extern u16  Battery_GetADCAverage(u8 ch, u8 times);
 History:     none
 *******************************************************************************/
 
@@ -26,7 +26,6 @@ History:     none
 #define BAT_ALARM_VAL     3.65     /*这是电机未开启的报警电压值，开启电机之后，电池电压会下降0.3-0.4v左右*/
 #define BAT_CHARGE_VAL    1.0      /*charge battery val unit :v*/
 #define BAT_OVERDIS_VAL   3.15     /*过放保护电压值，持续低于该电压则自动降落，over discharge protect value*/
-
 
 /*电压信息结构体*/
 typedef struct
@@ -44,11 +43,11 @@ typedef struct
 
 extern Bat_TypedefStructure Battery;  /*实例化一个电压信息结构体*/
 
-extern int Get_Temp(void);
-extern int Get_Battery_AD(void);
+extern int  Battery_GetAD(void);
+extern int  Battery_GetTemp(void);
 extern void Battery_Check(void);
-extern void Battery_Check_Init(void);
-extern u16 Get_ADC(u8 ch);
-extern u16 Get_ADC_Average(u8 ch, u8 times);
+extern void Battery_CheckInit(void);
+extern u16  Battery_GetADC(u8 ch);
+extern u16  Battery_GetADCAverage(u8 ch, u8 times);
 
 #endif

@@ -9,9 +9,9 @@
 #define  YAW_RATE_MAX  180.0f / M_PI_F  /*deg/s*/
 
 //纠正姿态误差，可以用来抵抗重心偏移等带来的初始不平衡
-//#define  Rool_error_init   7      //如果飞机起飞朝左偏，Rool_error_init朝正向增大修改;朝右偏，Rool_error_init朝负向增大修改
-//#define  Pitch_error_init  -5      //如果飞机起飞朝前偏，Pitch_error_init朝负向增大修改;朝后偏，Pitch_error_init朝正向增大修改
-//定高部分
+//#define  Rool_error_init   7       /*如果飞机起飞朝左偏，Rool_error_init朝正向增大修改;朝右偏，Rool_error_init朝负向增大修改*/
+//#define  Pitch_error_init  -5      /*如果飞机起飞朝前偏，Pitch_error_init朝负向增大修改;朝后偏，Pitch_error_init朝正向增大修改*/
+/*定高部分*/
 #define LAND_SPEED   1.2f  /*m/s^2*/
 #define ALT_VEL_MAX  4.0f
 
@@ -93,7 +93,6 @@ extern S_FLOAT_XYZ EXP_ANGLE;          /*期望角度*/
 extern S_FLOAT_XYZ DIF_ANGLE;          /*期望角度与实际角度差*/
 extern S_FLOAT_ANGLE Q_ANGLE;          /*四元数计算出的角度*/
 extern S_INT16_XYZ ACC_AVG, GYRO_AVG;  /*滑动窗口滤波后的ACC平均值和处理后的gyro值*/
-extern S_FLOAT_ANGLE Q_ANGLE;
 
 extern void Controler(void);
 extern void PID_INIT(void);

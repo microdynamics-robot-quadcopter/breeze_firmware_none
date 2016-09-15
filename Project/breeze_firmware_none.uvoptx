@@ -815,6 +815,18 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
+      <PathWithFileName>..\Algorithm\Algorithm_BAR\stm32f10x_algorithm_bar.c</PathWithFileName>
+      <FilenameWithoutPath>stm32f10x_algorithm_bar.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>7</GroupNumber>
+      <FileNumber>46</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
       <PathWithFileName>..\Algorithm\Algorithm_Filter\stm32f10x_algorithm_filter.c</PathWithFileName>
       <FilenameWithoutPath>stm32f10x_algorithm_filter.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
@@ -822,7 +834,7 @@
     </File>
     <File>
       <GroupNumber>7</GroupNumber>
-      <FileNumber>46</FileNumber>
+      <FileNumber>47</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>

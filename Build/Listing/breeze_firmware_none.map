@@ -561,7 +561,7 @@ Section Cross References
     stm32f10x_algorithm_bar.o(i.AltitudeCombineThread) refers to faddsub_clz.o(x$fpl$frsb) for __aeabi_frsub
     stm32f10x_algorithm_bar.o(i.AltitudeCombineThread) refers to stm32f10x_algorithm_bar.o(i.Interial_Filter_Predict) for Interial_Filter_Predict
     stm32f10x_algorithm_bar.o(i.AltitudeCombineThread) refers to stm32f10x_algorithm_bar.o(i.Interial_Filter_Correct) for Interial_Filter_Correct
-    stm32f10x_algorithm_bar.o(i.AltitudeCombineThread) refers to stm32f10x_algorithm_bar.o(.data) for tPre
+    stm32f10x_algorithm_bar.o(i.AltitudeCombineThread) refers to stm32f10x_algorithm_bar.o(.data) for PreTime
     stm32f10x_algorithm_bar.o(i.AltitudeCombineThread) refers to stm32f10x_system_ms5611.o(.data) for PaOffsetInited
     stm32f10x_algorithm_bar.o(i.AltitudeCombineThread) refers to stm32f10x_algorithm_imu.o(.bss) for imu
     stm32f10x_algorithm_bar.o(i.AltitudeCombineThread) refers to stm32f10x_algorithm_bar.o(.bss) for z_est

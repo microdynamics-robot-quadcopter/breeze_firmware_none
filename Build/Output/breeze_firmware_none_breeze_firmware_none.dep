@@ -1281,7 +1281,7 @@ I (..\Algorithm\Algorithm_IMU\stm32f10x_algorithm_imu.h)(0x57D8E227)
 I (..\Algorithm\Algorithm_Filter\stm32f10x_algorithm_filter.h)(0x57CF6673)
 I (..\User\stm32f10x_it.h)(0x57B9A72F)
 I (E:\Keil_v5\ARM\ARMCC\include\math.h)(0x55DB2B7E)
-F (..\Algorithm\Algorithm_BAR\stm32f10x_algorithm_bar.c)(0x57D93A39)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\User -I..\Drivers\Driver_Sys -I..\Drivers\Driver_IIC -I..\Drivers\Driver_Tim -I..\Drivers\Driver_SPI -I..\Drivers\Driver_Flash -I..\Drivers\Driver_PWM -I..\Drivers\Driver_Delay -I..\Drivers\Driver_USART -I..\Drivers\Driver_EEPROM -I..\System\System_Led -I..\System\System_Battery -I..\System\System_RPData -I..\System\System_MS5611 -I..\System\System_MPU6050 -I..\System\System_NRF24L01 -I..\Algorithm\Algorithm_IMU -I..\Algorithm\Algorithm_BAR -I..\Algorithm\Algorithm_Filter -I..\Algorithm\Algorithm_Control -I..\Libraries\FWLib\inc -I..\Libraries\CMSIS-I C:\Users\abcd\Documents\GitHub\breeze_firmware_none\Project\RTE-I E:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I E:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="517" -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD-o ..\build\output\stm32f10x_algorithm_bar.o --omf_browse ..\build\output\stm32f10x_algorithm_bar.crf --depend ..\build\output\stm32f10x_algorithm_bar.d)
+F (..\Algorithm\Algorithm_BAR\stm32f10x_algorithm_bar.c)(0x57DA87C3)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\User -I..\Drivers\Driver_Sys -I..\Drivers\Driver_IIC -I..\Drivers\Driver_Tim -I..\Drivers\Driver_SPI -I..\Drivers\Driver_Flash -I..\Drivers\Driver_PWM -I..\Drivers\Driver_Delay -I..\Drivers\Driver_USART -I..\Drivers\Driver_EEPROM -I..\System\System_Led -I..\System\System_Battery -I..\System\System_RPData -I..\System\System_MS5611 -I..\System\System_MPU6050 -I..\System\System_NRF24L01 -I..\Algorithm\Algorithm_IMU -I..\Algorithm\Algorithm_BAR -I..\Algorithm\Algorithm_Filter -I..\Algorithm\Algorithm_Control -I..\Libraries\FWLib\inc -I..\Libraries\CMSIS-I C:\Users\abcd\Documents\GitHub\breeze_firmware_none\Project\RTE-I E:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I E:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="517" -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD-o ..\build\output\stm32f10x_algorithm_bar.o --omf_browse ..\build\output\stm32f10x_algorithm_bar.crf --depend ..\build\output\stm32f10x_algorithm_bar.d)
 I (..\System\System_MS5611\stm32f10x_system_ms5611.h)(0x57CFEADC)
 I (..\Libraries\CMSIS\stm32f10x.h)(0x4D783CB4)
 I (..\Libraries\CMSIS\core_cm3.h)(0x4D523B58)
@@ -1311,7 +1311,7 @@ I (..\Libraries\FWLib\inc\stm32f10x_tim.h)(0x4D783BB4)
 I (..\Libraries\FWLib\inc\stm32f10x_usart.h)(0x4D783BB4)
 I (..\Libraries\FWLib\inc\stm32f10x_wwdg.h)(0x4D783BB4)
 I (..\Libraries\FWLib\inc\misc.h)(0x4D783BB4)
-I (..\Algorithm\Algorithm_BAR\stm32f10x_algorithm_bar.h)(0x57D93675)
+I (..\Algorithm\Algorithm_BAR\stm32f10x_algorithm_bar.h)(0x57DA84CF)
 I (..\Algorithm\Algorithm_IMU\stm32f10x_algorithm_imu.h)(0x57D8E227)
 I (..\User\stm32f10x_it.h)(0x57B9A72F)
 F (..\Algorithm\Algorithm_Filter\stm32f10x_algorithm_filter.c)(0x57CFA417)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\User -I..\Drivers\Driver_Sys -I..\Drivers\Driver_IIC -I..\Drivers\Driver_Tim -I..\Drivers\Driver_SPI -I..\Drivers\Driver_Flash -I..\Drivers\Driver_PWM -I..\Drivers\Driver_Delay -I..\Drivers\Driver_USART -I..\Drivers\Driver_EEPROM -I..\System\System_Led -I..\System\System_Battery -I..\System\System_RPData -I..\System\System_MS5611 -I..\System\System_MPU6050 -I..\System\System_NRF24L01 -I..\Algorithm\Algorithm_IMU -I..\Algorithm\Algorithm_BAR -I..\Algorithm\Algorithm_Filter -I..\Algorithm\Algorithm_Control -I..\Libraries\FWLib\inc -I..\Libraries\CMSIS-I C:\Users\abcd\Documents\GitHub\breeze_firmware_none\Project\RTE-I E:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.1.0\Device\Include-I E:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="517" -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD-o ..\build\output\stm32f10x_algorithm_filter.o --omf_browse ..\build\output\stm32f10x_algorithm_filter.crf --depend ..\build\output\stm32f10x_algorithm_filter.d)
@@ -1379,7 +1379,7 @@ I (..\Libraries\FWLib\inc\misc.h)(0x4D783BB4)
 I (..\System\System_RPData\stm32f10x_system_rpdata.h)(0x57D8E286)
 I (..\System\System_Battery\stm32f10x_system_battery.h)(0x57DA8045)
 I (..\Algorithm\Algorithm_IMU\stm32f10x_algorithm_imu.h)(0x57D8E227)
-I (..\Algorithm\Algorithm_BAR\stm32f10x_algorithm_bar.h)(0x57D93675)
+I (..\Algorithm\Algorithm_BAR\stm32f10x_algorithm_bar.h)(0x57DA84CF)
 I (..\Algorithm\Algorithm_Control\stm32f10x_algorithm_control.h)(0x57DA762C)
 I (..\User\stm32f10x_it.h)(0x57B9A72F)
 I (E:\Keil_v5\ARM\ARMCC\include\math.h)(0x55DB2B7E)

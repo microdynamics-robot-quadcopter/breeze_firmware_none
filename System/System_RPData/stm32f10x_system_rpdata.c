@@ -85,7 +85,7 @@ void ProcessDataFromNRF(void)
 //            altCtrlMode = MANUAL;		//上锁后加的处理
 //            zIntReset = 1;
 //            thrustZSp = 0;	
-//            thrustZInt = estimateHoverThru();
+//            thrustZInt = EstimateHoverThru();
 //            offLandFlag = 0;            
 //        break;
 //        

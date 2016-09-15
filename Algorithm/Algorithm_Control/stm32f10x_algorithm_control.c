@@ -7,21 +7,18 @@
 #include "stm32f10x_it.h"
 #include "math.h"
 
-
-uint8_t offLandFlag = 0;
-
+uint8_t offLandFlag              = 0;
 volatile unsigned char motorLock = 1;
 
+float rollSp     = 0;     /*根据动力分配重新计算得到的期望roll pitch*/
+float pitchSp    = 0;
+float Yaw        = 0;
+float Roll       = 0;
+float Pitch      = 0;
+float Thro       = 0;
 int16_t Motor[4] = {0};   /*定义电机PWM数组，分别对应M1-M4*/
-float rollSp  = 0;        /*根据动力分配重新计算得到的期望roll pitch*/
-float pitchSp = 0;
-float Thro    = 0;
-float Pitch   = 0;
-float Yaw     = 0;
-float Roll    = 0;
 
-
-//----PID结构体实例化----
+/*----PID结构体实例化----*/
 PID_Typedef pitch_rate_PID;  /*pitch角速率环的PID*/
 PID_Typedef pitch_angle_PID; /*pitch角度环的PID*/
 
@@ -45,12 +42,12 @@ float headHold       = 0;
 uint32_t ctrlPrd     = 0;
 uint8_t headFreeMode = 0;
 
-/*函数名：PID_Postion_Cal()*/
+/*函数名：PID_PostionCal()*/
 /*描述：位置式PID*/
-static void PID_Postion_Cal(PID_Typedef * PID, float target, float measure, int32_t dertT)
+static void PID_PostionCal(PID_Typedef * PID, float target, float measure, int32_t dertT)
 {
-    float termI = 0;
     float dt    = dertT / 1000000.0;
+    float termI = 0;
 
     /*误差=期望值-测量值*/
     PID->Error    = target - measure;
@@ -90,16 +87,18 @@ void SetHeadFree(uint8_t on)
     }
 }
 
-/*函数名：CtrlAttiAng(void)*/
+/*函数名：ControlAttiAng(void)*/
 /*描述：对飞行器姿态控制（pitch，roll，yaw）控制中，串级PID中的角度环控制*/
-void CtrlAttiAng(void)
+void ControlAttiAng(void)
 {
-    static uint32_t tPrev = 0;
-    float angTarget[3]    = {0, 0, 0};
-    float dt = 0, t = 0;
-    t = micros();
-    dt = (tPrev > 0) ? (t - tPrev) : 0;
-    tPrev = t;
+    float dt                = 0;
+    float NowTime           = 0;
+    float angTarget[3]      = {0, 0, 0};
+    static uint32_t PreTime = 0;
+
+    NowTime = micros();
+    dt      = (PreTime > 0) ? (NowTime - PreTime) : 0;
+    PreTime = NowTime;
 
     if (altCtrlMode == MANUAL)
     {
@@ -115,9 +114,9 @@ void CtrlAttiAng(void)
     if (headFreeMode)
     {
 #ifdef YAW_CORRECT
-        float radDiff = -(imu.yaw - headHold) * M_PI_F / 180.0f; 
+        float radDiff = -(imu.yaw - headHold) * M_PI_F / 180.0f;
 #else
-        float radDiff = (imu.yaw - headHold) * M_PI_F / 180.0f; 
+        float radDiff = (imu.yaw - headHold) * M_PI_F / 180.0f;
 #endif
         float cosDiff    = cosf(radDiff);
         float sinDiff    = sinf(radDiff);
@@ -126,27 +125,28 @@ void CtrlAttiAng(void)
         angTarget[PITCH] = tarPitFree;
     } 
 
-    PID_Postion_Cal(&pitch_angle_PID, angTarget[PITCH], imu.pitch, dt);
-    PID_Postion_Cal(&roll_angle_PID, angTarget[ROLL], imu.roll, dt);
+    PID_PostionCal(&pitch_angle_PID, angTarget[PITCH], imu.pitch, dt);
+    PID_PostionCal(&roll_angle_PID, angTarget[ROLL], imu.roll, dt);
 }
 
-/*函数名：CtrlAttiRate(void)*/
+/*函数名：ControlAttiRate(void)*/
 /*描述：对飞行器姿态控制（pitch，roll，yaw）控制中，串级PID中的角速度环控制*/
-void CtrlAttiRate(void)
+void ControlAttiRate(void)
 {
-    float yawRateTarget = 0;
-    static uint32_t tPrev = 0;
-    float dt = 0,t = 0;
-    
-    t     = micros();
-    dt    = (tPrev > 0) ? (t - tPrev) : 0;
-    tPrev = t;
+    float dt                = 0;
+    float NowTime           = 0;
+    float yawRateTarget     = 0;
+    static uint32_t PreTime = 0;
+
+    NowTime = micros();
+    dt      = (PreTime > 0) ? (NowTime - PreTime) : 0;
+    PreTime = NowTime;
     yawRateTarget = -(float)NRF_Data.yaw;
 
     /*注意，原来的pid参数，对应的是 ad值,故转之*/
-    PID_Postion_Cal(&pitch_rate_PID, pitch_angle_PID.Output, imu.gyro[PITCH] * 180.0f / M_PI_F, dt);
-    PID_Postion_Cal(&roll_rate_PID, roll_angle_PID.Output, imu.gyro[ROLL] * 180.0f / M_PI_F,dt);  /*gyroxGloble*/
-    PID_Postion_Cal(&yaw_rate_PID, yawRateTarget, imu.gyro[YAW] * 180.0f / M_PI_F,dt);            /*DMP_DATA.GYROz*/
+    PID_PostionCal(&pitch_rate_PID, pitch_angle_PID.Output, imu.gyro[PITCH] * 180.0f / M_PI_F, dt);
+    PID_PostionCal(&roll_rate_PID, roll_angle_PID.Output, imu.gyro[ROLL] * 180.0f / M_PI_F, dt);  /*gyroxGloble*/
+    PID_PostionCal(&yaw_rate_PID, yawRateTarget, imu.gyro[YAW] * 180.0f / M_PI_F, dt);            /*DMP_DATA.GYROz*/
 
     Pitch = pitch_rate_PID.Output;
     Roll  = roll_rate_PID.Output;
@@ -156,8 +156,8 @@ void CtrlAttiRate(void)
 
 #define ALT_FEED_FORWARD  0.5f
 #define THR_MAX           1.0f  /*max thrust*/
-#define ALT_LIMIT         2.0f  /*限高 3.5*/
-#define TILT_MAX          (ANGLE_MAX * M_PI_F / 180.0 )
+#define ALT_LIMIT         2.0f  /*限高3.5*/
+#define TILT_MAX          (ANGLE_MAX * M_PI_F / 180.0)
 
 const float ALT_CTRL_Z_DB = 0.1f;
 
@@ -165,9 +165,9 @@ float thrInit;
 float altLand;
 float spZMoveRate;
 
-uint8_t altCtrlMode;           /*normal=0  CLIMB rate, normal .  tobe tested*/
+uint8_t altCtrlMode;           /*normal = 0  CLIMB rate, normal. to be tested*/
 float hoverThrust   = 0;
-uint8_t zIntReset   = 1;       /*integral reset at first . when change manual mode to climb rate mode*/
+uint8_t zIntReset   = 1;       /*integral reset at first. when change manual mode to climb rate mode*/
 float thrustZInt    = 0;
 float thrustZSp     = 0;
 float thrustXYSp[2] = {0, 0};  /*roll pitch*/
@@ -178,14 +178,14 @@ uint8_t satXY       = 0;       /*是否过饱和*/
 
 uint8_t isAltLimit  = 0;
 
-/*函数名：estimateHoverThru()*/
+/*函数名：EstimateHoverThru()*/
 /*输入：无*/
 /*输出: 预估得到的悬停油门基准值*/
 /*描述：预估悬停油门基准值，直接影响到该飞行器的z轴悬停*/
 /*悬停油门值相关因素有：电池电压*/
 /*Get a estimated value for hold throttle.It will have a direct affection on hover*/
 /*Battery voltage*/
-float estimateHoverThru(void)
+float EstimateHoverThru(void)
 {
     float hoverHru = -0.55f;
 
@@ -217,13 +217,13 @@ float estimateHoverThru(void)
     return hoverHru;
 }
 
-/*函数名：estimateMinThru()*/
+/*函数名：EstimateMinThru()*/
 /*输入：无*/
 /*输出: 预估得到的最小油门值*/
 /*描述：预估最小油门值，根据机重、电池电量而定*/
 /*油门过小，下降速度过大时，导致失衡，例如快速下降时机身晃动厉害。再增加fuzzy control ，在油门小时用更大的姿态参数*/
 /*相关因素有：电池电压*/
-float estimateMinThru(void)
+float EstimateMinThru(void)
 {
     float minThru = -0.55f;
 
@@ -247,12 +247,12 @@ float estimateMinThru(void)
     return minThru;
 }
 
-/*函数名：CtrlAlti()*/
+/*函数名：ControlAlti()*/
 /*输入：无*/
 /*输出: 最终结果输出到全局变量thrustZSp*/
 /*描述：控制高度，也就是高度悬停控制函数*/
 /*only in climb rate mode and landind mode. now we don't work on manual mode*/
-void CtrlAlti(void)
+void ControlAlti(void)
 {
     float manThr          = 0;
     float alt             = 0;
@@ -262,8 +262,8 @@ void CtrlAlti(void)
     float altSpOffset;
     float altSpOffsetMax  = 0;
     float dt              = 0;
-    float t               = 0;
-    static float tPrev    = 0;
+    float NowTime         = 0;
+    static float PreTime  = 0;
     static float velZPrev = 0;
     float posZErr         = 0;
     float velZErr         = 0;
@@ -275,16 +275,16 @@ void CtrlAlti(void)
 
     /*get dt*/
     /*保证dt运算不能被打断，保持更新，否则dt过大，积分爆满*/
-    if (tPrev == 0)
+    if (PreTime == 0)
     {
-        tPrev = micros();
+        PreTime = micros();
         return;
     }
     else
     {
-        t     = micros();
-        dt    = (t-tPrev) /1000000.0f;
-        tPrev = t;
+        NowTime = micros();
+        dt      = (NowTime - PreTime) / 1000000.0f;
+        PreTime = NowTime;
     }
 
     /*only in climb rate mode and landind mode. now we don't work on manual mode*/
@@ -304,7 +304,7 @@ void CtrlAlti(void)
     spZMoveRate = spZMoveRate * ALT_VEL_MAX;                           /*scale to vel min max*/
 
     /*get alt setpoint in CLIMB rate mode*/
-    altSp   = -nav.z;                        /*only alt is not in ned frame.*/
+    altSp   = -nav.z;                                                  /*only alt is not in ned frame.*/
     altSp  -= spZMoveRate * dt;
 
     /*limit alt setpoint*/
@@ -325,7 +325,7 @@ void CtrlAlti(void)
     {
         if (altSp - altLand > ALT_LIMIT)
         {
-            altSp       = altLand + ALT_LIMIT;
+            altSp = altLand + ALT_LIMIT;
             spZMoveRate = 0;
         }
     }
@@ -344,19 +344,19 @@ void CtrlAlti(void)
     /*get hold throttle. give it a estimated value*/
     if (zIntReset)
     {
-        thrustZInt = estimateHoverThru();
+        thrustZInt = EstimateHoverThru();
         zIntReset  = 0;
     }
 
-    velZ     = nav.vz;
-    velZErr  = posZVelSp - velZ;
-    valZErrD = (spZMoveRate - velZ) * alt_PID.P - (velZ - velZPrev) / dt;         /*spZMoveRate is from manual stick vel control*/
-    velZPrev = velZ;
-
+    velZ      = nav.vz;
+    velZErr   = posZVelSp - velZ;
+    valZErrD  = (spZMoveRate - velZ) * alt_PID.P - (velZ - velZPrev) / dt;         /*spZMoveRate is from manual stick vel control*/
+    velZPrev  = velZ;
     thrustZSp = velZErr * alt_vel_PID.P + valZErrD * alt_vel_PID.D + thrustZInt;  /*in ned frame. thrustZInt contains hover thrust*/
 
     /*限制最小下降油门*/
-    minThrust = estimateMinThru();
+    minThrust = EstimateMinThru();
+
     if (altCtrlMode != LANDING)
     {
         if (-thrustZSp < minThrust)
@@ -365,7 +365,7 @@ void CtrlAlti(void)
         }
     }
 
-    /*与动力分配相关	testing*/
+    /*与动力分配相关   testing*/
     satXY = 0;
     satZ  = 0;
     thrustXYSp[0] = sinf(NRF_Data.roll * M_PI_F /180.0f);    /*目标角度转加速度*/
@@ -441,11 +441,11 @@ void CtrlAlti(void)
     }
 }
 
-/*函数名：CtrlMotor()*/
+/*函数名：ControlMotor()*/
 /*输入：无*/
 /*输出: 4个电机的PWM输出*/
 /*描述：输出PWM，控制电机，本函数会被主循环中100Hz循环调用*/
-void CtrlMotor(void)
+void ControlMotor(void)
 {
     float cosTilt = imu.accb[2] / CONSTANTS_ONE_G;
 
@@ -458,7 +458,7 @@ void CtrlMotor(void)
     }
     else
     {
-        Thro = (-thrustZSp) * 1000;  /*/imu.DCMgb[2][2];  //倾角补偿后效果不错，有时过猛*/
+        Thro = (-thrustZSp) * 1000;  /*/imu.DCMgb[2][2]; 倾角补偿后效果不错，有时过猛*/
         if (Thro > 1000)
         {
             Thro = 1000;
@@ -471,7 +471,7 @@ void CtrlMotor(void)
     Motor[3] = (int16_t)(Thro - Pitch + Roll + Yaw );  /*M4*/
     Motor[1] = (int16_t)(Thro + Pitch - Roll + Yaw );  /*M2*/
 
-   	if (FLY_ENABLE != 0)
+    if (FLY_ENABLE != 0)
     {
         PWM_MotorFlash(Motor[0], Motor[1], Motor[2], Motor[3]);
     }

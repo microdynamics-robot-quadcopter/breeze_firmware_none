@@ -694,107 +694,107 @@ Section Cross References
     stm32f10x_algorithm_filter.o(i.LPF2pSetCutOffFreq_6) refers to faddsub_clz.o(x$fpl$fsub) for __aeabi_fsub
     stm32f10x_algorithm_filter.o(i.LPF2pSetCutOffFreq_6) refers to faddsub_clz.o(x$fpl$frsb) for __aeabi_frsub
     stm32f10x_algorithm_filter.o(i.LPF2pSetCutOffFreq_6) refers to stm32f10x_algorithm_filter.o(.data) for _cutoff_freq6
-    stm32f10x_algorithm_control.o(i.CtrlAlti) refers to feqf.o(x$fpl$feqf) for __aeabi_cfcmpeq
-    stm32f10x_algorithm_control.o(i.CtrlAlti) refers to stm32f10x_it.o(i.micros) for micros
-    stm32f10x_algorithm_control.o(i.CtrlAlti) refers to fflt_clz.o(x$fpl$ffltu) for __aeabi_ui2f
-    stm32f10x_algorithm_control.o(i.CtrlAlti) refers to faddsub_clz.o(x$fpl$fsub) for __aeabi_fsub
-    stm32f10x_algorithm_control.o(i.CtrlAlti) refers to fdiv.o(x$fpl$fdiv) for __aeabi_fdiv
-    stm32f10x_algorithm_control.o(i.CtrlAlti) refers to stm32f10x_system_rpdata.o(i.dbScaleLinear) for dbScaleLinear
-    stm32f10x_algorithm_control.o(i.CtrlAlti) refers to fmul.o(x$fpl$fmul) for __aeabi_fmul
-    stm32f10x_algorithm_control.o(i.CtrlAlti) refers to faddsub_clz.o(x$fpl$frsb) for __aeabi_frsub
-    stm32f10x_algorithm_control.o(i.CtrlAlti) refers to frleqf.o(x$fpl$frleqf) for __aeabi_cfrcmple
-    stm32f10x_algorithm_control.o(i.CtrlAlti) refers to faddsub_clz.o(x$fpl$fadd) for __aeabi_fadd
-    stm32f10x_algorithm_control.o(i.CtrlAlti) refers to stm32f10x_algorithm_control.o(i.estimateHoverThru) for estimateHoverThru
-    stm32f10x_algorithm_control.o(i.CtrlAlti) refers to stm32f10x_algorithm_control.o(i.estimateMinThru) for estimateMinThru
-    stm32f10x_algorithm_control.o(i.CtrlAlti) refers to fleqf.o(x$fpl$fleqf) for __aeabi_cfcmple
-    stm32f10x_algorithm_control.o(i.CtrlAlti) refers to f2d.o(x$fpl$f2d) for __aeabi_f2d
-    stm32f10x_algorithm_control.o(i.CtrlAlti) refers to dmul.o(x$fpl$dmul) for __aeabi_dmul
-    stm32f10x_algorithm_control.o(i.CtrlAlti) refers to ddiv.o(x$fpl$ddiv) for __aeabi_ddiv
-    stm32f10x_algorithm_control.o(i.CtrlAlti) refers to d2f.o(x$fpl$d2f) for __aeabi_d2f
-    stm32f10x_algorithm_control.o(i.CtrlAlti) refers to sinf.o(i.sinf) for sinf
-    stm32f10x_algorithm_control.o(i.CtrlAlti) refers to sqrtf.o(i.sqrtf) for sqrtf
-    stm32f10x_algorithm_control.o(i.CtrlAlti) refers to tanf.o(i.tanf) for tanf
-    stm32f10x_algorithm_control.o(i.CtrlAlti) refers to stm32f10x_algorithm_control.o(.data) for tPrev
-    stm32f10x_algorithm_control.o(i.CtrlAlti) refers to stm32f10x_system_rpdata.o(.data) for FLY_ENABLE
-    stm32f10x_algorithm_control.o(i.CtrlAlti) refers to stm32f10x_algorithm_bar.o(.bss) for nav
-    stm32f10x_algorithm_control.o(i.CtrlAlti) refers to stm32f10x_system_rpdata.o(.bss) for NRF_Data
-    stm32f10x_algorithm_control.o(i.CtrlAlti) refers to stm32f10x_algorithm_control.o(.bss) for alt_PID
-    stm32f10x_algorithm_control.o(i.CtrlAlti) refers to asinf.o(i.asinf) for asinf
-    stm32f10x_algorithm_control.o(i.CtrlAttiAng) refers to stm32f10x_it.o(i.micros) for micros
-    stm32f10x_algorithm_control.o(i.CtrlAttiAng) refers to fflt_clz.o(x$fpl$ffltu) for __aeabi_ui2f
-    stm32f10x_algorithm_control.o(i.CtrlAttiAng) refers to faddsub_clz.o(x$fpl$frsb) for __aeabi_frsub
-    stm32f10x_algorithm_control.o(i.CtrlAttiAng) refers to ffixu.o(x$fpl$ffixu) for __aeabi_f2uiz
-    stm32f10x_algorithm_control.o(i.CtrlAttiAng) refers to faddsub_clz.o(x$fpl$fsub) for __aeabi_fsub
-    stm32f10x_algorithm_control.o(i.CtrlAttiAng) refers to f2d.o(x$fpl$f2d) for __aeabi_f2d
-    stm32f10x_algorithm_control.o(i.CtrlAttiAng) refers to dmul.o(x$fpl$dmul) for __aeabi_dmul
-    stm32f10x_algorithm_control.o(i.CtrlAttiAng) refers to ddiv.o(x$fpl$ddiv) for __aeabi_ddiv
-    stm32f10x_algorithm_control.o(i.CtrlAttiAng) refers to d2f.o(x$fpl$d2f) for __aeabi_d2f
-    stm32f10x_algorithm_control.o(i.CtrlAttiAng) refers to cosf.o(i.cosf) for cosf
-    stm32f10x_algorithm_control.o(i.CtrlAttiAng) refers to sinf.o(i.sinf) for sinf
-    stm32f10x_algorithm_control.o(i.CtrlAttiAng) refers to fmul.o(x$fpl$fmul) for __aeabi_fmul
-    stm32f10x_algorithm_control.o(i.CtrlAttiAng) refers to faddsub_clz.o(x$fpl$fadd) for __aeabi_fadd
-    stm32f10x_algorithm_control.o(i.CtrlAttiAng) refers to ffix.o(x$fpl$ffix) for __aeabi_f2iz
-    stm32f10x_algorithm_control.o(i.CtrlAttiAng) refers to stm32f10x_algorithm_control.o(i.PID_Postion_Cal) for PID_Postion_Cal
-    stm32f10x_algorithm_control.o(i.CtrlAttiAng) refers to stm32f10x_algorithm_control.o(.data) for tPrev
-    stm32f10x_algorithm_control.o(i.CtrlAttiAng) refers to stm32f10x_system_rpdata.o(.bss) for NRF_Data
-    stm32f10x_algorithm_control.o(i.CtrlAttiAng) refers to stm32f10x_algorithm_imu.o(.bss) for imu
-    stm32f10x_algorithm_control.o(i.CtrlAttiAng) refers to stm32f10x_algorithm_control.o(.bss) for pitch_angle_PID
-    stm32f10x_algorithm_control.o(i.CtrlAttiRate) refers to stm32f10x_it.o(i.micros) for micros
-    stm32f10x_algorithm_control.o(i.CtrlAttiRate) refers to fflt_clz.o(x$fpl$ffltu) for __aeabi_ui2f
-    stm32f10x_algorithm_control.o(i.CtrlAttiRate) refers to faddsub_clz.o(x$fpl$frsb) for __aeabi_frsub
-    stm32f10x_algorithm_control.o(i.CtrlAttiRate) refers to ffixu.o(x$fpl$ffixu) for __aeabi_f2uiz
-    stm32f10x_algorithm_control.o(i.CtrlAttiRate) refers to ffix.o(x$fpl$ffix) for __aeabi_f2iz
-    stm32f10x_algorithm_control.o(i.CtrlAttiRate) refers to fmul.o(x$fpl$fmul) for __aeabi_fmul
-    stm32f10x_algorithm_control.o(i.CtrlAttiRate) refers to f2d.o(x$fpl$f2d) for __aeabi_f2d
-    stm32f10x_algorithm_control.o(i.CtrlAttiRate) refers to ddiv.o(x$fpl$ddiv) for __aeabi_ddiv
-    stm32f10x_algorithm_control.o(i.CtrlAttiRate) refers to d2f.o(x$fpl$d2f) for __aeabi_d2f
-    stm32f10x_algorithm_control.o(i.CtrlAttiRate) refers to stm32f10x_algorithm_control.o(i.PID_Postion_Cal) for PID_Postion_Cal
-    stm32f10x_algorithm_control.o(i.CtrlAttiRate) refers to stm32f10x_algorithm_control.o(.data) for tPrev
-    stm32f10x_algorithm_control.o(i.CtrlAttiRate) refers to stm32f10x_system_rpdata.o(.bss) for NRF_Data
-    stm32f10x_algorithm_control.o(i.CtrlAttiRate) refers to stm32f10x_algorithm_imu.o(.bss) for imu
-    stm32f10x_algorithm_control.o(i.CtrlAttiRate) refers to stm32f10x_algorithm_control.o(.bss) for pitch_angle_PID
-    stm32f10x_algorithm_control.o(i.CtrlMotor) refers to fdiv.o(x$fpl$fdiv) for __aeabi_fdiv
-    stm32f10x_algorithm_control.o(i.CtrlMotor) refers to faddsub_clz.o(x$fpl$fsub) for __aeabi_fsub
-    stm32f10x_algorithm_control.o(i.CtrlMotor) refers to fmul.o(x$fpl$fmul) for __aeabi_fmul
-    stm32f10x_algorithm_control.o(i.CtrlMotor) refers to frleqf.o(x$fpl$frleqf) for __aeabi_cfrcmple
-    stm32f10x_algorithm_control.o(i.CtrlMotor) refers to ffix.o(x$fpl$ffix) for __aeabi_f2iz
-    stm32f10x_algorithm_control.o(i.CtrlMotor) refers to faddsub_clz.o(x$fpl$fadd) for __aeabi_fadd
-    stm32f10x_algorithm_control.o(i.CtrlMotor) refers to stm32f10x_driver_pwm.o(i.PWM_MotorFlash) for PWM_MotorFlash
-    stm32f10x_algorithm_control.o(i.CtrlMotor) refers to stm32f10x_algorithm_imu.o(.bss) for imu
-    stm32f10x_algorithm_control.o(i.CtrlMotor) refers to stm32f10x_algorithm_control.o(.data) for altCtrlMode
-    stm32f10x_algorithm_control.o(i.CtrlMotor) refers to stm32f10x_algorithm_control.o(.bss) for DIF_ACC
-    stm32f10x_algorithm_control.o(i.CtrlMotor) refers to stm32f10x_system_rpdata.o(.bss) for NRF_Data
-    stm32f10x_algorithm_control.o(i.CtrlMotor) refers to stm32f10x_system_rpdata.o(.data) for FLY_ENABLE
-    stm32f10x_algorithm_control.o(i.PID_Postion_Cal) refers to dflt_clz.o(x$fpl$dflt) for __aeabi_i2d
-    stm32f10x_algorithm_control.o(i.PID_Postion_Cal) refers to ddiv.o(x$fpl$ddiv) for __aeabi_ddiv
-    stm32f10x_algorithm_control.o(i.PID_Postion_Cal) refers to d2f.o(x$fpl$d2f) for __aeabi_d2f
-    stm32f10x_algorithm_control.o(i.PID_Postion_Cal) refers to faddsub_clz.o(x$fpl$fsub) for __aeabi_fsub
-    stm32f10x_algorithm_control.o(i.PID_Postion_Cal) refers to fdiv.o(x$fpl$fdiv) for __aeabi_fdiv
-    stm32f10x_algorithm_control.o(i.PID_Postion_Cal) refers to fmul.o(x$fpl$fmul) for __aeabi_fmul
-    stm32f10x_algorithm_control.o(i.PID_Postion_Cal) refers to faddsub_clz.o(x$fpl$fadd) for __aeabi_fadd
-    stm32f10x_algorithm_control.o(i.PID_Postion_Cal) refers to f2d.o(x$fpl$f2d) for __aeabi_f2d
-    stm32f10x_algorithm_control.o(i.PID_Postion_Cal) refers to dleqf.o(x$fpl$dleqf) for __aeabi_cdcmple
-    stm32f10x_algorithm_control.o(i.PID_Postion_Cal) refers to fleqf.o(x$fpl$fleqf) for __aeabi_cfcmple
-    stm32f10x_algorithm_control.o(i.PID_Postion_Cal) refers to stm32f10x_system_rpdata.o(.data) for FLY_ENABLE
-    stm32f10x_algorithm_control.o(i.PID_Postion_Cal) refers to stm32f10x_algorithm_control.o(.data) for offLandFlag
+    stm32f10x_algorithm_control.o(i.ControlAlti) refers to feqf.o(x$fpl$feqf) for __aeabi_cfcmpeq
+    stm32f10x_algorithm_control.o(i.ControlAlti) refers to stm32f10x_it.o(i.micros) for micros
+    stm32f10x_algorithm_control.o(i.ControlAlti) refers to fflt_clz.o(x$fpl$ffltu) for __aeabi_ui2f
+    stm32f10x_algorithm_control.o(i.ControlAlti) refers to faddsub_clz.o(x$fpl$fsub) for __aeabi_fsub
+    stm32f10x_algorithm_control.o(i.ControlAlti) refers to fdiv.o(x$fpl$fdiv) for __aeabi_fdiv
+    stm32f10x_algorithm_control.o(i.ControlAlti) refers to stm32f10x_system_rpdata.o(i.dbScaleLinear) for dbScaleLinear
+    stm32f10x_algorithm_control.o(i.ControlAlti) refers to fmul.o(x$fpl$fmul) for __aeabi_fmul
+    stm32f10x_algorithm_control.o(i.ControlAlti) refers to faddsub_clz.o(x$fpl$frsb) for __aeabi_frsub
+    stm32f10x_algorithm_control.o(i.ControlAlti) refers to frleqf.o(x$fpl$frleqf) for __aeabi_cfrcmple
+    stm32f10x_algorithm_control.o(i.ControlAlti) refers to faddsub_clz.o(x$fpl$fadd) for __aeabi_fadd
+    stm32f10x_algorithm_control.o(i.ControlAlti) refers to stm32f10x_algorithm_control.o(i.EstimateHoverThru) for EstimateHoverThru
+    stm32f10x_algorithm_control.o(i.ControlAlti) refers to stm32f10x_algorithm_control.o(i.EstimateMinThru) for EstimateMinThru
+    stm32f10x_algorithm_control.o(i.ControlAlti) refers to fleqf.o(x$fpl$fleqf) for __aeabi_cfcmple
+    stm32f10x_algorithm_control.o(i.ControlAlti) refers to f2d.o(x$fpl$f2d) for __aeabi_f2d
+    stm32f10x_algorithm_control.o(i.ControlAlti) refers to dmul.o(x$fpl$dmul) for __aeabi_dmul
+    stm32f10x_algorithm_control.o(i.ControlAlti) refers to ddiv.o(x$fpl$ddiv) for __aeabi_ddiv
+    stm32f10x_algorithm_control.o(i.ControlAlti) refers to d2f.o(x$fpl$d2f) for __aeabi_d2f
+    stm32f10x_algorithm_control.o(i.ControlAlti) refers to sinf.o(i.sinf) for sinf
+    stm32f10x_algorithm_control.o(i.ControlAlti) refers to sqrtf.o(i.sqrtf) for sqrtf
+    stm32f10x_algorithm_control.o(i.ControlAlti) refers to tanf.o(i.tanf) for tanf
+    stm32f10x_algorithm_control.o(i.ControlAlti) refers to stm32f10x_algorithm_control.o(.data) for PreTime
+    stm32f10x_algorithm_control.o(i.ControlAlti) refers to stm32f10x_system_rpdata.o(.data) for FLY_ENABLE
+    stm32f10x_algorithm_control.o(i.ControlAlti) refers to stm32f10x_algorithm_bar.o(.bss) for nav
+    stm32f10x_algorithm_control.o(i.ControlAlti) refers to stm32f10x_system_rpdata.o(.bss) for NRF_Data
+    stm32f10x_algorithm_control.o(i.ControlAlti) refers to stm32f10x_algorithm_control.o(.bss) for alt_PID
+    stm32f10x_algorithm_control.o(i.ControlAlti) refers to asinf.o(i.asinf) for asinf
+    stm32f10x_algorithm_control.o(i.ControlAttiAng) refers to stm32f10x_it.o(i.micros) for micros
+    stm32f10x_algorithm_control.o(i.ControlAttiAng) refers to fflt_clz.o(x$fpl$ffltu) for __aeabi_ui2f
+    stm32f10x_algorithm_control.o(i.ControlAttiAng) refers to faddsub_clz.o(x$fpl$frsb) for __aeabi_frsub
+    stm32f10x_algorithm_control.o(i.ControlAttiAng) refers to ffixu.o(x$fpl$ffixu) for __aeabi_f2uiz
+    stm32f10x_algorithm_control.o(i.ControlAttiAng) refers to faddsub_clz.o(x$fpl$fsub) for __aeabi_fsub
+    stm32f10x_algorithm_control.o(i.ControlAttiAng) refers to f2d.o(x$fpl$f2d) for __aeabi_f2d
+    stm32f10x_algorithm_control.o(i.ControlAttiAng) refers to dmul.o(x$fpl$dmul) for __aeabi_dmul
+    stm32f10x_algorithm_control.o(i.ControlAttiAng) refers to ddiv.o(x$fpl$ddiv) for __aeabi_ddiv
+    stm32f10x_algorithm_control.o(i.ControlAttiAng) refers to d2f.o(x$fpl$d2f) for __aeabi_d2f
+    stm32f10x_algorithm_control.o(i.ControlAttiAng) refers to cosf.o(i.cosf) for cosf
+    stm32f10x_algorithm_control.o(i.ControlAttiAng) refers to sinf.o(i.sinf) for sinf
+    stm32f10x_algorithm_control.o(i.ControlAttiAng) refers to fmul.o(x$fpl$fmul) for __aeabi_fmul
+    stm32f10x_algorithm_control.o(i.ControlAttiAng) refers to faddsub_clz.o(x$fpl$fadd) for __aeabi_fadd
+    stm32f10x_algorithm_control.o(i.ControlAttiAng) refers to ffix.o(x$fpl$ffix) for __aeabi_f2iz
+    stm32f10x_algorithm_control.o(i.ControlAttiAng) refers to stm32f10x_algorithm_control.o(i.PID_PostionCal) for PID_PostionCal
+    stm32f10x_algorithm_control.o(i.ControlAttiAng) refers to stm32f10x_algorithm_control.o(.data) for PreTime
+    stm32f10x_algorithm_control.o(i.ControlAttiAng) refers to stm32f10x_system_rpdata.o(.bss) for NRF_Data
+    stm32f10x_algorithm_control.o(i.ControlAttiAng) refers to stm32f10x_algorithm_imu.o(.bss) for imu
+    stm32f10x_algorithm_control.o(i.ControlAttiAng) refers to stm32f10x_algorithm_control.o(.bss) for pitch_angle_PID
+    stm32f10x_algorithm_control.o(i.ControlAttiRate) refers to stm32f10x_it.o(i.micros) for micros
+    stm32f10x_algorithm_control.o(i.ControlAttiRate) refers to fflt_clz.o(x$fpl$ffltu) for __aeabi_ui2f
+    stm32f10x_algorithm_control.o(i.ControlAttiRate) refers to faddsub_clz.o(x$fpl$frsb) for __aeabi_frsub
+    stm32f10x_algorithm_control.o(i.ControlAttiRate) refers to ffixu.o(x$fpl$ffixu) for __aeabi_f2uiz
+    stm32f10x_algorithm_control.o(i.ControlAttiRate) refers to ffix.o(x$fpl$ffix) for __aeabi_f2iz
+    stm32f10x_algorithm_control.o(i.ControlAttiRate) refers to fmul.o(x$fpl$fmul) for __aeabi_fmul
+    stm32f10x_algorithm_control.o(i.ControlAttiRate) refers to f2d.o(x$fpl$f2d) for __aeabi_f2d
+    stm32f10x_algorithm_control.o(i.ControlAttiRate) refers to ddiv.o(x$fpl$ddiv) for __aeabi_ddiv
+    stm32f10x_algorithm_control.o(i.ControlAttiRate) refers to d2f.o(x$fpl$d2f) for __aeabi_d2f
+    stm32f10x_algorithm_control.o(i.ControlAttiRate) refers to stm32f10x_algorithm_control.o(i.PID_PostionCal) for PID_PostionCal
+    stm32f10x_algorithm_control.o(i.ControlAttiRate) refers to stm32f10x_algorithm_control.o(.data) for PreTime
+    stm32f10x_algorithm_control.o(i.ControlAttiRate) refers to stm32f10x_system_rpdata.o(.bss) for NRF_Data
+    stm32f10x_algorithm_control.o(i.ControlAttiRate) refers to stm32f10x_algorithm_imu.o(.bss) for imu
+    stm32f10x_algorithm_control.o(i.ControlAttiRate) refers to stm32f10x_algorithm_control.o(.bss) for pitch_angle_PID
+    stm32f10x_algorithm_control.o(i.ControlMotor) refers to fdiv.o(x$fpl$fdiv) for __aeabi_fdiv
+    stm32f10x_algorithm_control.o(i.ControlMotor) refers to faddsub_clz.o(x$fpl$fsub) for __aeabi_fsub
+    stm32f10x_algorithm_control.o(i.ControlMotor) refers to fmul.o(x$fpl$fmul) for __aeabi_fmul
+    stm32f10x_algorithm_control.o(i.ControlMotor) refers to frleqf.o(x$fpl$frleqf) for __aeabi_cfrcmple
+    stm32f10x_algorithm_control.o(i.ControlMotor) refers to ffix.o(x$fpl$ffix) for __aeabi_f2iz
+    stm32f10x_algorithm_control.o(i.ControlMotor) refers to faddsub_clz.o(x$fpl$fadd) for __aeabi_fadd
+    stm32f10x_algorithm_control.o(i.ControlMotor) refers to stm32f10x_driver_pwm.o(i.PWM_MotorFlash) for PWM_MotorFlash
+    stm32f10x_algorithm_control.o(i.ControlMotor) refers to stm32f10x_algorithm_imu.o(.bss) for imu
+    stm32f10x_algorithm_control.o(i.ControlMotor) refers to stm32f10x_algorithm_control.o(.data) for altCtrlMode
+    stm32f10x_algorithm_control.o(i.ControlMotor) refers to stm32f10x_algorithm_control.o(.bss) for DIF_ACC
+    stm32f10x_algorithm_control.o(i.ControlMotor) refers to stm32f10x_system_rpdata.o(.bss) for NRF_Data
+    stm32f10x_algorithm_control.o(i.ControlMotor) refers to stm32f10x_system_rpdata.o(.data) for FLY_ENABLE
+    stm32f10x_algorithm_control.o(i.EstimateHoverThru) refers to stm32f10x_system_battery.o(i.Get_Battery_AD) for Get_Battery_AD
+    stm32f10x_algorithm_control.o(i.EstimateHoverThru) refers to f2d.o(x$fpl$f2d) for __aeabi_f2d
+    stm32f10x_algorithm_control.o(i.EstimateHoverThru) refers to dflt_clz.o(x$fpl$dflt) for __aeabi_i2d
+    stm32f10x_algorithm_control.o(i.EstimateHoverThru) refers to ddiv.o(x$fpl$ddiv) for __aeabi_ddiv
+    stm32f10x_algorithm_control.o(i.EstimateHoverThru) refers to dmul.o(x$fpl$dmul) for __aeabi_dmul
+    stm32f10x_algorithm_control.o(i.EstimateHoverThru) refers to d2f.o(x$fpl$d2f) for __aeabi_d2f
+    stm32f10x_algorithm_control.o(i.EstimateHoverThru) refers to drleqf.o(x$fpl$drleqf) for __aeabi_cdrcmple
+    stm32f10x_algorithm_control.o(i.EstimateHoverThru) refers to stm32f10x_system_battery.o(.bss) for Battery
+    stm32f10x_algorithm_control.o(i.EstimateMinThru) refers to stm32f10x_system_battery.o(i.Get_Battery_AD) for Get_Battery_AD
+    stm32f10x_algorithm_control.o(i.EstimateMinThru) refers to f2d.o(x$fpl$f2d) for __aeabi_f2d
+    stm32f10x_algorithm_control.o(i.EstimateMinThru) refers to dflt_clz.o(x$fpl$dflt) for __aeabi_i2d
+    stm32f10x_algorithm_control.o(i.EstimateMinThru) refers to ddiv.o(x$fpl$ddiv) for __aeabi_ddiv
+    stm32f10x_algorithm_control.o(i.EstimateMinThru) refers to dmul.o(x$fpl$dmul) for __aeabi_dmul
+    stm32f10x_algorithm_control.o(i.EstimateMinThru) refers to d2f.o(x$fpl$d2f) for __aeabi_d2f
+    stm32f10x_algorithm_control.o(i.EstimateMinThru) refers to drleqf.o(x$fpl$drleqf) for __aeabi_cdrcmple
+    stm32f10x_algorithm_control.o(i.EstimateMinThru) refers to stm32f10x_system_battery.o(.bss) for Battery
+    stm32f10x_algorithm_control.o(i.PID_PostionCal) refers to dflt_clz.o(x$fpl$dflt) for __aeabi_i2d
+    stm32f10x_algorithm_control.o(i.PID_PostionCal) refers to ddiv.o(x$fpl$ddiv) for __aeabi_ddiv
+    stm32f10x_algorithm_control.o(i.PID_PostionCal) refers to d2f.o(x$fpl$d2f) for __aeabi_d2f
+    stm32f10x_algorithm_control.o(i.PID_PostionCal) refers to faddsub_clz.o(x$fpl$fsub) for __aeabi_fsub
+    stm32f10x_algorithm_control.o(i.PID_PostionCal) refers to fdiv.o(x$fpl$fdiv) for __aeabi_fdiv
+    stm32f10x_algorithm_control.o(i.PID_PostionCal) refers to fmul.o(x$fpl$fmul) for __aeabi_fmul
+    stm32f10x_algorithm_control.o(i.PID_PostionCal) refers to faddsub_clz.o(x$fpl$fadd) for __aeabi_fadd
+    stm32f10x_algorithm_control.o(i.PID_PostionCal) refers to f2d.o(x$fpl$f2d) for __aeabi_f2d
+    stm32f10x_algorithm_control.o(i.PID_PostionCal) refers to dleqf.o(x$fpl$dleqf) for __aeabi_cdcmple
+    stm32f10x_algorithm_control.o(i.PID_PostionCal) refers to fleqf.o(x$fpl$fleqf) for __aeabi_cfcmple
+    stm32f10x_algorithm_control.o(i.PID_PostionCal) refers to stm32f10x_system_rpdata.o(.data) for FLY_ENABLE
+    stm32f10x_algorithm_control.o(i.PID_PostionCal) refers to stm32f10x_algorithm_control.o(.data) for offLandFlag
     stm32f10x_algorithm_control.o(i.SetHeadFree) refers to stm32f10x_algorithm_imu.o(.bss) for imu
     stm32f10x_algorithm_control.o(i.SetHeadFree) refers to stm32f10x_algorithm_control.o(.data) for headHold
-    stm32f10x_algorithm_control.o(i.estimateHoverThru) refers to stm32f10x_system_battery.o(i.Get_Battery_AD) for Get_Battery_AD
-    stm32f10x_algorithm_control.o(i.estimateHoverThru) refers to f2d.o(x$fpl$f2d) for __aeabi_f2d
-    stm32f10x_algorithm_control.o(i.estimateHoverThru) refers to dflt_clz.o(x$fpl$dflt) for __aeabi_i2d
-    stm32f10x_algorithm_control.o(i.estimateHoverThru) refers to ddiv.o(x$fpl$ddiv) for __aeabi_ddiv
-    stm32f10x_algorithm_control.o(i.estimateHoverThru) refers to dmul.o(x$fpl$dmul) for __aeabi_dmul
-    stm32f10x_algorithm_control.o(i.estimateHoverThru) refers to d2f.o(x$fpl$d2f) for __aeabi_d2f
-    stm32f10x_algorithm_control.o(i.estimateHoverThru) refers to drleqf.o(x$fpl$drleqf) for __aeabi_cdrcmple
-    stm32f10x_algorithm_control.o(i.estimateHoverThru) refers to stm32f10x_system_battery.o(.bss) for Battery
-    stm32f10x_algorithm_control.o(i.estimateMinThru) refers to stm32f10x_system_battery.o(i.Get_Battery_AD) for Get_Battery_AD
-    stm32f10x_algorithm_control.o(i.estimateMinThru) refers to f2d.o(x$fpl$f2d) for __aeabi_f2d
-    stm32f10x_algorithm_control.o(i.estimateMinThru) refers to dflt_clz.o(x$fpl$dflt) for __aeabi_i2d
-    stm32f10x_algorithm_control.o(i.estimateMinThru) refers to ddiv.o(x$fpl$ddiv) for __aeabi_ddiv
-    stm32f10x_algorithm_control.o(i.estimateMinThru) refers to dmul.o(x$fpl$dmul) for __aeabi_dmul
-    stm32f10x_algorithm_control.o(i.estimateMinThru) refers to d2f.o(x$fpl$d2f) for __aeabi_d2f
-    stm32f10x_algorithm_control.o(i.estimateMinThru) refers to drleqf.o(x$fpl$drleqf) for __aeabi_cdrcmple
-    stm32f10x_algorithm_control.o(i.estimateMinThru) refers to stm32f10x_system_battery.o(.bss) for Battery
     use_no_semi_2.o(.text) refers (Special) to use_no_semi.o(.text) for __use_no_semihosting_swi
     llsdiv.o(.text) refers to lludivv7m.o(.text) for __aeabi_uldivmod
     __2printf.o(.text) refers to _printf_char_file.o(.text) for _printf_char_file
@@ -1859,14 +1859,14 @@ Removing Unused input sections from the image.
     Removing stm32f10x_algorithm_filter.o(i.LPF2pSetCutOffFreq_5), (316 bytes).
     Removing stm32f10x_algorithm_filter.o(i.LPF2pSetCutOffFreq_6), (316 bytes).
     Removing stm32f10x_algorithm_filter.o(.data), (192 bytes).
-    Removing stm32f10x_algorithm_control.o(i.CtrlAlti), (1412 bytes).
-    Removing stm32f10x_algorithm_control.o(i.CtrlAttiAng), (348 bytes).
-    Removing stm32f10x_algorithm_control.o(i.CtrlAttiRate), (320 bytes).
-    Removing stm32f10x_algorithm_control.o(i.CtrlMotor), (396 bytes).
-    Removing stm32f10x_algorithm_control.o(i.PID_Postion_Cal), (268 bytes).
+    Removing stm32f10x_algorithm_control.o(i.ControlAlti), (1412 bytes).
+    Removing stm32f10x_algorithm_control.o(i.ControlAttiAng), (348 bytes).
+    Removing stm32f10x_algorithm_control.o(i.ControlAttiRate), (320 bytes).
+    Removing stm32f10x_algorithm_control.o(i.ControlMotor), (396 bytes).
+    Removing stm32f10x_algorithm_control.o(i.EstimateHoverThru), (256 bytes).
+    Removing stm32f10x_algorithm_control.o(i.EstimateMinThru), (184 bytes).
+    Removing stm32f10x_algorithm_control.o(i.PID_PostionCal), (268 bytes).
     Removing stm32f10x_algorithm_control.o(i.SetHeadFree), (44 bytes).
-    Removing stm32f10x_algorithm_control.o(i.estimateHoverThru), (256 bytes).
-    Removing stm32f10x_algorithm_control.o(i.estimateMinThru), (184 bytes).
     Removing stm32f10x_algorithm_control.o(.constdata), (4 bytes).
     Removing stm32f10x_algorithm_control.o(.data), (124 bytes).
     Removing stm32f10x_algorithm_filter.o(i.__ARM_isinff), (20 bytes).

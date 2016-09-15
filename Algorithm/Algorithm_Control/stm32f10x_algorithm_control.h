@@ -3,7 +3,6 @@
 
 #include "stm32f10x.h"
 
-
 #define  SLOW_THRO     200              /*怠速转速*/
 #define  ANGLE_MAX     40.0             /*定义飞机最大倾斜角度*/
 #define  YAW_RATE_MAX  180.0f / M_PI_F  /*deg/s*/
@@ -18,12 +17,14 @@
 #define YAW_CORRECT
 
 enum {CLIMB_RATE = 0, MANUAL, LANDING};
-extern uint8_t altCtrlMode;
-extern float   hoverThrust;
+
 extern uint8_t zIntReset;
-extern uint8_t offLandFlag;
-extern float   altLand;
 extern uint8_t isAltLimit;
+extern uint8_t altCtrlMode;
+extern uint8_t offLandFlag;
+
+extern float   hoverThrust;
+extern float   altLand;
 extern float   thrustZSp;
 extern float   thrustZInt;
 
@@ -86,30 +87,25 @@ typedef struct float_angle
     float Yaw;
 }S_FLOAT_ANGLE;
 
-extern S_FLOAT_XYZ ACC_F, GYRO_F;      /*当次转换结果ACC单位为G,GYRO单位为度/秒*/
+extern S_FLOAT_XYZ ACC_F;
+extern S_FLOAT_XYZ GYRO_F;             /*当次转换结果ACC单位为G,GYRO单位为度/秒*/
 extern S_FLOAT_XYZ GYRO_I[3];          /*陀螺仪积分*/
 extern S_FLOAT_XYZ DIF_ACC;            /*差分加速度*/
 extern S_FLOAT_XYZ EXP_ANGLE;          /*期望角度*/
 extern S_FLOAT_XYZ DIF_ANGLE;          /*期望角度与实际角度差*/
 extern S_FLOAT_ANGLE Q_ANGLE;          /*四元数计算出的角度*/
-extern S_INT16_XYZ ACC_AVG, GYRO_AVG;  /*滑动窗口滤波后的ACC平均值和处理后的gyro值*/
-
-extern void Controler(void);
-extern void PID_INIT(void);
-extern void PID_Calculate(void);
-static void PID_Postion_Cal(PID_Typedef * PID,float target,float measure,int32_t dertT);
-
-extern void CtrlAttiAng(void);
-extern void CtrlAttiRate(void);
-extern void CtrlAlti(void);
-extern void CtrlAltiVel(void);
-extern void CtrlMotor(void);
-extern void CtrlTest(void);
-extern void CtrlAttiRateNew(void);
-extern void CtrlAttiNew(void);
-extern float estimateHoverThru(void);
+extern S_INT16_XYZ ACC_AVG;
+extern S_INT16_XYZ GYRO_AVG;           /*滑动窗口滤波后的ACC平均值和处理后的gyro值*/
 
 extern void SetHeadFree(uint8_t on);
+static void PID_PostionCal(PID_Typedef * PID, float target, float measure, int32_t dertT);
+
+extern void ControlAttiAng(void);
+extern void ControlAttiRate(void);
+extern void ControlAlti(void);
+extern void ControlMotor(void);
+extern float EstimateMinThru(void);
+extern float EstimateHoverThru(void);
 
 extern u16 PIDWriteBuf[3];           /*写入flash的临时数字，由NRF24L01_RXDATA[i]赋值*/
 

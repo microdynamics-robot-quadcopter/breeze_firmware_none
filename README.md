@@ -1,2 +1,2 @@
 # breeze_firmware_none
-TIM4用来设置与主控制过程相关的中断处理
+This is the flight control source code of breeze mini quadcopter, and the suffix none means no real-time operating system used.

@@ -37,3 +37,8 @@
 *.htm
 *.dep
 *.axf
+*.d
+*.lnp
+*.sct
+*.map
+*.lst

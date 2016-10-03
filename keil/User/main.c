@@ -28,7 +28,7 @@ int main(void)
 //    u8 i;
 //    u16 time = 0;
     Hardware_Init();   
-    //PWM_MotorFlash(200, 200, 200, 200);
+//    PWM_MotorFlash(200, 200, 200, 200);
    
     while (1)
     {

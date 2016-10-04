@@ -23,8 +23,7 @@ void LPF2pSetCutOffFreq_1(float sample_freq, float cutoff_freq)
     c   = 1.0f + 2.0f * cosf(M_PI_F / 4.0f) * ohm + ohm * ohm;
 
     _cutoff_freq1 = cutoff_freq;
-
-    if (_cutoff_freq1 > 0.0f) 
+    if (_cutoff_freq1 > 0.0f)
     {
         _b01 = ohm * ohm / c;
         _b11 = 2.0f * _b01;
@@ -46,7 +45,7 @@ float LPF2pApply_1(float sample)
     else
     {
         delay_element_0 = sample - _delay_element_11 * _a11 - _delay_element_21 * _a21;
-        
+
         /*do the filtering*/
         if (isnan(delay_element_0) || isinf(delay_element_0))
         {
@@ -82,7 +81,6 @@ void LPF2pSetCutOffFreq_2(float sample_freq, float cutoff_freq)
     c   = 1.0f + 2.0f * cosf(M_PI_F / 4.0f) * ohm + ohm * ohm;
 
     _cutoff_freq2 = cutoff_freq;
-
     if (_cutoff_freq2 > 0.0f)
     {
         _b02 = ohm * ohm / c;
@@ -105,7 +103,7 @@ float LPF2pApply_2(float sample)
     else
     {
         delay_element_0 = sample - _delay_element_12 * _a12 - _delay_element_22 * _a22;
-        
+
         /*do the filtering*/
         if (isnan(delay_element_0) || isinf(delay_element_0))
         {
@@ -132,7 +130,7 @@ static float  _delay_element_23;  /*buffered sample -2*/
 
 void LPF2pSetCutOffFreq_3(float sample_freq, float cutoff_freq)
 {
-    float fr  = 0;  
+    float fr  = 0;
     float ohm = 0;
     float c   = 0;
 
@@ -141,7 +139,6 @@ void LPF2pSetCutOffFreq_3(float sample_freq, float cutoff_freq)
     c   = 1.0f + 2.0f * cosf(M_PI_F / 4.0f) * ohm + ohm * ohm;
 
     _cutoff_freq3 = cutoff_freq;
-    
     if (_cutoff_freq3 > 0.0f) 
     {
         _b03 = ohm * ohm / c;
@@ -164,7 +161,7 @@ float LPF2pApply_3(float sample)
     else
     {
         delay_element_0 = sample - _delay_element_13 * _a13 - _delay_element_23 * _a23;
-        
+
         /*do the filtering*/
         if (isnan(delay_element_0) || isinf(delay_element_0))
         {
@@ -201,7 +198,6 @@ void LPF2pSetCutOffFreq_4(float sample_freq, float cutoff_freq)
     c   = 1.0f + 2.0f * cosf(M_PI_F / 4.0f) * ohm + ohm * ohm;
 
     _cutoff_freq4 = cutoff_freq;
-
     if (_cutoff_freq4 > 0.0f)
     {
         _b04 = ohm * ohm / c;
@@ -224,7 +220,7 @@ float LPF2pApply_4(float sample)
     else
     {
         delay_element_0 = sample - _delay_element_14 * _a14 - _delay_element_24 * _a24;
-        
+
         /*do the filtering*/
         if (isnan(delay_element_0) || isinf(delay_element_0))
         {
@@ -260,7 +256,6 @@ void LPF2pSetCutOffFreq_5(float sample_freq, float cutoff_freq)
     c   = 1.0f + 2.0f * cosf(M_PI_F / 4.0f) * ohm + ohm * ohm;
 
     _cutoff_freq5 = cutoff_freq;
-
     if (_cutoff_freq5 > 0.0f)
     {
         _b05 = ohm * ohm / c;
@@ -283,7 +278,7 @@ float LPF2pApply_5(float sample)
     else
     {
         delay_element_0 = sample - _delay_element_15 * _a15 - _delay_element_25 * _a25;
-        
+
         /*do the filtering*/
         if (isnan(delay_element_0) || isinf(delay_element_0))
         {
@@ -319,7 +314,6 @@ void LPF2pSetCutOffFreq_6(float sample_freq, float cutoff_freq)
     c   = 1.0f + 2.0f * cosf(M_PI_F / 4.0f) * ohm + ohm * ohm;
 
     _cutoff_freq6 = cutoff_freq;
-
     if (_cutoff_freq6 > 0.0f)
     {
         _b06 = ohm * ohm / c;
@@ -334,7 +328,7 @@ float LPF2pApply_6(float sample)
 {
     float delay_element_0 = 0;
     float output = 0;
- 
+
     if (_cutoff_freq6 <= 0.0f)
     {
         return sample;  /*no filtering*/
@@ -342,7 +336,7 @@ float LPF2pApply_6(float sample)
     else
     {
         delay_element_0 = sample - _delay_element_16 * _a16 - _delay_element_26 * _a26;
-        
+
         /*do the filtering*/
         if (isnan(delay_element_0) || isinf(delay_element_0))
         {

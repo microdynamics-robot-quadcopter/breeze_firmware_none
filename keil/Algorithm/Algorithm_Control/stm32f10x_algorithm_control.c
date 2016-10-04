@@ -97,7 +97,7 @@ void ControlAttiAng(void)
     static uint32_t PreTime = 0;
 
     NowTime = micros();
-    dt      = (PreTime > 0) ? (NowTime - PreTime) : 0;
+    dt = (PreTime > 0) ? (NowTime - PreTime) : 0;
     PreTime = NowTime;
 
     if (altCtrlMode == MANUAL)
@@ -139,7 +139,7 @@ void ControlAttiRate(void)
     static uint32_t PreTime = 0;
 
     NowTime = micros();
-    dt      = (PreTime > 0) ? (NowTime - PreTime) : 0;
+    dt = (PreTime > 0) ? (NowTime - PreTime) : 0;
     PreTime = NowTime;
     yawRateTarget = -(float)NRF_Data.yaw;
 
@@ -283,7 +283,7 @@ void ControlAlti(void)
     else
     {
         NowTime = micros();
-        dt      = (NowTime - PreTime) / 1000000.0f;
+        dt = (NowTime - PreTime) / 1000000.0f;
         PreTime = NowTime;
     }
 

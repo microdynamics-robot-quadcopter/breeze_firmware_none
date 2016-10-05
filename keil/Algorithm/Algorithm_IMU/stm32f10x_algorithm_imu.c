@@ -48,6 +48,7 @@ uint8_t IMU_Calibrate(void)  /*检测时间为3s*/
         }
     }
     
+    /*10ms*/
     if (dt >= 10)
     {
         if (cnt < 300)
@@ -75,15 +76,15 @@ uint8_t IMU_Calibrate(void)  /*检测时间为3s*/
     return ret;
 }
 
-#define SENSOR_MAX_G 8.0f
-#define SENSOR_MAX_W 2000.0f
+#define SENSOR_MAX_G 8.0f     /*max constant g*/
+#define SENSOR_MAX_W 2000.0f  /*max deg/s*/
 #define ACC_SCALE (SENSOR_MAX_G / 32768.0f)
 #define GYRO_SCALE (SENSOR_MAX_W / 32768.0f)
 
 void IMU_ReadSensorHandle(void)
 {
     uint8_t i;
-    MPU6050_ReadAcc(imu.accADC);
+    MPU6050_ReadAcc(imu.accADC);    /*read raw value*/
     MPU6050_ReadGyro(imu.gyroADC);
     
     for (i = 0; i < 3; i++)
@@ -91,16 +92,16 @@ void IMU_ReadSensorHandle(void)
         imu.accRaw[i] = (float) imu.accADC[i] * ACC_SCALE * CONSTANTS_ONE_G;
         imu.gyroRaw[i] = (float) imu.gyroADC[i] * GYRO_SCALE * M_PI_F / 180.0f;
     }
-    
-    imu.accb[0] = LPF2pApply_1(imu.accRaw[0]);
-    imu.accb[1] = LPF2pApply_2(imu.accRaw[1]);
-    imu.accb[2] = LPF2pApply_3(imu.accRaw[2]);
+
+    imu.accb[0] = LPF2pApply_1(imu.accRaw[0] - imu.accOffset[0]);
+    imu.accb[1] = LPF2pApply_2(imu.accRaw[1] - imu.accOffset[1]);
+    imu.accb[2] = LPF2pApply_3(imu.accRaw[2] - imu.accOffset[2]);
     imu.gyro[0] = LPF2pApply_4(imu.gyroRaw[0]);
     imu.gyro[1] = LPF2pApply_5(imu.gyroRaw[1]);
     imu.gyro[2] = LPF2pApply_6(imu.gyroRaw[2]);
 }
 
-#define ACCZ_ERR_MAX 0.05
+#define ACCZ_ERR_MAX 0.05 /*m/s^2*/
 #define CHECK_CNT    5
 
 uint8_t IMU_Check(void)
@@ -139,12 +140,12 @@ static void EularToDCM(float DCM[3][3], float pitch, float yaw, float roll)
     float coszcosx, coszcosy, sinzcosx, coszsinx, sinzsinx;
 
     cosx = cosf(roll * M_PI_F / 180.0f);
-    sinx = sinf(roll * M_PI_F / 1800.0f);
+    sinx = sinf(roll * M_PI_F / 180.0f);
     cosy = cosf(pitch * M_PI_F / 180.0f);
     siny = sinf(pitch * M_PI_F / 180.0f);
     cosz = cosf(yaw * M_PI_F / 180.0f);
     sinz = sinf(yaw * M_PI_F / 180.0f);
-    
+
     coszcosx = cosz * cosx;
     coszcosy = cosz * cosy;
     sinzcosx = sinz * cosx;
@@ -181,7 +182,7 @@ static float q3q3;
 
 static uint8_t bFilterInit = 0;
 
-/*函数名：invSqrt(void)*/
+/*函数名：InvSqrt(void)*/
 /*描述：求平方根的倒数*/
 /*该函数是经典的Carmack求平方根算法，效率极高，使用魔数0x5f375a86*/
 static float InvSqrt(float num)
@@ -190,7 +191,7 @@ static float InvSqrt(float num)
     volatile float x;
     volatile float y;
     volatile const float f = 1.5F;
-    
+
     x = num * 0.5F;
     y = num;
     i = *((long*) &y);
@@ -249,7 +250,7 @@ static void NonLinearSO3AHRSInit(float ax, float ay, float az, float mx, float m
     q3q3 = q3 * q3;
 }
 
-/*函数名：NonlinearSO3AHRSupdate()*/
+/*函数名：NonLinearSO3AHRSUpdate()*/
 /*描述：姿态解算融合，是Crazepony和核心算法*/
 /*使用的是Mahony互补滤波算法，没有使用Kalman滤波算法*/
 /*改算法是直接参考pixhawk飞控的算法，可以在Github上看到出处*/
@@ -269,7 +270,7 @@ static void NonLinearSO3AHRSUpdate(float gx, float gy, float gz, float ax, float
         NonLinearSO3AHRSInit(ax, ay, az, mx, my, mz);
         bFilterInit = 1;
     }
-    	
+
     /*! If magnetometer measurement is available, use it.*/
     if (!((mx == 0.0f) && (my == 0.0f) && (mz == 0.0f)))
     {
@@ -301,7 +302,7 @@ static void NonLinearSO3AHRSUpdate(float gx, float gy, float gz, float ax, float
         halfez += (mx * halfwy - my * halfwx);
     }
 
-    /*增加一个条件：  加速度的模量与G相差不远时。 0.75*G < normAcc < 1.25*G*/
+    /*增加一个条件：加速度的模量与G相差不远时。 0.75*G < normAcc < 1.25*G*/
     /*Compute feedback only if accelerometer measurement valid (avoids NaN in accelerometer normalisation)*/
     if (!((ax == 0.0f) && (ay == 0.0f) && (az == 0.0f)))
     {
@@ -390,13 +391,12 @@ static void NonLinearSO3AHRSUpdate(float gx, float gy, float gz, float ax, float
 #define so3_comp_params_Kp  1.0f
 #define so3_comp_params_Ki  0.05f
 
-
 /*函数名：IMU_SO3Thread(void)*/
 /*描述：姿态软件解算融合函数*/
 /*该函数对姿态的融合是软件解算，Crazepony现在不使用DMP硬件解算*/
 void IMU_SO3Thread(void)
 {
-    /*! Time constant*/
+    /*time constant*/
     float dt = 0.01f;                            /*s*/
     static uint32_t PreTime = 0, StartTime = 0;  /*us*/
     uint32_t NowTime;
@@ -405,7 +405,7 @@ void IMU_SO3Thread(void)
     /*output euler angles*/
     float euler[3] = {0.0f, 0.0f, 0.0f};         /*rad*/
 
-    /*Initialization*/
+    /*initialization*/
     float Rot_matrix[9] = {1.f,  0.0f,  0.0f, 0.0f,  1.f,  0.0f, 0.0f,  0.0f,  1.f };  /**< init: identity matrix */
     float acc[3]        = {0.0f, 0.0f, 0.0f};    /*m/s^2*/
     float mag[3]        = {0.0f, 0.0f, 0.0f};
@@ -427,7 +427,7 @@ void IMU_SO3Thread(void)
         {
             StartTime = NowTime;
         }
-		
+
         gyro_offsets_sum[0] += imu.gyroRaw[0];
         gyro_offsets_sum[1] += imu.gyroRaw[1];
         gyro_offsets_sum[2] += imu.gyroRaw[2];

@@ -3,6 +3,8 @@
 
 #include "stm32f10x.h"
 
+#define HIGH_FREQ_CTRL                    /*Important!!!*/
+
 #ifdef  HIGH_FREQ_CTRL
 #define IMU_SAMPLE_RATE         200.0f
 #else
@@ -16,7 +18,7 @@
 #define GYRO_CALC_TIME          3000000l  /*us*/
 
 typedef float  quad[4];
-typedef float  vector3f[3];             /*不可作为返回值，指针*/
+typedef float  vector3f[3];               /*不可作为返回值，指针*/
 typedef float  matrix3f[3][3];
 
 typedef struct mat3_tt
@@ -61,7 +63,7 @@ typedef struct
 #define CONSTANTS_ONE_G                      9.80665f   /*m/s^2*/
 #define CONSTANTS_AIR_DENSITY_SEA_LEVEL_15C  1.225f     /*kg/m^3*/
 #define CONSTANTS_AIR_GAS_CONST              287.1f     /*j/(kg*k)*/
-#define CONSTANTS_ABSOLUTE_NULL_CELSIUS      -273.15f
+#define CONSTANTS_ABSOLUTE_NULL_CELSIUS      -273.15f   /*deg*/
 #define CONSTANTS_RADIUS_OF_EARTH            6371000    /*m*/
 
 extern volatile float AccFilted[3], GyroFilted[3];
@@ -85,7 +87,7 @@ static void EularToDCM(float DCM[3][3], float pitch, float yaw, float roll);
 static float InvSqrt(float num);
 
 static void NonLinearSO3AHRSInit(float ax, float ay, float az, float mx, float my, float mz);
-static void NonLinearSO3AHRSUpDate(float gx, float gy, float gz, float ax, float ay, float az, float mx, float my, float mz, float twokp, float twopi, float dt);
-extern void MPU_SO3Thread(void);
+static void NonLinearSO3AHRSUpdate(float gx, float gy, float gz, float ax, float ay, float az, float mx, float my, float mz, float twoKp, float twoKi, float dt);
+extern void IMU_SO3Thread(void);
 
 #endif

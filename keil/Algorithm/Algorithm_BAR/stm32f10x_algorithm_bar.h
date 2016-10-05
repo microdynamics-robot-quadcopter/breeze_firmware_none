@@ -20,7 +20,7 @@ typedef struct NAV_TT
 }nav_t;
 
 extern nav_t nav;
-extern float z_est[3];
+extern float z_est[3];  /*estimate z vz az*/
 extern uint8_t landed;
 extern uint8_t accUpdated;
 

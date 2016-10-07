@@ -83,7 +83,7 @@ extern uint8_t IMU_Check(void);
 extern uint8_t IMU_Calibrate(void);
 extern void IMU_ReadSensorHandle(void);
 
-static void EularToDCM(float DCM[3][3], float pitch, float yaw, float roll);
+static void EularToDCM(float DCM[3][3], float pitch, float yaw, float roll);  /*这是使用DMP进行硬件解算才需要的函数*/
 static float InvSqrt(float num);
 
 static void NonLinearSO3AHRSInit(float ax, float ay, float az, float mx, float my, float mz);

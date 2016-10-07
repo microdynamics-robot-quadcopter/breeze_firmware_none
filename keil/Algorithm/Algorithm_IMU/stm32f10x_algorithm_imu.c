@@ -134,6 +134,7 @@ in standard sequence , roll-pitch-yaw , x-y-z
 angle in rad
 get DCM for ground to body
 */
+/*这是使用DMP进行硬件解算才需要的函数*/
 static void EularToDCM(float DCM[3][3], float pitch, float yaw, float roll)
 {
     float cosx, cosy, cosz, sinx, siny, sinz;

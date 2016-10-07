@@ -46,15 +46,15 @@ uint8_t headFreeMode = 0;
 /*描述：位置式PID*/
 static void PID_PostionCal(PID_Typedef * PID, float target, float measure, int32_t dertT)
 {
-    float dt    = dertT / 1000000.0;
     float termI = 0;
+    float dt = dertT / 1000000.0;
 
     /*误差=期望值-测量值*/
     PID->Error    = target - measure;
     PID->Deriv    = (PID->Error - PID->PreError) / dt;
     PID->Output   = (PID->P * PID->Error) + (PID->I * PID->Integ) + (PID->D * PID->Deriv);  /*PID:比例环节+积分环节+微分环节*/
     PID->PreError = PID->Error;
-    
+
     /*仅用于角度环和角速度环的*/
     if (FLY_ENABLE && offLandFlag)
     {
@@ -62,7 +62,7 @@ static void PID_PostionCal(PID_Typedef * PID, float target, float measure, int32
         {
             termI = (PID->Integ) + (PID->Error) * dt;  /*积分环节*/
             if ((termI > - PID->iLimit) && (termI < PID->iLimit) && (PID->Output > - PID->iLimit) 
-                && (PID->Output < PID->iLimit))        /*在-300~300时才进行积分环节*/
+             && (PID->Output < PID->iLimit))        /*在-300~300时才进行积分环节*/
             {
                 PID->Integ = termI;
             }
@@ -143,10 +143,10 @@ void ControlAttiRate(void)
     PreTime = NowTime;
     yawRateTarget = -(float)NRF_Data.yaw;
 
-    /*注意，原来的pid参数，对应的是 ad值,故转之*/
+    /*注意原来的PID参数对应的是AD值,故转换之*/
     PID_PostionCal(&pitch_rate_PID, pitch_angle_PID.Output, imu.gyro[PITCH] * 180.0f / M_PI_F, dt);
-    PID_PostionCal(&roll_rate_PID, roll_angle_PID.Output, imu.gyro[ROLL] * 180.0f / M_PI_F, dt);  /*gyroxGloble*/
-    PID_PostionCal(&yaw_rate_PID, yawRateTarget, imu.gyro[YAW] * 180.0f / M_PI_F, dt);            /*DMP_DATA.GYROz*/
+    PID_PostionCal(&roll_rate_PID, roll_angle_PID.Output, imu.gyro[ROLL] * 180.0f / M_PI_F, dt);    /*gyroxGloble*/
+    PID_PostionCal(&yaw_rate_PID, yawRateTarget, imu.gyro[YAW] * 180.0f / M_PI_F, dt);              /*DMP_DATA.GYROz*/
 
     Pitch = pitch_rate_PID.Output;
     Roll  = roll_rate_PID.Output;
@@ -173,7 +173,7 @@ float thrustZSp     = 0;
 float thrustXYSp[2] = {0, 0};  /*roll pitch*/
 uint8_t recAltFlag  = 0;
 float holdAlt       = 0;
-uint8_t satZ        = 0;
+uint8_t satZ        = 0;       /*Z方向是否饱和*/
 uint8_t satXY       = 0;       /*是否过饱和*/
 
 uint8_t isAltLimit  = 0;
@@ -311,7 +311,7 @@ void ControlAlti(void)
     altSpOffsetMax = ALT_VEL_MAX / alt_PID.P * 2.0f;
     altSpOffset    = altSp - alt;
 
-    if (altSpOffset > altSpOffsetMax)
+    if (altSpOffset > altSpOffsetMax)  /*高度增量限制*/
     {
         altSp = alt + altSpOffsetMax;
     }
@@ -330,7 +330,7 @@ void ControlAlti(void)
         }
     }
 
-    /*pid and feedforward control . in ned frame*/
+    /*PID and feedforward control. in ned frame*/
     posZErr   = -(altSp - alt);
     posZVelSp = posZErr * alt_PID.P + spZMoveRate * ALT_FEED_FORWARD;
 
@@ -356,7 +356,6 @@ void ControlAlti(void)
 
     /*限制最小下降油门*/
     minThrust = EstimateMinThru();
-
     if (altCtrlMode != LANDING)
     {
         if (-thrustZSp < minThrust)
@@ -376,7 +375,6 @@ void ControlAlti(void)
     if (thrustXYSpLen > 0.01f)
     {
         thrustXYMax = -thrustZSp * tanf(TILT_MAX);
-        
         if (thrustXYSpLen > thrustXYMax)
         {
             float k = thrustXYMax / thrustXYSpLen;
@@ -389,7 +387,6 @@ void ControlAlti(void)
 
     /*limit max thrust!!*/
     thrustSpLen = sqrtf(thrustXYSpLen * thrustXYSpLen + thrustZSp * thrustZSp);
-
     if (thrustSpLen > THR_MAX)
     {
         if (thrustZSp < 0.0f)   /*going up*/
@@ -415,7 +412,7 @@ void ControlAlti(void)
                 satXY = 1;
             }
         }
-        else 
+        else
         {       /*going down*/
                 /*Z component is negative, going down, simply limit thrust vector*/
                 float k        = THR_MAX / thrustSpLen;
@@ -448,7 +445,6 @@ void ControlAlti(void)
 void ControlMotor(void)
 {
     float cosTilt = imu.accb[2] / CONSTANTS_ONE_G;
-
     if (altCtrlMode == MANUAL)
     {
         DIF_ACC.Z = imu.accb[2] - CONSTANTS_ONE_G;
@@ -458,7 +454,7 @@ void ControlMotor(void)
     }
     else
     {
-        Thro = (-thrustZSp) * 1000;  /*/imu.DCMgb[2][2]; 倾角补偿后效果不错，有时过猛*/
+        Thro = (-thrustZSp) * 1000;  /*imu.DCMgb[2][2]; 倾角补偿后效果不错，有时过猛*/
         if (Thro > 1000)
         {
             Thro = 1000;
@@ -471,7 +467,7 @@ void ControlMotor(void)
     Motor[3] = (int16_t)(Thro - Pitch + Roll + Yaw );  /*M4*/
     Motor[1] = (int16_t)(Thro + Pitch - Roll + Yaw );  /*M2*/
 
-    if (FLY_ENABLE != 0)
+    if (FLY_ENABLE)
     {
         PWM_MotorFlash(Motor[0], Motor[1], Motor[2], Motor[3]);
     }

@@ -37,7 +37,7 @@ int Battery_GetTemp(void)
     {
         temp_val += Battery_GetADC(16);             /*温度传感器为通道16*/
     }
-    
+
     temp_val    /= 20;
     temperature  = (float)temp_val * (3.3 / 4096);      /*得到温度传感器的电压值*/
     temperature  = (1.43 - temperature) / 0.0043 + 25;  /*计算出当前温度值*/
@@ -156,7 +156,7 @@ void Battery_CheckInit(void)
     Battery.Factor           = Battery.TestVal / Battery.ADInputVal;  /*计算电压计算系数*/
     Battery.OverDischargeCnt = 0;
 
-    printf("Batter voltage AD init ...\r\n");  
+    printf("Batter voltage AD init ...\r\n");
 }
 
 /*获得ADC值*/
@@ -165,7 +165,7 @@ void Battery_CheckInit(void)
 u16 Battery_GetADC(u8 ch)
 {
     /*设置转换序列*/
-    ADC1->SQR3 &= 0XFFFFFFE0;      /*规则序列1 通道ch*/
+    ADC1->SQR3 &= 0XFFFFFFE0;      /*规则序列1通道ch*/
     ADC1->SQR3 |= ch;
     ADC1->CR2  |= 1<<22;           /*启动规则转换通道*/
     while (!(ADC1->SR & (1<<1)));  /*等待转换结束*/

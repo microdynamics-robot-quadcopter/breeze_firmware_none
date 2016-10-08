@@ -33,7 +33,7 @@ extern volatile float MS5611_Pressure;
 extern volatile float MS5611_Altitude;
 extern volatile float MS5611_Temperature;
 extern uint8_t PaOffsetInited;
-extern uint8_t Baro_Alt_Updated;          /*气压计高度更新完成标志*/
+extern uint8_t Baro_Alt_Updated;  /*气压计高度更新完成标志*/
 
 extern void MS5611_Reset(void);
 extern void MS5611_ReadPROM(void);

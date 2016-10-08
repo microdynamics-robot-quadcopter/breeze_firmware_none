@@ -227,7 +227,6 @@ float MS5611_GetAltitude(void)
     return Altitude;
 }
 
-
 /**************************实现函数********************************************
 *函数原型:      void MS5611_GetPressure(void)
 *功    能:      读取气压转换结果并做补偿修正
@@ -312,7 +311,7 @@ uint8_t MS5611_WaitBaroInitOffset(void)
     uint32_t now = 0;
     uint32_t starttime = 0;
     starttime = micros();   /*us*/
-    
+
     while (!PaOffsetInited)
     {
         MS5611_Thread();

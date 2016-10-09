@@ -17,7 +17,9 @@ Function List:
 History:     none
 *******************************************************************************/
 
+#include "stm32f10x_system_rpdata.h"
 #include "stm32f10x_system_battery.h"
+#include "stm32f10x_algorithm_control.h"
 #include "stdio.h"
 
 extern uint8_t FLY_ENABLE;
@@ -75,8 +77,11 @@ void Battery_Check(void)
             Battery.OverDischargeCnt++;
             if (Battery.OverDischargeCnt > 8)
             {
-                //altCtrlMode=LANDING;
-                //rcData[0]=1500;rcData[1]=1500;rcData[2]=1500;rcData[3]=1500;
+                altCtrlMode = LANDING;
+                rcData[0]   = 1500;
+                rcData[1]   = 1500;
+                rcData[2]   = 1500;
+                rcData[3]   = 1500;
             }
         }
         else

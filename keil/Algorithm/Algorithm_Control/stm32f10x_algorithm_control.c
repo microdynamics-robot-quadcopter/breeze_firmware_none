@@ -300,11 +300,11 @@ void ControlAlti(void)
 
     /*get desired move rate from stick*/
     manThr      = NRF_Data.throttle / 1000.0f;
-    spZMoveRate = -dbScaleLinear(manThr - 0.5f, 0.5f, ALT_CTRL_Z_DB);  /*scale to -1~1 . NED frame*/
-    spZMoveRate = spZMoveRate * ALT_VEL_MAX;                           /*scale to vel min max*/
+    spZMoveRate = -CutDBScaleToLinear(manThr - 0.5f, 0.5f, ALT_CTRL_Z_DB);  /*scale to -1~1 . NED frame*/
+    spZMoveRate = spZMoveRate * ALT_VEL_MAX;                                /*scale to vel min max*/
 
     /*get alt setpoint in CLIMB rate mode*/
-    altSp   = -nav.z;                                                  /*only alt is not in ned frame.*/
+    altSp   = -nav.z;                                                       /*only alt is not in ned frame.*/
     altSp  -= spZMoveRate * dt;
 
     /*limit alt setpoint*/

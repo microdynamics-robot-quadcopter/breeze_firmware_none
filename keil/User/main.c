@@ -1,25 +1,38 @@
 #include "stm32f10x_driver_sys.h"
 #include "stm32f10x_driver_pwm.h"
 #include "stm32f10x_driver_tim.h"
+#include "stm32f10x_driver_iic.h"
 #include "stm32f10x_driver_delay.h"
 #include "stm32f10x_driver_usart.h"
 #include "stm32f10x_driver_eeprom.h"
 #include "stm32f10x_system_led.h"
 #include "stm32f10x_system_rpdata.h"
+#include "stm32f10x_system_ms5611.h"
+#include "stm32f10x_system_battery.h"
+#include "stm32f10x_system_mpu6050.h"
 #include "stm32f10x_system_nrf24l01.h"
-//#include "stm32f10x_system_battery.h"
+#include "stm32f10x_algorithm_imu.h"
+#include "stm32f10x_algorithm_control.h"
 
 void Hardware_Init(void)
 {
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
-    delay_init();
-	led_init();
-    PWM_Init();
     usart_init(115200);
     TIM4_Init(4999, 7199);
+    FLASH_Unlock();
     LoadParamsFromEEPROM();
+    delay_init();
+    led_init();
+    PWM_Init();
+    Battery_CheckInit();
+    IIC_Init();
+    MPU6050_Init();
     NRF24L01_INIT();
-    //Battery_CheckInit();
+    Battery_Check();
+    MS5611_Init();
+    IMU_Init();
+    altCtrlMode = MANUAL;
+//    MS5611_WaitBaroInitOffset(); 总是得不到合适的时间导致死循环
 }
 
 int main(void)

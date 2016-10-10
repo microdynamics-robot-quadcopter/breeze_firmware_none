@@ -52,46 +52,46 @@ void ProcessDataFromNRF(void)
     NRF_Data.pitch = ANGLE_MAX    * CutDBScaleToLinear((rcData[PITCH] - 1500), 500, APP_PR_DB);
     NRF_Data.roll  = ANGLE_MAX    * CutDBScaleToLinear((rcData[ROLL] - 1500), 500, APP_PR_DB);
 
-    printf("This is the value of the armState:\n");  /*debug*/
-    printf("%d\n", armState);
+    //printf("This is the value of the armState:\n");  /*debug*/
+    //printf("%d\n", armState);
 
-//    if (armState == REQ_ARM)
-//    {
-//        PWM_MotorFlash(200, 200, 200, 200);
-//    }
-//    
-//    if (armState == REQ_DISARM)
-//    {
-//        PWM_MotorFlash(0, 0, 0, 0);
-//    }
-    switch (armState)
+    if (armState == REQ_ARM)
     {
-        case REQ_ARM:
-            if (IMU_Check() && !Battery.AlarmFlag)
-            {
-                armState = ARMED;
-                FLY_ENABLE = 0xA5;
-            }
-            else
-            {
-                armState = DISARMED;
-                FLY_ENABLE = 0;
-            }
-        break;
-
-        case REQ_DISARM:
-            armState    = DISARMED;
-            FLY_ENABLE  = 0;
-            altCtrlMode = MANUAL;       /*上锁后加的处理*/
-            zIntReset   = 1;
-            thrustZSp   = 0;
-            thrustZInt  = EstimateHoverThru();
-            offLandFlag = 0;
-        break;
-
-        default:
-            break;
+        PWM_MotorFlash(200, 200, 200, 200);
     }
+    
+    if (armState == REQ_DISARM)
+    {
+        PWM_MotorFlash(0, 0, 0, 0);
+    }
+//    switch (armState)
+//    {
+//        case REQ_ARM:
+//            if (IMU_Check() && !Battery.AlarmFlag)
+//            {
+//                armState = ARMED;
+//                FLY_ENABLE = 0xA5;
+//            }
+//            else
+//            {
+//                armState = DISARMED;
+//                FLY_ENABLE = 0;
+//            }
+//        break;
+
+//        case REQ_DISARM:
+//            armState    = DISARMED;
+//            FLY_ENABLE  = 0;
+//            altCtrlMode = MANUAL;       /*上锁后加的处理*/
+//            zIntReset   = 1;
+//            thrustZSp   = 0;
+//            thrustZInt  = EstimateHoverThru();
+//            offLandFlag = 0;
+//        break;
+
+//        default:
+//            break;
+//    }
 }
 
 /*cut deadband scale to move linear*/

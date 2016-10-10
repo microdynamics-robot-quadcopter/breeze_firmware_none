@@ -4,6 +4,9 @@
 #include "stm32f10x_it.h"
 #include "math.h"
 
+#include "stm32f10x_driver_usart.h" /*debug*/
+#include "stdio.h"
+
 #define MS5611_Press_OSR MS5611_OSR_4096  /*气压采样精度*/
 #define MS5611_Temp_OSR  MS5611_OSR_4096  /*温度采样精度*/
 
@@ -314,6 +317,8 @@ uint8_t MS5611_WaitBaroInitOffset(void)
 
     while (!PaOffsetInited)
     {
+        //printf("This is PaOffsetInited: %d", PaOffsetInited);  /*debug*/
+        //printf("  This is now: %d", now);
         MS5611_Thread();
         now = micros();
         if ((now - starttime) / 1000 >= PA_OFFSET_INIT_NUM * 50)  /*超时*/

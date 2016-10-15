@@ -133,7 +133,7 @@ void PendSV_Handler(void)
 {
 }
 
-void cycleCounterInit(void)
+void CycleCounter_Init(void)
 {
     RCC_ClocksTypeDef clocks;
     RCC_GetClocksFreq(&clocks);
@@ -150,16 +150,14 @@ void SysTick_Handler(void)
     sysTickUptime++;
 }
 
+//void DelayMs(uint16_t nms)
+//{
+//    uint32_t t0 = micros();
+//    while (micros() - t0 < nms * 1000);			
+//}
 
-//
-void DelayMs(uint16_t nms)
-{
-    uint32_t t0 = micros();
-    while (micros() - t0 < nms * 1000);			
-}
-
-// Return system uptime in microseconds (rollover in 70minutes)
-//返回 us
+/*Return system uptime in microseconds (rollover in 70minutes)*/
+/*return us*/
 uint32_t micros(void)
 {
     register uint32_t ms, cycle_cnt;

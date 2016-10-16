@@ -19,6 +19,9 @@ History:     none
 
 #include "stm32f10x.h"
 
+extern char SysClock;          /*申请存储系统时钟变量，单位MHz*/
+
+extern char SystemClock_HSE(u8 PLL);
 extern void delay_init(void);  /*Initializes the delay function*/
 extern void delay_us(u32 nus); /*Set time with microsecond precision*/
 extern void delay_ms(u16 nms); /*Set time with millisecond precision*/

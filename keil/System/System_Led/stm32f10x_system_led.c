@@ -8,14 +8,14 @@ Date:        2016.8.14
 Description: implement the led operation function
 Others:      none
 Function List:
-             1. extern void led_init(void);
+             1. extern void led_Init(void);
              2. extern void led_test(int flag);
 History:     none
 *******************************************************************************/
 
 #include "stm32f10x_system_led.h"
 
-void led_init(void)
+void led_Init(void)
 {
     GPIO_InitTypeDef GPIO_InitStructure;
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB | RCC_APB2Periph_AFIO, ENABLE);
@@ -24,10 +24,10 @@ void led_init(void)
     GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_Out_PP;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIOB, &GPIO_InitStructure);
-    
+
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8 | GPIO_Pin_11;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
-       
+
     /*硬件电路要求关闭JATG，千万不能将SWD也关闭，否则芯片作废!!!*/
     AFIO->MAPR |= AFIO_MAPR_SWJ_CFG_JTAGDISABLE;
 
@@ -44,7 +44,7 @@ void led_init(void)
 //    GPIOA->ODR   |= 9<<0;        /*PA8,11 pull-up*/
 //  
 //    AFIO->MAPR   |= 2<<24; //关闭JATG,千万不能将SWD也关闭，否则芯片作废!!!
-    
+
     LedA_Off;
     LedB_Off;
     LedC_Off;

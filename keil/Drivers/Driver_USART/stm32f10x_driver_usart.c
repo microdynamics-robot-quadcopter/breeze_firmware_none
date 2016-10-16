@@ -8,12 +8,12 @@ Date:        2016.8.15
 Description: implement the serial port operation
 Others:      none
 Function List:
-             1. extern void usart_init(u32 bound);
+             1. extern void usart_Init(u32 bound);
 History:     none
 *******************************************************************************/
 
-#include "stdio.h"
 #include "stm32f10x_driver_usart.h"
+#include "stdio.h"
 
 /*加入以下代码支持printf函数*/
 #if 1
@@ -44,28 +44,28 @@ int fputc(int ch, FILE *f)
 #endif
 
 #if EN_USART_RX                  /*若使能了接收标志*/
-//串口1中断服务程序
-//注意,读取USARTx->SR能避免莫名其妙的错误   	
+/*串口1中断服务程序*/
+/*注意读取USARTx->SR能避免莫名其妙的错误*/
 u8 USART_RX_BUF[USART_REC_LEN];  /*接收缓冲，最大USART_REC_LEN个字节*/
 
-//接收状态
-//bit15，	接收完成标志
-//bit14，	接收到0x0d
-//bit13~0，	接收到的有效字节数目
+/*接收状态*/
+/*bit15     接收完成标志*/
+/*bit14     接收到0x0d*/
+/*bit13~0   接收到的有效字节数目*/
 u16 USART_RX_STA = 0;            /*接收状态标记*/
 
-void usart_init(u32 bound)
+void usart_Init(u32 bound)
 {
     /*GPIO端口设置*/
     GPIO_InitTypeDef GPIO_InitStructure;
     NVIC_InitTypeDef NVIC_InitStructure;
-    USART_InitTypeDef USART_InitStructure;   
-    
+    USART_InitTypeDef USART_InitStructure;
+
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1 | RCC_APB2Periph_GPIOA, ENABLE);
-    
+
     /*Reset the USART1*/
     USART_DeInit(USART1);
-    
+
     /*USART1_TX  GPIOA.9*/
     GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_9;
     GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF_PP;

@@ -14,7 +14,7 @@ uint8_t NRF24L01_TXDATA[RX_PLOAD_WIDTH];  /*nrf24l01需要发送的数据*/
 u8 RX_ADDRESS[RX_ADR_WIDTH] = {0x34, 0xc3, 0x10, 0x10, 0x00};   /*接收地址*/
 
 /*初始化*/
-void NRF24L01_INIT(void)
+void NRF24L01_Init(void)
 {
     SPI_INIT();	
 	//check if NRF24L01 is in the SPI bus

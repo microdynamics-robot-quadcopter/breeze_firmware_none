@@ -53,7 +53,7 @@
 #define RX_OK   		0x40   //接收到数据中断
 
 
-extern void NRF24L01_INIT(void);
+extern void NRF24L01_Init(void);
 extern void SetRX_Mode(void);
 extern void SetTX_Mode(void);
 extern void NRF_TxPacket(uint8_t *tx_buf, uint8_t len);

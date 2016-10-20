@@ -56,7 +56,7 @@ void TIM4_IRQHandler(void)
     {
         TIM_ClearITPendingBit(TIM4, TIM_IT_Update);
 
-        if (loop100HZCnt * 100 >= 1000)
+        if (++loop100HZCnt * 100 >= 1000)
         {
             loop100HZCnt  = 0;
             loop100HZFlag = 1;

@@ -23,6 +23,7 @@ extern volatile uint16_t loop20HZCnt;
 extern volatile uint16_t loop50HZCnt;
 extern volatile uint16_t loop100HZCnt;
 
+/*控制算法主程序定时器中断标志*/
 extern uint8_t loop10HZFlag;
 extern uint8_t loop20HZFlag;
 extern uint8_t loop50HZFlag;

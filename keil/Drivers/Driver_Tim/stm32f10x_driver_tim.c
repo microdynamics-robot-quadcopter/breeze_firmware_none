@@ -35,7 +35,7 @@ void TIM4_Init(u16 arr, u16 psc)
     TIM_DeInit(TIM4);  /*复位定时器4*/
 
     TIM_TimeBaseStructure.TIM_Period        = arr;
-    TIM_TimeBaseStructure.TIM_Prescaler     = psc;
+    TIM_TimeBaseStructure.TIM_Prescaler     = psc - 1;
     TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
     TIM_TimeBaseStructure.TIM_CounterMode   = TIM_CounterMode_Up;
     TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
@@ -49,19 +49,24 @@ void TIM4_Init(u16 arr, u16 psc)
     TIM_Cmd(TIM4, ENABLE);
 }
 
+/*每1ms申请一次中断*/
 void TIM4_IRQHandler(void)
 {
     if (TIM_GetITStatus(TIM4, TIM_IT_Update) != RESET)
     {
         TIM_ClearITPendingBit(TIM4, TIM_IT_Update);
 
-        loop100HZCnt++;
-        if(++loop50HZCnt * 50 >= 1000)
+        if (loop100HZCnt * 100 >= 1000)
+        {
+            loop100HZCnt  = 0;
+            loop100HZFlag = 1;
+        }
+        if (++loop50HZCnt * 50 >= 1000)
         {
             loop50HZCnt  = 0;
             loop50HZFlag = 1;
         }
-        if(++loop10HZCnt * 10 >= 1000)
+        if (++loop10HZCnt * 10 >= 1000)
         {
             loop10HZCnt  = 0;
             loop10HZFlag = 1;

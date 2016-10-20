@@ -15,15 +15,15 @@ History:     none
 #include "stm32f10x_driver_tim.h"
 #include "stm32f10x_system_led.h"
 
-volatile uint16_t loop10HZCnt  = 0;
-volatile uint16_t loop20HZCnt  = 0;
-volatile uint16_t loop50HZCnt  = 0;
-volatile uint16_t loop100HZCnt = 0;
+volatile uint16_t loop10HzCnt  = 0;
+volatile uint16_t loop20HzCnt  = 0;
+volatile uint16_t loop50HzCnt  = 0;
+volatile uint16_t loop100HzCnt = 0;
 
-uint8_t loop10HZFlag;
-uint8_t loop20HZFlag;
-uint8_t loop50HZFlag;
-uint8_t loop100HZFlag;
+uint8_t loop10HzFlag  = 0;
+uint8_t loop20HzFlag  = 0;
+uint8_t loop50HzFlag  = 0;
+uint8_t loop100HzFlag = 0;
 
 void TIM4_Init(u16 arr, u16 psc)
 {
@@ -56,20 +56,20 @@ void TIM4_IRQHandler(void)
     {
         TIM_ClearITPendingBit(TIM4, TIM_IT_Update);
 
-        if (++loop100HZCnt * 100 >= 1000)
+        if (++loop100HzCnt * 100 >= 1000)
         {
-            loop100HZCnt  = 0;
-            loop100HZFlag = 1;
+            loop100HzCnt  = 0;
+            loop100HzFlag = 1;
         }
-        if (++loop50HZCnt * 50 >= 1000)
+        if (++loop50HzCnt * 50 >= 1000)
         {
-            loop50HZCnt  = 0;
-            loop50HZFlag = 1;
+            loop50HzCnt  = 0;
+            loop50HzFlag = 1;
         }
-        if (++loop10HZCnt * 10 >= 1000)
+        if (++loop10HzCnt * 10 >= 1000)
         {
-            loop10HZCnt  = 0;
-            loop10HZFlag = 1;
+            loop10HzCnt  = 0;
+            loop10HzFlag = 1;
         }
     }
 }

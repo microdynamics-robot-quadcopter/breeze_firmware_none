@@ -18,16 +18,16 @@ History:     none
 #include "stm32f10x.h"
 
 /*控制算法主程序定时器中断变量*/
-extern volatile uint16_t loop10HZCnt;
-extern volatile uint16_t loop20HZCnt;
-extern volatile uint16_t loop50HZCnt;
-extern volatile uint16_t loop100HZCnt;
+extern volatile uint16_t loop10HzCnt;
+extern volatile uint16_t loop20HzCnt;
+extern volatile uint16_t loop50HzCnt;
+extern volatile uint16_t loop100HzCnt;
 
 /*控制算法主程序定时器中断标志*/
-extern uint8_t loop10HZFlag;
-extern uint8_t loop20HZFlag;
-extern uint8_t loop50HZFlag;
-extern uint8_t loop100HZFlag;
+extern uint8_t loop10HzFlag;
+extern uint8_t loop20HzFlag;
+extern uint8_t loop50HzFlag;
+extern uint8_t loop100HzFlag;
 
 extern void TIM4_Init(u16 arr, u16 psc); /*TIM4初始化*/
 

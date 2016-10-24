@@ -164,14 +164,14 @@ uint32_t MS5611_GetConversion(void)
 {
     uint32_t res = 0;
     u8 temp[3];
-    
+
     IIC_Start();
     IIC_SendByte(MS5611_ADDR);      /*写地址*/
     IIC_WaitAck();
     IIC_SendByte(0);                /*start read sequence*/
     IIC_WaitAck();
     IIC_Stop();
-    
+
     IIC_Start();
     IIC_SendByte(MS5611_ADDR + 1);  /*进入接收模式*/
     IIC_WaitAck();
@@ -226,7 +226,7 @@ float MS5611_GetAltitude(void)
         return Altitude;
     }
     Altitude = 4433000.0 * (1 - pow((MS5611_Pressure / AltOffsetPa), 0.1903)) * 0.01f;  /*计算相对于上电时的位置的高度值单位为m*/
-	Altitude = Altitude + AltOffsetM ;  /*加偏置*/
+    Altitude = Altitude + AltOffsetM ;  /*加偏置*/
     return Altitude;
 }
 

@@ -29,11 +29,8 @@ void TIM4_Init(u16 arr, u16 psc)
 {
     TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
     NVIC_InitTypeDef NVIC_InitStructure;
-
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
-
     TIM_DeInit(TIM4);  /*复位定时器4*/
-
     TIM_TimeBaseStructure.TIM_Period        = arr;
     TIM_TimeBaseStructure.TIM_Prescaler     = psc - 1;
     TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
@@ -56,17 +53,17 @@ void TIM4_IRQHandler(void)
     {
         TIM_ClearITPendingBit(TIM4, TIM_IT_Update);
 
-        if (++loop100HzCnt * 100 >= 1000)
+        if (++loop100HzCnt * 100 >= 1000)  /*溢出时间10ms*/
         {
             loop100HzCnt  = 0;
             loop100HzFlag = 1;
         }
-        if (++loop50HzCnt * 50 >= 1000)
+        if (++loop50HzCnt * 50 >= 1000)    /*溢出时间20ms*/
         {
             loop50HzCnt  = 0;
             loop50HzFlag = 1;
         }
-        if (++loop10HzCnt * 10 >= 1000)
+        if (++loop10HzCnt * 10 >= 1000)    /*溢出时间100ms*/
         {
             loop10HzCnt  = 0;
             loop10HzFlag = 1;

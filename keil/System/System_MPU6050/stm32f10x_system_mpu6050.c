@@ -572,7 +572,7 @@ void MPU6050_GetFIFOBytes(uint8_t *data, uint8_t length)
  */
 uint8_t MPU6050_GetIntStatus(void)
 {
-    return I2C_ReadOneByte(DevAddr, MPU6050_RA_INT_STATUS);
+    return IIC_ReadOneByte(DevAddr, MPU6050_RA_INT_STATUS);
 }
 
 void MPU6050_SetDMPEnabled(uint8_t enabled)
@@ -582,13 +582,13 @@ void MPU6050_SetDMPEnabled(uint8_t enabled)
 
 uint8_t MPU6050_GetOTPBankValid(void)
 {
-    uint8_t temp = I2C_ReadOneByte(DevAddr, MPU6050_RA_XG_OFFS_TC);
+    uint8_t temp = IIC_ReadOneByte(DevAddr, MPU6050_RA_XG_OFFS_TC);
     return temp & (1 << MPU6050_TC_OTP_BNK_VLD_BIT);
 }
 
 int8_t MPU6050_GetXGyroOffsetTC(void)
 {
-    uint8_t temp = I2C_ReadOneByte(DevAddr, MPU6050_RA_XG_OFFS_TC);
+    uint8_t temp = IIC_ReadOneByte(DevAddr, MPU6050_RA_XG_OFFS_TC);
     temp &= 0x3F;
     return temp;
 }
@@ -601,7 +601,7 @@ void MPU6050_SetXGyroOffsetTC(int8_t offset)
 /*YG_OFFS_TC register*/
 int8_t MPU6050_GetYGyroOffsetTC(void)
 {
-    uint8_t temp = I2C_ReadOneByte(DevAddr, MPU6050_RA_YG_OFFS_TC);
+    uint8_t temp = IIC_ReadOneByte(DevAddr, MPU6050_RA_YG_OFFS_TC);
     temp &= 0x3F;
     return temp;
 }
@@ -614,7 +614,7 @@ void MPU6050_SetYGyroOffsetTC(int8_t offset)
 /*ZG_OFFS_TC register*/
 int8_t MPU6050_GetZGyroOffsetTC(void)
 {
-    uint8_t temp = I2C_ReadOneByte(DevAddr, MPU6050_RA_ZG_OFFS_TC);
+    uint8_t temp = IIC_ReadOneByte(DevAddr, MPU6050_RA_ZG_OFFS_TC);
     temp &= 0x3F;
     return temp;
 }

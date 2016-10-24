@@ -106,19 +106,19 @@ void MS5611_ReadPROM(void)
     for (i = 0; i < MS5611_PROM_REG_COUNT; i++)
     {
         IIC_Start();
-        IIC_Send_Byte(MS5611_ADDR);
-        IIC_Wait_Ack();
-        IIC_Send_Byte(MS5611_PROM_BASE_ADDR + (i * MS5611_PROM_REG_SIZE));
-        IIC_Wait_Ack();
+        IIC_SendByte(MS5611_ADDR);
+        IIC_WaitAck();
+        IIC_SendByte(MS5611_PROM_BASE_ADDR + (i * MS5611_PROM_REG_SIZE));
+        IIC_WaitAck();
         IIC_Stop();
         delay_us(5);
         IIC_Start();
-        IIC_Send_Byte(MS5611_ADDR + 1);  /*进入接收模式*/
+        IIC_SendByte(MS5611_ADDR + 1);  /*进入接收模式*/
         delay_us(1);
-        IIC_Wait_Ack();
-        inth = IIC_Read_Byte(1);         /*带ACK的读数据*/
+        IIC_WaitAck();
+        inth = IIC_ReadByte(1);         /*带ACK的读数据*/
         delay_us(1);
-        intl = IIC_Read_Byte(0);         /*最后一个字节NACK*/
+        intl = IIC_ReadByte(0);         /*最后一个字节NACK*/
         IIC_Stop();
         PROM_C[i] = (((uint16_t)inth << 8) | intl);
     }
@@ -131,10 +131,10 @@ void MS5611_ReadPROM(void)
 void MS5611_Reset(void)
 {
     IIC_Start();
-    IIC_Send_Byte(MS5611_ADDR);   /*写地址*/
-    IIC_Wait_Ack();
-    IIC_Send_Byte(MS5611_RESET);  /*发送复位命令*/
-    IIC_Wait_Ack();
+    IIC_SendByte(MS5611_ADDR);   /*写地址*/
+    IIC_WaitAck();
+    IIC_SendByte(MS5611_RESET);  /*发送复位命令*/
+    IIC_WaitAck();
     IIC_Stop();
 }
 
@@ -147,10 +147,10 @@ void MS5611_Reset(void)
 void MS5611_StartConversion(uint8_t cmd)
 {
     IIC_Start();
-    IIC_Send_Byte(MS5611_ADDR);  /*写地址*/
-    IIC_Wait_Ack();
-    IIC_Send_Byte(cmd);          /*写转换命令*/
-    IIC_Wait_Ack();
+    IIC_SendByte(MS5611_ADDR);  /*写地址*/
+    IIC_WaitAck();
+    IIC_SendByte(cmd);          /*写转换命令*/
+    IIC_WaitAck();
     IIC_Stop();
 }
 
@@ -166,18 +166,18 @@ uint32_t MS5611_GetConversion(void)
     u8 temp[3];
     
     IIC_Start();
-    IIC_Send_Byte(MS5611_ADDR);      /*写地址*/
-    IIC_Wait_Ack();
-    IIC_Send_Byte(0);                /*start read sequence*/
-    IIC_Wait_Ack();
+    IIC_SendByte(MS5611_ADDR);      /*写地址*/
+    IIC_WaitAck();
+    IIC_SendByte(0);                /*start read sequence*/
+    IIC_WaitAck();
     IIC_Stop();
     
     IIC_Start();
-    IIC_Send_Byte(MS5611_ADDR + 1);  /*进入接收模式*/
-    IIC_Wait_Ack();
-    temp[0] = IIC_Read_Byte(1);      /*带ACK的读数据  bit 23-16*/
-    temp[1] = IIC_Read_Byte(1);      /*带ACK的读数据  bit 8-15*/
-    temp[2] = IIC_Read_Byte(0);      /*带NACK的读数据 bit 0-7*/
+    IIC_SendByte(MS5611_ADDR + 1);  /*进入接收模式*/
+    IIC_WaitAck();
+    temp[0] = IIC_ReadByte(1);      /*带ACK的读数据  bit 23-16*/
+    temp[1] = IIC_ReadByte(1);      /*带ACK的读数据  bit 8-15*/
+    temp[2] = IIC_ReadByte(0);      /*带NACK的读数据 bit 0-7*/
     IIC_Stop();
     res = (unsigned long)temp[0] * 65536 + (unsigned long)temp[1] * 256 + (unsigned long)temp[2];
     return res;

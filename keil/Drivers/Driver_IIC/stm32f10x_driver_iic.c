@@ -11,24 +11,22 @@ Function List:
              1. void IIC_Init(void); 
              2. void IIC_Start(void);
              3. void IIC_Stop(void);
-			 4. void IIC_Send_Byte(u8 txd);
-			 5. u8 IIC_Read_Byte(u8 ack);
-			 6. u8 IIC_Wait_Ack(void); 
-			 7. void IIC_Ack(void); 
-			 8. void IIC_NAck(void);  
+             4. void IIC_SendByte(u8 txd);
+             5. u8 IIC_ReadByte(u8 ack);
+             6. u8 IIC_WaitAck(void); 
+             7. void IIC_Ack(void); 
+             8. void IIC_NAck(void);  
 History:     none
 *******************************************************************************/
 
-#include "stm32f10x.h"
 #include "stm32f10x_driver_iic.h"
 #include "stm32f10x_driver_delay.h"
-
+#include "stm32f10x.h"
 
 void IIC_Init(void)
-{					     
+{
     GPIO_InitTypeDef GPIO_InitStructure;
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
-    
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
@@ -57,7 +55,7 @@ void IIC_Stop(void)
     delay_us(4);
 }
 
-u8 IIC_Wait_Ack(void)
+u8 IIC_WaitAck(void)
 {
     u8 ucErrTime = 0;
     SDA_IN();
@@ -65,7 +63,7 @@ u8 IIC_Wait_Ack(void)
     delay_us(1);
     IIC_SCL = 1;
     delay_us(1);
-    
+
     while (READ_SDA)
     {
         ucErrTime++;
@@ -102,12 +100,12 @@ void IIC_NAck(void)
     IIC_SCL = 0;
 }
 
-void IIC_Send_Byte(u8 txd)
+void IIC_SendByte(u8 txd)
 {
     u8 i;
     SDA_OUT();
     IIC_SCL = 0;
-    
+
     for (i = 0; i < 8; i++)
     {
         IIC_SDA = (txd & 0x80) >> 7;
@@ -120,12 +118,12 @@ void IIC_Send_Byte(u8 txd)
     }
 }
 
-u8 IIC_Read_Byte(u8 ack)
+u8 IIC_ReadByte(u8 ack)
 {
     u8 i;
     u8 receive = 0;
     SDA_IN();
-    
+
     for (i = 0; i < 8; i++)
     {
         IIC_SCL = 0;
@@ -138,7 +136,7 @@ u8 IIC_Read_Byte(u8 ack)
         }
         delay_us(1);
     }
-    
+
     if (ack)
     {
         IIC_Ack();
@@ -150,24 +148,23 @@ u8 IIC_Read_Byte(u8 ack)
     return receive;
 }
 
-u8 I2C_ReadOneByte(u8 I2C_Addr, u8 addr)
+u8 IIC_ReadOneByte(u8 IIC_Addr, u8 addr)
 {
     u8 res = 0;
     IIC_Start();
-    IIC_Send_Byte(I2C_Addr);
+    IIC_SendByte(IIC_Addr);
     res++;
-    IIC_Wait_Ack();
-    IIC_Send_Byte(addr);
+    IIC_WaitAck();
+    IIC_SendByte(addr);
     res++;
-    IIC_Wait_Ack();
-    
+    IIC_WaitAck();
     IIC_Start();
-    IIC_Send_Byte(I2C_Addr + 1);
+    IIC_SendByte(IIC_Addr + 1);
     res++;
-    IIC_Wait_Ack();
-    res = IIC_Read_Byte(0);
+    IIC_WaitAck();
+    res = IIC_ReadByte(0);
     IIC_Stop();
-    
+
     return res;
 }
 
@@ -176,28 +173,28 @@ u8 IICReadBytes(u8 dev, u8 reg, u8 length, u8 *data)
     u8 count = 0;
     u8 temp;
     IIC_Start();
-    IIC_Send_Byte(dev);
-    IIC_Wait_Ack();
-    IIC_Send_Byte(reg);
-    IIC_Wait_Ack();
+    IIC_SendByte(dev);
+    IIC_WaitAck();
+    IIC_SendByte(reg);
+    IIC_WaitAck();
     IIC_Start();
-    IIC_Send_Byte(dev + 1);
-    IIC_Wait_Ack();
-    
+    IIC_SendByte(dev + 1);
+    IIC_WaitAck();
+
     for (count = 0; count < length; count++)
     {
         if (count != (length - 1))
         {
-            temp = IIC_Read_Byte(1);
+            temp = IIC_ReadByte(1);
         }
         else
         {
-            temp = IIC_Read_Byte(0);
+            temp = IIC_ReadByte(0);
         }
         data[count] = temp;
     }
     IIC_Stop();
-    
+
     return count;
 }
 
@@ -205,24 +202,24 @@ u8 IICWriteBytes(u8 dev, u8 reg, u8 length, u8 *data)
 {
     u8 count = 0;
     IIC_Start();
-    IIC_Send_Byte(dev);
-    IIC_Wait_Ack();
-    IIC_Send_Byte(reg);
-    IIC_Wait_Ack();
-    
+    IIC_SendByte(dev);
+    IIC_WaitAck();
+    IIC_SendByte(reg);
+    IIC_WaitAck();
+
     for (count = 0; count < length; count++)
     {
-        IIC_Send_Byte(data[count]);
-        IIC_Wait_Ack();
+        IIC_SendByte(data[count]);
+        IIC_WaitAck();
     }
     IIC_Stop();
-    
+
     return 1;
 }
 
 u8 IICReadByte(u8 dev, u8 reg, u8 *data)
 {
-    *data = I2C_ReadOneByte(dev, reg);
+    *data = IIC_ReadOneByte(dev, reg);
     return 1;
 }
 
@@ -236,7 +233,7 @@ u8 IICWriteBits(u8 dev, u8 reg, u8 bitStart, u8 length, u8 data)
     u8 b;
     if (IICReadByte(dev, reg, &b) != 0)
     {
-        u8 mask = (0xff << (bitStart + 1)) | 0xff >> ((8 - bitStart) + length - 1);
+        u8 mask = (0xFF << (bitStart + 1)) | 0xFF >> ((8 - bitStart) + length - 1);
         data <<= (8 - length);
         data >>= (7 - bitStart);
         b &= mask;

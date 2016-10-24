@@ -1,5 +1,6 @@
 #include "stm32f10x_driver_pwm.h"
 #include "stm32f10x_driver_usart.h"
+#include "stm32f10x_system_led.h"  /*debug*/
 #include "stm32f10x_system_rpdata.h"
 #include "stm32f10x_system_battery.h"
 #include "stm32f10x_system_nrf24l01.h"
@@ -42,9 +43,16 @@ void ReceiveDataFromNRF(void)
 
 void ProcessDataFromNRF(void)
 {
+    if (LANDING == altCtrlMode)
+    {
+        rcData[THROTTLE] = 1500;
+        rcData[YAW]      = 1500;
+        rcData[PITCH]    = 1500;
+        rcData[ROLL]     = 1500;
+    }
     CONSTRAIN(rcData[PITCH], 1000, 2000);
-	CONSTRAIN(rcData[YAW], 1000, 2000);
-	CONSTRAIN(rcData[ROLL], 1000, 2000);
+    CONSTRAIN(rcData[YAW], 1000, 2000);
+    CONSTRAIN(rcData[ROLL], 1000, 2000);
     CONSTRAIN(rcData[THROTTLE], 1000, 2000);
 
     NRF_Data.throttle = rcData[THROTTLE] - 1000;
@@ -55,46 +63,48 @@ void ProcessDataFromNRF(void)
     //printf("This is the value of the armState:\n");  /*debug*/
     //printf("%d\n", armState);
 
-    if (armState == REQ_ARM)
-    {
-        PWM_MotorFlash(200, 200, 200, 200);
-    }
-    
-    if (armState == REQ_DISARM)
-    {
-        PWM_MotorFlash(0, 0, 0, 0);
-    }
-//    switch (armState)
+//    if (armState == REQ_ARM)
 //    {
-//        case REQ_ARM:
-//            if (IMU_Check() && !Battery.AlarmFlag)
-//            {
-//                armState = ARMED;
-//                FLY_ENABLE = 0xA5;
-//            }
-//            else
-//            {
-//                armState = DISARMED;
-//                FLY_ENABLE = 0;
-//            }
-//        break;
-
-//        case REQ_DISARM:
-//            armState    = DISARMED;
-//            FLY_ENABLE  = 0;
-//            altCtrlMode = MANUAL;       /*上锁后加的处理*/
-//            zIntReset   = 1;
-//            thrustZSp   = 0;
-//            thrustZInt  = EstimateHoverThru();
-//            offLandFlag = 0;
-//        break;
-
-//        default:
-//            break;
+//        PWM_MotorFlash(200, 200, 200, 200);
 //    }
+//
+//    if (armState == REQ_DISARM)
+//    {
+//        PWM_MotorFlash(0, 0, 0, 0);
+//    }
+    switch (armState)
+    {
+        case REQ_ARM:
+            if (IMU_Check() && !Battery.AlarmFlag)
+            {
+                armState = ARMED;
+                FLY_ENABLE = 0xA5;
+                LedC_On;
+                //PWM_MotorFlash(200, 200, 200, 200);这肯定没用，因为在100Hz中会被重新赋值为0,设置在flight模块中
+            }
+            else
+            {
+                armState = DISARMED;
+                FLY_ENABLE = 0;
+            }
+        break;
+
+        case REQ_DISARM:
+            armState    = DISARMED;
+            FLY_ENABLE  = 0;
+            altCtrlMode = MANUAL;       /*上锁后加的处理*/
+            zIntReset   = 1;
+            thrustZSp   = 0;
+            thrustZInt  = EstimateHoverThru();
+            offLandFlag = 0;
+        break;
+
+        default:
+            break;
+    }
 }
 
-/*cut deadband scale to move linear*/
+/*Cut deadband scale to move linear*/
 float CutDBScaleToLinear(float x, float x_end, float deadband)
 {
     if (x > deadband)

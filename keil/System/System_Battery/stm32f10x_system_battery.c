@@ -57,11 +57,11 @@ int Battery_GetAD(void)
 void Battery_Check(void)
 {
     Battery.ADVal   = Battery_GetAD();                                               /*电池电压检测*/
-    Battery.RealVal = Battery.Factor * (Battery.ADVal / 4096.0) * Battery.ADRefVal;  /*实际电压 值计算*/
+    Battery.RealVal = Battery.Factor * (Battery.ADVal / 4096.0) * Battery.ADRefVal;  /*实际电压值计算*/
 
     if (FLY_ENABLE)
     {
-        /*处于电机开启等飞行状态，在过放电压值（BAT_OVERDIS_VAL）以上0.03v以上，开始报警*/
+        /*处于电机开启等飞行状态，在过放电压值(BAT_OVERDIS_VAL)以上0.03v时，开始报警*/
         if (Battery.RealVal <= (BAT_OVERDIS_VAL + 0.03))
         {
             Battery.AlarmFlag = 1;

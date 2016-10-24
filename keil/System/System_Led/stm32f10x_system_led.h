@@ -8,8 +8,8 @@ Date:        2016.8.14
 Description: declare the time led function
 Others:      none
 Function List:
-             1. extern void led_Init(void);
-             2. extern void led_test(int flag);
+             1. extern void LED_Init(void);
+             2. extern void LED_test(int flag);
 History:     none
 *******************************************************************************/
 
@@ -34,7 +34,7 @@ History:     none
 #define LEDB_troggle GPIO_WriteBit(GPIOA, GPIO_Pin_8, !GPIO_ReadOutputDataBit(GPIOA, GPIO_Pin_8))
 #define LEDA_troggle GPIO_WriteBit(GPIOA, GPIO_Pin_11, !GPIO_ReadOutputDataBit(GPIOA, GPIO_Pin_11))
 
-extern void led_Init(void);     /*initialize led*/
-extern void led_test(int flag);
+extern void LED_Init(void);     /*initialize led*/
+extern void LED_test(int flag);
 
 #endif

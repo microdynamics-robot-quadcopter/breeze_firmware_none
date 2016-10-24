@@ -8,18 +8,17 @@ Date:        2016.8.14
 Description: implement the led operation function
 Others:      none
 Function List:
-             1. extern void led_Init(void);
-             2. extern void led_test(int flag);
+             1. extern void LED_Init(void);
+             2. extern void LED_test(int flag);
 History:     none
 *******************************************************************************/
 
 #include "stm32f10x_system_led.h"
 
-void led_Init(void)
+void LED_Init(void)
 {
     GPIO_InitTypeDef GPIO_InitStructure;
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB | RCC_APB2Periph_AFIO, ENABLE);
-
     GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_1 | GPIO_Pin_3;
     GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_Out_PP;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
@@ -51,7 +50,7 @@ void led_Init(void)
     LedD_Off;
 }
 
-void led_test(int flag)
+void LED_test(int flag)
 {
     if (flag == 1)
     {

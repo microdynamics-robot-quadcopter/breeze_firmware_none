@@ -106,7 +106,7 @@ uint8_t MPU6050_GetDeviceID(void)
 *******************************************************************************/
 uint8_t MPU6050_TestConnection(void)
 {
-    if (MPU6050_GetDeviceID() == 0x68)  //0b01101000;
+    if (MPU6050_GetDeviceID() == 0x68)  /*0b01101000*/
     {
         return 1;
     }
@@ -163,7 +163,8 @@ void MPU6050_Init(void)
     IICWriteByte(DevAddr, MPU6050_RA_INT_PIN_CFG, 0 << 7 | 0 << 6 | 0 << 5 | 0 << 4 | 0 << 3 | 0 << 2 | 1 << 1 | 0 << 0);  /*INT_PIN_CFG   -- INT_LEVEL_HIGH, INT_OPEN_DIS, LATCH_INT_DIS, INT_RD_CLEAR_DIS, FSYNC_INT_LEVEL_HIGH, FSYNC_INT_DIS, I2C_BYPASS_EN, CLOCK_DIS*/
     IICWriteByte(DevAddr, MPU6050_RA_CONFIG, MPU6050_DLPF_BW_42);  /*CONFIG  -- EXT_SYNC_SET 0 (disable input pin for data sync) ; default DLPF_CFG = 0 => ACC bandwidth = 260Hz  GYRO bandwidth = 256Hz)*/
     MPU6050_SetFullScaleGyroRange(MPU6050_GYRO_FS_2000);
-    // Accel scale 8g (4096 LSB/g)
+
+    /*Accel scale 8g (4096 LSB/g)*/
     IICWriteByte(DevAddr, MPU6050_RA_ACCEL_CONFIG, 2 << 3);
 }
 
@@ -182,9 +183,9 @@ void MPU6050_ReadGyro(int16_t *gyroData)
 {
     uint8_t buf[6];
     IICReadBytes(DevAddr, MPU6050_RA_GYRO_XOUT_H, 6, buf);
-    gyroData[0] = (int16_t)((buf[0] << 8) | buf[1]) ;
-    gyroData[1] = (int16_t)((buf[2] << 8) | buf[3]) ;
-    gyroData[2] = (int16_t)((buf[4] << 8) | buf[5]) ;
+    gyroData[0] = (int16_t)((buf[0] << 8) | buf[1]);
+    gyroData[1] = (int16_t)((buf[2] << 8) | buf[3]);
+    gyroData[2] = (int16_t)((buf[4] << 8) | buf[5]);
 }
 
 /*用于校准DMP的偏置值*/
@@ -265,7 +266,7 @@ uint8_t MPU6050_WriteMemoryBlock(const uint8_t *data, uint16_t dataSize, uint8_t
     uint8_t j;
     MPU6050_SetMemoryBank(bank, 0, 0);
     MPU6050_SetMemoryStartAddress(address);
-    
+
     for (i = 0; i < dataSize;)
     {
         /*determine correct chunk size according to bank position and data size*/

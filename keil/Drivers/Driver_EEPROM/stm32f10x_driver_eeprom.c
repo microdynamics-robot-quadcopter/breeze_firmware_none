@@ -63,12 +63,12 @@ void TableToParam(void)
         imu.accOffset[i]  = table.accOffset[i];
         imu.gyroOffset[i] = table.gyroOffset[i];
     }
-    
+
     for (i = 0; i < 5; i++)
     {
         ((u8 *)(&RX_ADDRESS))[i] = ((float *)(&table.NRFAddr))[i];
     }
-		
+
     //BTstate = table.BTState;
     NRFMatched = table.NRFMatchFlag;
 }
@@ -81,7 +81,7 @@ void ParamToTable(void)
     {
         ((float *)(&table.pidPitch))[i] = ((float *)(&pitch_angle_PID))[i];
         //temp=((float *)(&roll_angle_PID))[i];
-        *((float *)(&table.pidRoll) + i) = ((float *)(&roll_angle_PID))[i];
+        *((float *)(&table.pidRoll) + i) = ((float *)(&roll_angle_PID))[i]; /*the same with next line Bug?*/
         ((float *)(&table.pidRoll))[i]   = ((float *)(&roll_angle_PID))[i];
         ((float *)(&table.pidYaw))[i]    = ((float *)(&yaw_angle_PID))[i];
 
@@ -95,14 +95,14 @@ void ParamToTable(void)
         table.accOffset[i]  = imu.accOffset[i];
         table.gyroOffset[i] = imu.gyroOffset[i];
     }
-		
+
     for (i = 0; i < 5; i++)
     {
         ((float *)(&table.NRFAddr))[i] = ((u8 *)(&RX_ADDRESS))[i];
     }
 
-	//table.BTState = BTstate;
-	table.NRFMatchFlag = NRFMatched;
+    //table.BTState = BTstate;
+    table.NRFMatchFlag = NRFMatched;
 }
 
 void LoadParamsFromEEPROM(void)
@@ -130,22 +130,22 @@ void SaveParamsToEEPROM(void)
 void ParamSetDefault(void)
 {
     pitch_angle_PID.P = 3.5;
-    pitch_angle_PID.I = 0;          //1.0;		//0
+    pitch_angle_PID.I = 0;          /*1.0 or 0*/
     pitch_angle_PID.D = 0;
-    pitch_angle_PID.iLimit = 300;	//or 1000
+    pitch_angle_PID.iLimit = 300;   /*or 1000*/
 
     pitch_rate_PID.P  = 0.7;
-    pitch_rate_PID.I  = 0.5; 		//0.5
+    pitch_rate_PID.I  = 0.5;        /*0.5*/
     pitch_rate_PID.D  = 0.03;
     pitch_rate_PID.iLimit = 300;
 
     roll_angle_PID.P = 3.5;
-    roll_angle_PID.I = 0;           //1.0;
+    roll_angle_PID.I = 0;           /*1.0*/
     roll_angle_PID.D = 0;
-    roll_angle_PID.iLimit = 300;	//or 1000
+    roll_angle_PID.iLimit = 300;    /*or 1000*/
 
     roll_rate_PID.P  = 0.7;
-    roll_rate_PID.I  = 0.5;; 	    //0.5
+    roll_rate_PID.I  = 0.5;         /*0.5*/
     roll_rate_PID.D  = 0.03;
     roll_rate_PID.iLimit = 300;
 
@@ -165,7 +165,7 @@ void ParamSetDefault(void)
     alt_vel_PID.I = 0.02f;
     alt_vel_PID.D = 0;
 
-    //should chango to read eeprom cfg. should be 0.
+    /*should chango to read eeprom cfg. should be 0*/
     imu.accOffset[0] = -0.1620515;
     imu.accOffset[1] = 0.07422026;
     imu.accOffset[2] = 0.7743073;

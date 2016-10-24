@@ -8,7 +8,7 @@ Date:        2016.8.4
 Description: declare the PWM operation function
 Others:      none
 Function List:
-             1. extern void PWM_Init(void); 
+             1. extern void PWM_Init(void);
              2. extern void PWM_Flash(int16_t MOTO1_PWM, int16_t MOTO2_PWM, int16_t MOTO3_PWM, int16_t MOTO4_PWM);
 History:     none
 *******************************************************************************/

@@ -108,9 +108,9 @@ void USART1_IRQHandler(void)
         {
             if (USART_RX_STA & 0x4000)                      /*接收到了0x0d*/
             {
-                if (res != 0x0a)
+                if (res != 0x0A)
                 {
-                    USART_RX_STA = 0;                       /*接收错误,重新开始*/
+                    USART_RX_STA = 0;                       /*接收错误, 重新开始*/
                 }
                 else
                 {
@@ -119,13 +119,13 @@ void USART1_IRQHandler(void)
             }
             else
             {
-                if (res == 0x0d)
+                if (res == 0x0D)
                 {
                     USART_RX_STA |= 0x4000;
                 }
                 else
                 {
-                    USART_RX_BUF[USART_RX_STA&0x3fff] = res;
+                    USART_RX_BUF[USART_RX_STA&0x3FFF] = res;
                     USART_RX_STA++;
                     if (USART_RX_STA > (USART_REC_LEN - 1))
                     {

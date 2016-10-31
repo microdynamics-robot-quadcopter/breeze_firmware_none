@@ -28,7 +28,7 @@ History:     none
 *      only function delay_init(void) and delay_us(u32 nus)
 *      in this modual can modify it
 *******************************************************************************/
-static u8 g_fac_us = 0;
+//static u8 g_fac_us = 0;
 
 /*******************************************************************************
 * Global variable function:
@@ -40,7 +40,7 @@ static u8 g_fac_us = 0;
 *      only function delay_init(void) and delay_ms(u16 nms)
 *      in this modual can modify it
 *******************************************************************************/
-static u16 g_fac_ms = 0;
+//static u16 g_fac_ms = 0;
 
 char SysClock;  /*申请存储系统时钟变量，单位MHz*/
 

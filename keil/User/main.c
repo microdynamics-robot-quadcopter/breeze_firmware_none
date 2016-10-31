@@ -106,6 +106,10 @@ int main(void)
             {
                 BatCnt = 0;
                 Battery_Check();
+                if (Battery.AlarmFlag)
+                {
+                    LedD_On;
+                }
             }
 
             if (gParamsSaveEEPROMRequest)

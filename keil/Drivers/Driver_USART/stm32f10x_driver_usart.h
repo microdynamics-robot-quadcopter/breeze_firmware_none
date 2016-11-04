@@ -18,12 +18,11 @@ History:     none
 #include "stm32f10x.h"
 
 #define USART_REC_LEN 200               /*定义最大接收字节数*/
-#define EN_USART_RX   1                 /*使能串口接收*/
 
 extern u8 USART_RX_BUF[USART_REC_LEN];  /*接收缓冲，最大USART_REC_LEN个字节，最后一个字节为换行符*/
 extern u16 USART_RX_STA;                /*接收状态标记*/
 
-/*USART Receiver buffer*/
+/*USART receiver buffer*/
 #define RX_BUFFER_SIZE   128
 #define TX_BUFFER_SIZE   128
 
@@ -38,18 +37,18 @@ typedef struct
     uint8_t* pbuf;
 }UartBuf;
 
-extern UartBuf UartTxbuf;/*环形发送结构体*/
-extern UartBuf UartRxbuf;/*环形接收结构体*/
+extern UartBuf UartTxbuf;  /*环形发送队列*/
+extern UartBuf UartRxbuf;  /*环形接收队列*/
 
 extern void usart_Init(u32 bound);      /*USART_Init()在库函数中有*/
 
 extern void USART_ClearBuf(UartBuf* RingBuf);
-extern void USART_SendOneChar(unsigned char Data);
-extern uint8_t USART_SendOneCharReturn(unsigned char Data);
+extern void USART_SendOneChar(unsigned char dat);
+extern uint8_t USART_SendOneCharReturn(unsigned char dat);
 
 extern uint8_t USART_ReadBuf(UartBuf* RingBuf);
 extern uint16_t USART_CountBuf(UartBuf* RingBuf);
-extern void USART_WriteBuf(UartBuf* RingBuf, uint8_t DataIn);
+extern void USART_WriteBuf(UartBuf* RingBuf, uint8_t dat);
 extern void USART_SendBuf(uint8_t* dat, uint8_t len);
 
 #endif

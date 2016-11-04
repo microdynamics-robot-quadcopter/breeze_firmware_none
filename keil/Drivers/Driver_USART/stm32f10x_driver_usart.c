@@ -43,8 +43,6 @@ int fputc(int ch, FILE *f)
 
 #endif
 
-#if EN_USART_RX                  /*若使能了接收标志*/
-/*串口1中断服务程序*/
 /*注意读取USARTx->SR能避免莫名其妙的错误*/
 u8 USART_RX_BUF[USART_REC_LEN];  /*接收缓冲，最大USART_REC_LEN个字节*/
 
@@ -78,11 +76,11 @@ void usart_Init(u32 bound)
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 
     /*USART1 NVIC配置*/
-    NVIC_InitStructure.NVIC_IRQChannel                   = USART1_IRQn; /*指定USART1通道中断*/
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 3;           /*抢占优先级3*/
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority        = 3;           /*子优先级3*/
-    NVIC_InitStructure.NVIC_IRQChannelCmd                = ENABLE;      /*IRQ通道使能*/
-    NVIC_Init(&NVIC_InitStructure);                                     /*根据指定的参数初始化VIC寄存器*/
+    NVIC_InitStructure.NVIC_IRQChannel                   = USART1_IRQn;              /*指定USART1通道中断*/
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 3;                        /*抢占优先级3*/
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority        = 3;                        /*子优先级3*/
+    NVIC_InitStructure.NVIC_IRQChannelCmd                = ENABLE;                   /*IRQ通道使能*/
+    NVIC_Init(&NVIC_InitStructure);                                                  /*根据指定的参数初始化VIC寄存器*/
 
     /*USART 初始化设置*/
     USART_InitStructure.USART_BaudRate            = bound;                           /*串口波特率*/
@@ -92,9 +90,9 @@ void usart_Init(u32 bound)
     USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;  /*无硬件数据流控制*/
     USART_InitStructure.USART_Mode                = USART_Mode_Rx | USART_Mode_Tx;   /*收发模式*/
 
-    USART_Init(USART1, &USART_InitStructure);       /*初始化串口1*/
-    USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);  /*开启串口接收中断*/
-    USART_Cmd(USART1, ENABLE);                      /*使能串口1*/
+    USART_Init(USART1, &USART_InitStructure);                                        /*初始化串口1*/
+    USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);                                   /*开启串口接收中断*/
+    USART_Cmd(USART1, ENABLE);                                                       /*使能串口1*/
 }
 
 /*串口1中断服务程序*/
@@ -137,50 +135,48 @@ void USART1_IRQHandler(void)
     }
     else if (USART_GetITStatus(USART1, USART_IT_TXE) != RESET)
     {
-        USART_SendData(USART1, USART_ReadBuf(&UartTxbuf));     /*环形数据缓存发送*/
+        USART_SendData(USART1, USART_ReadBuf(&UartTxbuf));     /*环形队列数据缓存发送*/
         if (USART_CountBuf(&UartTxbuf) == 0)
         {
-            USART_ITConfig(USART1, USART_IT_TXE, DISABLE);  /*假如缓冲空了，就关闭串口发送中断*/
+            USART_ITConfig(USART1, USART_IT_TXE, DISABLE);     /*假如缓冲空了，就关闭串口发送中断*/
         }
     }
 }
 
-#endif
-
-void USART_SendOneChar(unsigned char Data)
+void USART_SendOneChar(unsigned char dat)
 {
-    USART_WriteBuf(&UartTxbuf, Data);            /*将待发送数据放在环形缓冲数组中*/
+    USART_WriteBuf(&UartTxbuf, dat);               /*将待发送数据放在环形缓冲队列中*/
     USART_ITConfig(USART1, USART_IT_TXE, ENABLE);  /*启动发送中断开始发送缓冲中的数据*/
 }
 
-uint8_t USART_SendOneCharReturn(unsigned char Data)
+uint8_t USART_SendOneCharReturn(unsigned char dat)
 {
-    USART_WriteBuf(&UartTxbuf, Data);            /*将待发送数据放在环形缓冲数组中*/
+    USART_WriteBuf(&UartTxbuf, dat);               /*将待发送数据放在环形缓冲队列中*/
     USART_ITConfig(USART1, USART_IT_TXE, ENABLE);  /*启动发送中断开始发送缓冲中的数据*/
-    return Data;
+    return dat;
 }
 
-/*环形数组结构体实例化两个变量*/
-UartBuf UartTxbuf;  /*环形发送结构体*/
-UartBuf UartRxbuf;  /*环形接收结构体*/
+/*环形队列结构体实例化两个变量*/
+UartBuf UartTxbuf;  /*环形发送队列*/
+UartBuf UartRxbuf;  /*环形接收队列*/
 
 unsigned char rx_buffer[RX_BUFFER_SIZE];
 unsigned char tx_buffer[TX_BUFFER_SIZE];
 
-/*读取环形数据中的一个字节*/
+/*读取环形数据队列中的一个字节*/
 uint8_t USART_ReadBuf(UartBuf* RingBuf)
 {
     uint8_t temp;
     temp = RingBuf->pbuf[RingBuf->Rd_Indx&RingBuf->Mask];  /*数据长度掩码很重要，这是决定数据环形的关键*/
-    RingBuf->Rd_Indx++;                                    /*读取完成一次，读指针加1，为下一次读取做准备*/
+    RingBuf->Rd_Indx++;                                    /*读取完成一次读指针加1，为下一次读取做准备*/
     return temp;
 }
 
-/*将一个字节写入一个环形结构体中*/
-void USART_WriteBuf(UartBuf* RingBuf, uint8_t DataIn)
+/*将一个字节写入一个环形队列中*/
+void USART_WriteBuf(UartBuf* RingBuf, uint8_t dat)
 {
-    RingBuf->pbuf[RingBuf->Wd_Indx&RingBuf->Mask] = DataIn; /*数据长度掩码很重要，这是决定数据环形的关键*/
-    RingBuf->Wd_Indx++;                                     /*写完一次，写指针加1，为下一次写入做准备*/
+    RingBuf->pbuf[RingBuf->Wd_Indx&RingBuf->Mask] = dat;    /*数据长度掩码很重要，这是决定数据环形的关键*/
+    RingBuf->Wd_Indx++;                                     /*写完一次写指针加1，为下一次写入做准备*/
 }
 
 /*环形数据区的可用字节长度，当写指针写完一圈，追上了读指针*/
@@ -205,5 +201,3 @@ void USART_SendBuf(uint8_t* dat, uint8_t len)
     }
     USART_ITConfig(USART1, USART_IT_TXE, ENABLE);   /*启动发送中断开始发送缓冲中的数据*/
 }
-
-volatile uint8_t Udatatmp;  /*串口接收临时数据字节*/

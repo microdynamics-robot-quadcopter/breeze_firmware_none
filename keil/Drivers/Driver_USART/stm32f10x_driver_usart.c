@@ -44,7 +44,7 @@ int fputc(int ch, FILE *f)
 #endif
 
 /*注意读取USARTx->SR能避免莫名其妙的错误*/
-u8 USART_RX_BUF[USART_REC_LEN];  /*接收缓冲，最大USART_REC_LEN个字节*/
+u8 USART_RX_BUF[USART_REC_LEN];   /*接收缓冲，最大USART_REC_LEN个字节*/
 
 /*接收状态*/
 /*bit15     接收完成标志*/
@@ -93,6 +93,11 @@ void usart_Init(u32 bound)
     USART_Init(USART1, &USART_InitStructure);                                        /*初始化串口1*/
     USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);                                   /*开启串口接收中断*/
     USART_Cmd(USART1, ENABLE);                                                       /*使能串口1*/
+    
+    UartTxbuf.Wd_Indx = 0;                                                           /*初始化环形队列*/
+    UartTxbuf.Rd_Indx = 0;
+    UartTxbuf.Mask    = TX_BUFFER_SIZE - 1;
+    UartTxbuf.pbuf    = &tx_buffer[0];
 }
 
 /*串口1中断服务程序*/
@@ -143,25 +148,26 @@ void USART1_IRQHandler(void)
     }
 }
 
-void USART_SendOneChar(unsigned char dat)
-{
-    USART_WriteBuf(&UartTxbuf, dat);               /*将待发送数据放在环形缓冲队列中*/
-    USART_ITConfig(USART1, USART_IT_TXE, ENABLE);  /*启动发送中断开始发送缓冲中的数据*/
-}
-
-uint8_t USART_SendOneCharReturn(unsigned char dat)
-{
-    USART_WriteBuf(&UartTxbuf, dat);               /*将待发送数据放在环形缓冲队列中*/
-    USART_ITConfig(USART1, USART_IT_TXE, ENABLE);  /*启动发送中断开始发送缓冲中的数据*/
-    return dat;
-}
-
 /*环形队列结构体实例化两个变量*/
 UartBuf UartTxbuf;  /*环形发送队列*/
 UartBuf UartRxbuf;  /*环形接收队列*/
 
 unsigned char rx_buffer[RX_BUFFER_SIZE];
 unsigned char tx_buffer[TX_BUFFER_SIZE];
+
+
+void USART_SendOneBytes(unsigned char dat)
+{
+    USART_WriteBuf(&UartTxbuf, dat);               /*将待发送数据放在环形缓冲队列中*/
+    USART_ITConfig(USART1, USART_IT_TXE, ENABLE);  /*启动发送中断开始发送缓冲中的数据*/
+}
+
+uint8_t USART_SendOneBytesReturn(unsigned char dat)
+{
+    USART_WriteBuf(&UartTxbuf, dat);               /*将待发送数据放在环形缓冲队列中*/
+    USART_ITConfig(USART1, USART_IT_TXE, ENABLE);  /*启动发送中断开始发送缓冲中的数据*/
+    return dat;
+}
 
 /*读取环形数据队列中的一个字节*/
 uint8_t USART_ReadBuf(UartBuf* RingBuf)

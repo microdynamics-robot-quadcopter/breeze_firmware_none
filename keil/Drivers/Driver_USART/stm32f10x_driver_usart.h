@@ -43,8 +43,8 @@ extern UartBuf UartRxbuf;  /*环形接收队列*/
 extern void usart_Init(u32 bound);      /*USART_Init()在库函数中有*/
 
 extern void USART_ClearBuf(UartBuf* RingBuf);
-extern void USART_SendOneChar(unsigned char dat);
-extern uint8_t USART_SendOneCharReturn(unsigned char dat);
+extern void USART_SendOneBytes(unsigned char dat);
+extern uint8_t USART_SendOneBytesReturn(unsigned char dat);
 
 extern uint8_t USART_ReadBuf(UartBuf* RingBuf);
 extern uint16_t USART_CountBuf(UartBuf* RingBuf);

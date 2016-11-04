@@ -135,21 +135,29 @@ void USART1_IRQHandler(void)
             }
         }
     }
+    else if (USART_GetITStatus(USART1, USART_IT_TXE) != RESET)
+    {
+        USART_SendData(USART1, USART_ReadBuf(&UartTxbuf));     /*环形数据缓存发送*/
+        if (USART_CountBuf(&UartTxbuf) == 0)
+        {
+            USART_ITConfig(USART1, USART_IT_TXE, DISABLE);  /*假如缓冲空了，就关闭串口发送中断*/
+        }
+    }
 }
 
 #endif
 
-void UART1_Put_Char(unsigned char DataToSend)
+void USART_SendOneChar(unsigned char Data)
 {
-    UartBuf_WD(&UartTxbuf, DataToSend);            /*将待发送数据放在环形缓冲数组中*/
-    USART_ITConfig(USART1, USART_IT_TXE, ENABLE);  /*启动发送中断开始啪啪啪发送缓冲中的数据*/
+    USART_WriteBuf(&UartTxbuf, Data);            /*将待发送数据放在环形缓冲数组中*/
+    USART_ITConfig(USART1, USART_IT_TXE, ENABLE);  /*启动发送中断开始发送缓冲中的数据*/
 }
 
-uint8_t Uart1_Put_Char(unsigned char DataToSend)
+uint8_t USART_SendOneCharReturn(unsigned char Data)
 {
-    UartBuf_WD(&UartTxbuf, DataToSend);            /*将待发送数据放在环形缓冲数组中*/
-    USART_ITConfig(USART1, USART_IT_TXE, ENABLE);  /*启动发送中断开始啪啪啪发送缓冲中的数据*/
-    return DataToSend;
+    USART_WriteBuf(&UartTxbuf, Data);            /*将待发送数据放在环形缓冲数组中*/
+    USART_ITConfig(USART1, USART_IT_TXE, ENABLE);  /*启动发送中断开始发送缓冲中的数据*/
+    return Data;
 }
 
 /*环形数组结构体实例化两个变量*/
@@ -160,42 +168,42 @@ unsigned char rx_buffer[RX_BUFFER_SIZE];
 unsigned char tx_buffer[TX_BUFFER_SIZE];
 
 /*读取环形数据中的一个字节*/
-uint8_t UartBuf_RD(UartBuf *Ringbuf)
+uint8_t USART_ReadBuf(UartBuf* RingBuf)
 {
     uint8_t temp;
-    temp = Ringbuf->pbuf[Ringbuf->Rd_Indx&Ringbuf->Mask];  /*数据长度掩码很重要，这是决定数据环形的关键*/
-    Ringbuf->Rd_Indx++;                                    /*读取完成一次，读指针加1，为下一次 读取做准备*/
+    temp = RingBuf->pbuf[RingBuf->Rd_Indx&RingBuf->Mask];  /*数据长度掩码很重要，这是决定数据环形的关键*/
+    RingBuf->Rd_Indx++;                                    /*读取完成一次，读指针加1，为下一次读取做准备*/
     return temp;
 }
 
 /*将一个字节写入一个环形结构体中*/
-void UartBuf_WD(UartBuf *Ringbuf,uint8_t DataIn)
+void USART_WriteBuf(UartBuf* RingBuf, uint8_t DataIn)
 {
-    Ringbuf->pbuf[Ringbuf->Wd_Indx&Ringbuf->Mask] = DataIn; /*数据长度掩码很重要，这是决定数据环形的关键*/
-    Ringbuf->Wd_Indx++;                                     /*写完一次，写指针加1，为下一次写入做准备*/
+    RingBuf->pbuf[RingBuf->Wd_Indx&RingBuf->Mask] = DataIn; /*数据长度掩码很重要，这是决定数据环形的关键*/
+    RingBuf->Wd_Indx++;                                     /*写完一次，写指针加1，为下一次写入做准备*/
 }
 
 /*环形数据区的可用字节长度，当写指针写完一圈，追上了读指针*/
 /*那么证明数据写满了，此时应该增加缓冲区长度，或者缩短外围数据处理时间*/
-uint16_t UartBuf_Cnt(UartBuf *Ringbuf)
+uint16_t USART_CountBuf(UartBuf* RingBuf)
 {
-    return (Ringbuf->Wd_Indx - Ringbuf->Rd_Indx) & Ringbuf->Mask;  /*数据长度掩码很重要，这是决定数据环形的关键*/
+    return (RingBuf->Wd_Indx - RingBuf->Rd_Indx) & RingBuf->Mask;  /*数据长度掩码很重要，这是决定数据环形的关键*/
 }
 
-void UartBufClear(UartBuf *Ringbuf)
+void USART_ClearBuf(UartBuf* RingBuf)
 {
-    Ringbuf->Rd_Indx = Ringbuf->Wd_Indx;
+    RingBuf->Rd_Indx = RingBuf->Wd_Indx;
 }
 
-void UartSendBuffer(uint8_t *dat, uint8_t len)
+void USART_SendBuf(uint8_t* dat, uint8_t len)
 {
     uint8_t i;
     for (i = 0; i < len; i++)
     {
-        UartBuf_WD(&UartTxbuf, *dat);
+        USART_WriteBuf(&UartTxbuf, *dat);
         dat++;
     }
-    USART_ITConfig(USART1, USART_IT_TXE, ENABLE);   /*启动发送中断开始啪啪啪发送缓冲中的数据*/
+    USART_ITConfig(USART1, USART_IT_TXE, ENABLE);   /*启动发送中断开始发送缓冲中的数据*/
 }
 
 volatile uint8_t Udatatmp;  /*串口接收临时数据字节*/

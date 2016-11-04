@@ -35,7 +35,7 @@ typedef struct
     uint16_t volatile Wd_Indx;
     uint16_t volatile Rd_Indx;
     uint16_t Mask;
-    uint8_t *pbuf;
+    uint8_t* pbuf;
 }UartBuf;
 
 extern UartBuf UartTxbuf;/*环形发送结构体*/
@@ -43,15 +43,13 @@ extern UartBuf UartRxbuf;/*环形接收结构体*/
 
 extern void usart_Init(u32 bound);      /*USART_Init()在库函数中有*/
 
-extern uint8_t flyLogF;
+extern void USART_ClearBuf(UartBuf* RingBuf);
+extern void USART_SendOneChar(unsigned char Data);
+extern uint8_t USART_SendOneCharReturn(unsigned char Data);
 
-void UartBufClear(UartBuf *Ringbuf);
-void UART1_Put_Char(unsigned char DataToSend);
-uint8_t Uart1_Put_Char(unsigned char DataToSend);
-
-extern uint8_t UartBuf_RD(UartBuf *Ringbuf);
-extern uint16_t UartBuf_Cnt(UartBuf *Ringbuf);
-extern void UartBuf_WD(UartBuf *Ringbuf,uint8_t DataIn);
-void UartSendBuffer(uint8_t *dat, uint8_t len);
+extern uint8_t USART_ReadBuf(UartBuf* RingBuf);
+extern uint16_t USART_CountBuf(UartBuf* RingBuf);
+extern void USART_WriteBuf(UartBuf* RingBuf, uint8_t DataIn);
+extern void USART_SendBuf(uint8_t* dat, uint8_t len);
 
 #endif

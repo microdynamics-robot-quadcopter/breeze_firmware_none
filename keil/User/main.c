@@ -9,6 +9,7 @@
 #include "stm32f10x_system_led.h"
 #include "stm32f10x_system_rpdata.h"
 #include "stm32f10x_system_ms5611.h"
+#include "stm32f10x_system_monitor.h"
 #include "stm32f10x_system_battery.h"
 #include "stm32f10x_system_mpu6050.h"
 #include "stm32f10x_system_nrf24l01.h"
@@ -96,6 +97,7 @@ int main(void)
             AltitudeCombineThread();
             ControlAlti();
             ControlAttiAng();
+            CommPCUploadHandle();
         }
 
         if (loop10HzFlag)

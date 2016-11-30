@@ -1,22 +1,34 @@
 /*******************************************************************************
-Copyright (C), 2016-2016, Team MicroDynamics. 
+THIS PROGRAM IS FREE SOFTWARE. YOU CAN REDISTRIBUTE IT AND/OR MODIFY IT 
+UNDER THE TERMS OF THE GNU GPLV3 AS PUBLISHED BY THE FREE SOFTWARE FOUNDATION.
+
+Copyright (C), 2016-2016, Team MicroDynamics <microdynamics@126.com>
 
 Filename:    stm32f10x_driver_iic.c
 Author:      maksyuki
-Version:     1.0
-Date:        2016.8.3
+Version:     0.1.0.20161231_release
+Create date: 2016.8.3
 Description: implement the IIC operation function
 Others:      none
 Function List:
-             1. void IIC_Init(void); 
+             1. void IIC_Init(void);
              2. void IIC_Start(void);
              3. void IIC_Stop(void);
              4. void IIC_SendByte(u8 txd);
              5. u8 IIC_ReadByte(u8 ack);
-             6. u8 IIC_WaitAck(void); 
-             7. void IIC_Ack(void); 
-             8. void IIC_NAck(void);  
-History:     none
+             6. u8 IIC_WaitAck(void);
+             7. void IIC_Ack(void);
+             8. void IIC_NAck(void);
+             9. u8 IIC_ReadOneByte(u8 IIC_Addr, u8 addr);
+             10.u8 IICReadBytes(u8 dev, u8 reg, u8 length, u8 *data);
+             11.u8 IICWriteBytes(u8 dev, u8 reg, u8 length, u8 *data);
+             12.u8 IICReadByte(u8 dev, u8 reg, u8 *data);
+             13.u8 IICWriteByte(u8 dev, u8 reg, u8 data);
+             14.u8 IICWriteBits(u8 dev, u8 reg, u8 bitStart, u8 length, u8 data);
+             15.u8 IICWriteBit(u8 dev, u8 reg, u8 bitNum, u8 data);
+History:
+1. <author>    <date>         <desc>
+   maksyuki  2016.11.30  modify the module
 *******************************************************************************/
 
 #include "stm32f10x_driver_iic.h"
@@ -164,7 +176,6 @@ u8 IIC_ReadOneByte(u8 IIC_Addr, u8 addr)
     IIC_WaitAck();
     res = IIC_ReadByte(0);
     IIC_Stop();
-
     return res;
 }
 
@@ -194,7 +205,6 @@ u8 IICReadBytes(u8 dev, u8 reg, u8 length, u8 *data)
         data[count] = temp;
     }
     IIC_Stop();
-
     return count;
 }
 

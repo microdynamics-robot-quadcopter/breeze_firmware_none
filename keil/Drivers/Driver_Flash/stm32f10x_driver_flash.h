@@ -7,7 +7,7 @@ Copyright (C), 2016-2016, Team MicroDynamics <microdynamics@126.com>
 Filename:    stm32f10x_driver_flash.h
 Author:      maksyuki
 Version:     0.1.0.20161231_release
-Create date: 2016.8.20
+Create date: 2016.08.20
 Description: declare the flash operation function
 Others:      none
 Function List:

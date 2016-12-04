@@ -7,7 +7,7 @@ Copyright (C), 2016-2016, Team MicroDynamics <microdynamics@126.com>
 Filename:    stm32f10x_driver_iic.h
 Author:      maksyuki
 Version:     0.1.0.20161231_release
-Create date: 2016.8.3
+Create date: 2016.08.03
 Description: define the IIC operation and declare the IIC operation function
 Others:      none
 Function List:

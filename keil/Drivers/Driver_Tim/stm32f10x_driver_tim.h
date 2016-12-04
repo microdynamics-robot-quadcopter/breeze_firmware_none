@@ -7,7 +7,7 @@ Copyright (C), 2016-2016, Team MicroDynamics <microdynamics@126.com>
 Filename:    stm32f10x_driver_tim.h
 Author:      maksyuki
 Version:     0.1.0.20161231_release
-Create date: 2016.8.17
+Create date: 2016.08.17
 Description: declare the timer set operation
 Others:      none
 Function List:

@@ -7,7 +7,7 @@ Copyright (C), 2016-2016, Team MicroDynamics <microdynamics@126.com>
 Filename:    stm32f10x_driver_pwm.c
 Author:      maksyuki
 Version:     0.1.0.20161231_release
-Create date: 2016.8.4
+Create date: 2016.08.04
 Description: implement the PWM operation function
 Others:      none
 Function List:

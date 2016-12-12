@@ -49,8 +49,8 @@ typedef struct
     uint8_t* pbuf;
 }UartBuf;
 
-extern UartBuf UartTxbuf;  /* Ring send queue */
-extern UartBuf UartRxbuf;  /* Ring receive queue */
+extern UartBuf UartTxbuf;  /* Ring-send queue */
+extern UartBuf UartRxbuf;  /* Ring-receive queue */
 
 /* USART_Init() exists in the official library */
 extern void usart_Init(u32 bound);      

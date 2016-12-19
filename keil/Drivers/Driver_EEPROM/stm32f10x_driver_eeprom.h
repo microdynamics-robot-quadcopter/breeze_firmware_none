@@ -1,3 +1,29 @@
+/*******************************************************************************
+THIS PROGRAM IS FREE SOFTWARE. YOU CAN REDISTRIBUTE IT AND/OR MODIFY IT 
+UNDER THE TERMS OF THE GNU GPLV3 AS PUBLISHED BY THE FREE SOFTWARE FOUNDATION.
+
+Copyright (C), 2016-2016, Team MicroDynamics <microdynamics@126.com>
+
+Filename:    stm32f10x_driver_eeprom.h
+Author:      maksyuki
+Version:     0.1.0.20161231_release
+Create date: 2016.08.21
+Description: declare the eeprom function
+Others:      none
+Function List:
+             1. void LoadParamsFromEEPROM(void);
+             2. void ParamSetDefault(void);
+             3. void ParamToTable(void);
+             4. void TableToParam(void);
+             5. void TableWriteEEPROM(void);
+             6. void TableReadEEPROM(void);
+             7. void SaveParamsToEEPROM(void);
+             8. uint8_t isEEPROMValid(void);
+History:
+1. <author>    <date>         <desc>
+   maksyuki  2016.12.19  modify the module
+*******************************************************************************/
+
 #ifndef __STM32F10X_DRIVER_EEPROM_H__
 #define __STM32F10X_DRIVER_EEPROM_H__
 

@@ -1,3 +1,29 @@
+/*******************************************************************************
+THIS PROGRAM IS FREE SOFTWARE. YOU CAN REDISTRIBUTE IT AND/OR MODIFY IT 
+UNDER THE TERMS OF THE GNU GPLV3 AS PUBLISHED BY THE FREE SOFTWARE FOUNDATION.
+
+Copyright (C), 2016-2016, Team MicroDynamics <microdynamics@126.com>
+
+Filename:    stm32f10x_driver_eeprom.c
+Author:      maksyuki
+Version:     0.1.0.20161231_release
+Create date: 2016.08.21
+Description: implement the eeprom function
+Others:      none
+Function List:
+             1. void LoadParamsFromEEPROM(void);
+             2. void ParamSetDefault(void);
+             3. void ParamToTable(void);
+             4. void TableToParam(void);
+             5. void TableWriteEEPROM(void);
+             6. void TableReadEEPROM(void);
+             7. void SaveParamsToEEPROM(void);
+             8. uint8_t isEEPROMValid(void);
+History:
+1. <author>    <date>         <desc>
+   maksyuki  2016.12.19  modify the module
+*******************************************************************************/
+
 #include "stm32f10x_driver_flash.h"
 #include "stm32f10x_driver_eeprom.h"
 #include "stm32f10x_system_nrf24l01.h"
@@ -81,7 +107,7 @@ void ParamToTable(void)
     {
         ((float *)(&table.pidPitch))[i] = ((float *)(&pitch_angle_PID))[i];
         //temp=((float *)(&roll_angle_PID))[i];
-        *((float *)(&table.pidRoll) + i) = ((float *)(&roll_angle_PID))[i]; /*the same with next line Bug?*/
+        *((float *)(&table.pidRoll) + i) = ((float *)(&roll_angle_PID))[i]; /* the same with next line Bug? */
         ((float *)(&table.pidRoll))[i]   = ((float *)(&roll_angle_PID))[i];
         ((float *)(&table.pidYaw))[i]    = ((float *)(&yaw_angle_PID))[i];
 
@@ -130,22 +156,22 @@ void SaveParamsToEEPROM(void)
 void ParamSetDefault(void)
 {
     pitch_angle_PID.P = 3.5;
-    pitch_angle_PID.I = 0;          /*1.0 or 0*/
+    pitch_angle_PID.I = 0;          /* 1.0 or 0 */
     pitch_angle_PID.D = 0;
-    pitch_angle_PID.iLimit = 300;   /*or 1000*/
+    pitch_angle_PID.iLimit = 300;   /* or 1000 */
 
     pitch_rate_PID.P  = 0.7;
-    pitch_rate_PID.I  = 0.5;        /*0.5*/
+    pitch_rate_PID.I  = 0.5;
     pitch_rate_PID.D  = 0.03;
     pitch_rate_PID.iLimit = 300;
 
     roll_angle_PID.P = 3.5;
-    roll_angle_PID.I = 0;           /*1.0*/
+    roll_angle_PID.I = 0;           /* 1.0 */
     roll_angle_PID.D = 0;
-    roll_angle_PID.iLimit = 300;    /*or 1000*/
+    roll_angle_PID.iLimit = 300;    /* or 1000 */
 
     roll_rate_PID.P  = 0.7;
-    roll_rate_PID.I  = 0.5;         /*0.5*/
+    roll_rate_PID.I  = 0.5;
     roll_rate_PID.D  = 0.03;
     roll_rate_PID.iLimit = 300;
 
@@ -165,7 +191,7 @@ void ParamSetDefault(void)
     alt_vel_PID.I = 0.02f;
     alt_vel_PID.D = 0;
 
-    /*should chango to read eeprom cfg. should be 0*/
+    /* should chango to read eeprom cfg. should be 0 */
     imu.accOffset[0] = -0.1620515;
     imu.accOffset[1] = 0.07422026;
     imu.accOffset[2] = 0.7743073;

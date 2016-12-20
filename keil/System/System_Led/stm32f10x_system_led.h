@@ -1,16 +1,21 @@
 /*******************************************************************************
-Copyright (C), 2016-2016, Team MicroDynamics.
+THIS PROGRAM IS FREE SOFTWARE. YOU CAN REDISTRIBUTE IT AND/OR MODIFY IT 
+UNDER THE TERMS OF THE GNU GPLV3 AS PUBLISHED BY THE FREE SOFTWARE FOUNDATION.
+
+Copyright (C), 2016-2016, Team MicroDynamics <microdynamics@126.com>
 
 Filename:    stm32f10x_system_led.h
 Author:      maksyuki
-Version:     1.0
-Date:        2016.8.14
-Description: declare the time led function
+Version:     0.1.0.20161231_release
+Create date: 2016.08.14
+Description: declare the led function
 Others:      none
 Function List:
-             1. extern void LED_Init(void);
-             2. extern void LED_test(int flag);
-History:     none
+             1. void LED_Init(void);
+             2. void LED_test(int flag);
+History:
+1. <author>    <date>         <desc>
+   maksyuki  2016.12.20  modify the module
 *******************************************************************************/
 
 #ifndef __STM32F10X_SYSTEM_LED_H__
@@ -34,7 +39,7 @@ History:     none
 #define LEDB_troggle GPIO_WriteBit(GPIOA, GPIO_Pin_8, !GPIO_ReadOutputDataBit(GPIOA, GPIO_Pin_8))
 #define LEDA_troggle GPIO_WriteBit(GPIOA, GPIO_Pin_11, !GPIO_ReadOutputDataBit(GPIOA, GPIO_Pin_11))
 
-extern void LED_Init(void);     /*initialize led*/
+extern void LED_Init(void);     /* Initialize led */
 extern void LED_test(int flag);
 
 #endif

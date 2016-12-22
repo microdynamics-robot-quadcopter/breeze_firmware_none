@@ -1,6 +1,28 @@
+/*******************************************************************************
+THIS PROGRAM IS FREE SOFTWARE. YOU CAN REDISTRIBUTE IT AND/OR MODIFY IT 
+UNDER THE TERMS OF THE GNU GPLV3 AS PUBLISHED BY THE FREE SOFTWARE FOUNDATION.
+
+Copyright (C), 2016-2016, Team MicroDynamics <microdynamics@126.com>
+
+Filename:    stm32f10x_system_rpdata.c
+Author:      maksyuki
+Version:     0.1.0.20161231_release
+Create date: 2016.08.20
+Description: implement the data receive and process operation function
+Others:      none
+Function List:
+             1. void ReceiveDataFromNRF(void);
+             2. void ProcessDataFromNRF(void);
+             3. float CutDBScaleToLinear(float x, float x_end,
+                                         float deadband);
+History:
+1. <author>    <date>         <desc>
+   maksyuki  2016.12.22  modify the module
+*******************************************************************************/
+
 #include "stm32f10x_driver_pwm.h"
 #include "stm32f10x_driver_usart.h"
-#include "stm32f10x_system_led.h"  /*debug*/
+#include "stm32f10x_system_led.h"  /* Debug */
 #include "stm32f10x_system_rpdata.h"
 #include "stm32f10x_system_battery.h"
 #include "stm32f10x_system_nrf24l01.h"
@@ -60,7 +82,7 @@ void ProcessDataFromNRF(void)
     NRF_Data.pitch = ANGLE_MAX    * CutDBScaleToLinear((rcData[PITCH] - 1500), 500, APP_PR_DB);
     NRF_Data.roll  = ANGLE_MAX    * CutDBScaleToLinear((rcData[ROLL] - 1500), 500, APP_PR_DB);
 
-    //printf("This is the value of the armState:\n");  /*debug*/
+    //printf("This is the value of the armState:\n");  /* Debug */
     //printf("%d\n", armState);
 
 //    if (armState == REQ_ARM)
@@ -80,7 +102,10 @@ void ProcessDataFromNRF(void)
                 armState = ARMED;
                 FLY_ENABLE = 0xA5;
                 LedC_On;
-                //PWM_MotorFlash(200, 200, 200, 200);这肯定没用，因为在100Hz中会被重新赋值为0,设置在flight模块中
+
+                /* This is an unuseful process, because it will be assigned zero in 100Hz loop */
+                /* Setting in the flight module */
+                //PWM_MotorFlash(200, 200, 200, 200);
             }
             else
             {
@@ -92,7 +117,7 @@ void ProcessDataFromNRF(void)
         case REQ_DISARM:
             armState    = DISARMED;
             FLY_ENABLE  = 0;
-            altCtrlMode = MANUAL;       /*上锁后加的处理*/
+            altCtrlMode = MANUAL;       /* Extra process after DISARMED */
             zIntReset   = 1;
             thrustZSp   = 0;
             thrustZInt  = EstimateHoverThru();
@@ -104,7 +129,7 @@ void ProcessDataFromNRF(void)
     }
 }
 
-/*Cut deadband scale to move linear*/
+/* Cut deadband scale to move linear */
 float CutDBScaleToLinear(float x, float x_end, float deadband)
 {
     if (x > deadband)

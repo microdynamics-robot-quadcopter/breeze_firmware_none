@@ -1,3 +1,25 @@
+/*******************************************************************************
+THIS PROGRAM IS FREE SOFTWARE. YOU CAN REDISTRIBUTE IT AND/OR MODIFY IT 
+UNDER THE TERMS OF THE GNU GPLV3 AS PUBLISHED BY THE FREE SOFTWARE FOUNDATION.
+
+Copyright (C), 2016-2016, Team MicroDynamics <microdynamics@126.com>
+
+Filename:    stm32f10x_system_rpdata.h
+Author:      maksyuki
+Version:     0.1.0.20161231_release
+Create date: 2016.08.20
+Description: declare the data receive and process operation function
+Others:      none
+Function List:
+             1. void ReceiveDataFromNRF(void);
+             2. void ProcessDataFromNRF(void);
+             3. float CutDBScaleToLinear(float x, float x_end,
+                                         float deadband);
+History:
+1. <author>    <date>         <desc>
+   maksyuki  2016.12.22  modify the module
+*******************************************************************************/
+
 #ifndef __STM32F10X_SYSTEM_RPDATA_H__
 #define __STM32F10X_SYSTEM_RPDATA_H__
 
@@ -24,12 +46,12 @@ enum {DISARMED = 0, REQ_ARM, ARMED, REQ_DISARM};
 #define MSP_FLY_STATE       16
 #define MSP_ACC_CALI        205
 
-#define APP_YAW_DB     70               /*dead band*/
+#define APP_YAW_DB     70               /* Dead band */
 #define APP_PR_DB      50
 
 #define  M_PI_F        3.1415926
-#define  ANGLE_MAX     40.0             /*定义飞机最大倾斜角度*/
-#define  YAW_RATE_MAX  180.0f / M_PI_F  /*deg/s*/
+#define  ANGLE_MAX     40.0             /* Define the max tilt angle */
+#define  YAW_RATE_MAX  180.0f / M_PI_F  /* Unit: deg/s */
 
 #define CONSTRAIN(x, min, max) {if (x < min) x = min; if (x > max) x = max;}
 

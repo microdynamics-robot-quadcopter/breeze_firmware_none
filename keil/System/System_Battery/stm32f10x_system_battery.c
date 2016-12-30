@@ -1,20 +1,25 @@
 /*******************************************************************************
-Copyright (C), 2016-2016, Team MicroDynamics. 
+THIS PROGRAM IS FREE SOFTWARE. YOU CAN REDISTRIBUTE IT AND/OR MODIFY IT 
+UNDER THE TERMS OF THE GNU GPLV3 AS PUBLISHED BY THE FREE SOFTWARE FOUNDATION.
+
+Copyright (C), 2016-2016, Team MicroDynamics <microdynamics@126.com>
 
 Filename:    stm32f10x_system_battery.c
 Author:      maksyuki
-Version:     1.0
-Date:        2016.8.14
+Version:     0.1.0.20161231_release
+Create date: 2016.08.14
 Description: implement the battery operation function
 Others:      none
 Function List:
-             1. extern int  Battery_GetAD(void);
-             2. extern int  Battery_GetTemp(void);
-             3. extern void Battery_Check(void);
-             4. extern void Battery_CheckInit(void);
-             5. extern u16  Battery_GetADC(u8 ch);
-             6. extern u16  Battery_GetADCAverage(u8 ch, u8 times);
-History:     none
+             1. int  Battery_GetAD(void);
+             2. int  Battery_GetTemp(void);
+             3. void Battery_Check(void);
+             4. void Battery_CheckInit(void);
+             5. u16  Battery_GetADC(u8 ch);
+             6. u16  Battery_GetADCAverage(u8 ch, u8 times);
+History:
+1. <author>    <date>         <desc>
+   maksyuki  2016.12.30  modify the module
 *******************************************************************************/
 
 #include "stm32f10x_system_rpdata.h"
@@ -24,44 +29,41 @@ History:     none
 
 extern uint8_t FLY_ENABLE;
 
-/*实例化一个电压信息结构体*/
 Bat_TypedefStructure Battery;
 
-/*得到ADC采样内部温度传感器的温度值*/
-/*返回值3位温度值 XXX*0.1c*/
+/* Get the ADC value from internal temperature sensor */
+/* Return three bits temperature value XXX * 0.1c */
 int Battery_GetTemp(void)
 {
     u16 temp_val = 0;
     float temperature;
 
     u8 i;
-    for (i = 0; i < 20; i++)                        /*读20次，取平均值*/
+    for (i = 0; i < 20; i++)
     {
-        temp_val += Battery_GetADC(16);             /*温度传感器为通道16*/
+        temp_val += Battery_GetADC(16); /* 16 channels */
     }
 
     temp_val    /= 20;
-    temperature  = (float)temp_val * (3.3 / 4096);      /*得到温度传感器的电压值*/
-    temperature  = (1.43 - temperature) / 0.0043 + 25;  /*计算出当前温度值*/
-    temperature *= 10;                                  /*扩大十倍,使用小数点后一位*/
+    temperature  = (float)temp_val * (3.3 / 4096);     /* Get the voltage value */
+    temperature  = (1.43 - temperature) / 0.0043 + 25; /* Calculate the temperature */
+    temperature *= 10;
     return (int)temperature;
 }
 
-/*返回电池电压AD值*/
 int Battery_GetAD(void)
 {
     return Battery_GetADCAverage(8, 5);
 }
 
-/*检测电池电压*/
 void Battery_Check(void)
 {
-    Battery.ADVal   = Battery_GetAD();                                               /*电池电压检测*/
-    Battery.RealVal = Battery.Factor * (Battery.ADVal / 4096.0) * Battery.ADRefVal;  /*实际电压值计算*/
+    Battery.ADVal   = Battery_GetAD(); /* Detect battery voltage */
+    Battery.RealVal = Battery.Factor * (Battery.ADVal / 4096.0) * Battery.ADRefVal;
 
     if (FLY_ENABLE)
     {
-        /*处于电机开启等飞行状态，在过放电压值(BAT_OVERDIS_VAL)以上0.03v时，开始报警*/
+        /* Under the state of idling */
         if (Battery.RealVal <= (BAT_OVERDIS_VAL + 0.03))
         {
             Battery.AlarmFlag = 1;
@@ -71,7 +73,7 @@ void Battery_Check(void)
             Battery.AlarmFlag = 0;
         }
 
-        /*过放保护，Battery overdischarge protect*/
+        /* Battery overdischarge protect */
         if (Battery.RealVal <= BAT_OVERDIS_VAL)
         {
             Battery.OverDischargeCnt++;
@@ -91,7 +93,7 @@ void Battery_Check(void)
     }
     else
     {
-        if ((Battery.RealVal < BAT_ALARM_VAL) && (Battery.RealVal > BAT_CHARGE_VAL))  /*低于3.7v 且大于充电检测电压 BAT_CHG_VAL*/
+        if ((Battery.RealVal < BAT_ALARM_VAL) && (Battery.RealVal > BAT_CHARGE_VAL))
         {
             Battery.AlarmFlag = 1;
         }
@@ -101,7 +103,8 @@ void Battery_Check(void)
         }
     }
 
-    if (Battery.RealVal < BAT_CHARGE_VAL)  /*on charge*/
+    /* On charge */
+    if (Battery.RealVal < BAT_CHARGE_VAL)
     {
         Battery.ChargeState = 1;
     }
@@ -111,76 +114,75 @@ void Battery_Check(void)
     }
 }
 
-/*初始化电池检测ADC*/
-/*开启ADC1的通道8*/
-/*BatteryCheck---->PB0*/
+/* Start the channel 8 of ADC1 */
+/* BatteryCheck---->PB0 */
 void Battery_CheckInit(void)
 {
-    /*先初PB0为模拟输入*/
-    RCC->APB2ENR  |= 1<<3;        /*使能PORTB口时钟*/
-    GPIOB->CRL    &= 0XFFFFFFF0;  /*PB0	anolog输入*/
+    /* Initialize the PB0 and set it become analog input mode */
+    RCC->APB2ENR  |= 1<<3;        /* Enable the clock of PORTB */
+    GPIOB->CRL    &= 0XFFFFFFF0;  /* PB0 anolog input */
 
-    /*通道8*/
-    RCC->APB2ENR  |= 1<<9;        /*ADC1时钟使能*/
-    RCC->APB2RSTR |= 1<<9;        /*ADC1复位*/
-    RCC->APB2RSTR &= ~(1<<9);     /*复位结束*/
-    RCC->CFGR     &= ~(3<<14);    /*分频因子清零*/
+    /* Channel 8 */
+    RCC->APB2ENR  |= 1<<9;        /* Enable the clock of ADC1 */
+    RCC->APB2RSTR |= 1<<9;        /* Reset the ADC1 */
+    RCC->APB2RSTR &= ~(1<<9);     /* Reset is end */
+    RCC->CFGR     &= ~(3<<14);    /* Clear frequency division factor */
 
-    /*SYSCLK/DIV2=12M ADC时钟设置为12M,ADC最大时钟不能超过14M!*/
-    /*否则将导致ADC准确度下降!*/
+    /* SYSCLK/DIV2=12M set the clock of ADC is 12M, the maximum value cannot excess 14M! */
+    /* Otherwise it can lead to the low accuracy in getting ADC! */
     RCC->CFGR  |= 2<<14;
-    ADC1->CR1  &= 0XF0FFFF;        /*工作模式清零*/
-    ADC1->CR1  |= 0<<16;           /*独立工作模式*/
-    ADC1->CR1  &= ~(1<<8);         /*非扫描模式*/
-    ADC1->CR2  &= ~(1<<1);         /*单次转换模式*/
+    ADC1->CR1  &= 0XF0FFFF;       /* Clear the working mode */
+    ADC1->CR1  |= 0<<16;          /* Stand-alone mode */
+    ADC1->CR1  &= ~(1<<8);        /* Non scanning mode */
+    ADC1->CR2  &= ~(1<<1);        /* Single conversion mode */
     ADC1->CR2  &= ~(7<<17);
-    ADC1->CR2  |= 7<<17;           /*软件控制转换*/
-    ADC1->CR2  |= 1<<20;           /*使用用外部触发(SWSTART)!!!	必须使用一个事件来触发*/
-    ADC1->CR2  &= ~(1<<11);        /*右对齐*/
-    ADC1->CR2  |= 1<<23;           /*使能温度传感器*/
+    ADC1->CR2  |= 7<<17;          /* Control conversion by software */
+    ADC1->CR2  |= 1<<20;          /* Use external trigger(SWSTART)!!! must use an event to trigger */
+    ADC1->CR2  &= ~(1<<11);       /* Right align */
+    ADC1->CR2  |= 1<<23;          /* Enalbe the temperature sensor */
     ADC1->SQR1 &= ~(0XF<<20);
-    ADC1->SQR1 &= 0<<20;          /*1个转换在规则序列中 也就是只转换规则序列1*/
+    ADC1->SQR1 &= 0<<20;          /* One conversion is in the regular sequence */
 
-    /*设置通道1的采样时间*/
-    ADC1->SMPR2 &= ~(7<<3);       /*通道1采样时间清空*/
-    ADC1->SMPR2 |= 7<<3;          /*通道1  239.5周期,提高采样时间可以提高精确度*/
+    /* Set the sample time of channel 1 */
+    ADC1->SMPR2 &= ~(7<<3);       /* Clear the sample time of channel 1 */
+    ADC1->SMPR2 |= 7<<3;          /* The sample time is(channel 1) 239.5 period, improving it can improve accuracy */
 
-    ADC1->SMPR1 &= ~(7<<18);      /*清除通道16原来的设置*/
-    ADC1->SMPR1 |= 7<<18;         /*通道16  239.5周期,提高采样时间可以提高精确度*/
+    ADC1->SMPR1 &= ~(7<<18);      /* Clear original settings of channel 16 */
+    ADC1->SMPR1 |= 7<<18;         /* The sample time is(channel 16) 239.5 period, improving it can improve accuracy */
 
-    ADC1->CR2 |= 1<<0;            /*开启AD转换器*/
-    ADC1->CR2 |= 1<<3;            /*使能复位校准*/
-    while (ADC1->CR2 & (1<<3));   /*等待校准结束，该位由软件设置并由硬件清除。在校准寄存器被初始化后该位将被清除*/
+    ADC1->CR2 |= 1<<0;            /* Start the AD converter */
+    ADC1->CR2 |= 1<<3;            /* Enable the reset calibration */
+    while (ADC1->CR2 & (1<<3));   /* Wait the end of calibration, this bit is set by software and cleared by hardware */
+                                  /* After the initialization of calibration register, this bit will be cleared */
+                                  
+    ADC1->CR2 |= 1<<2;            /* Start the AD calibration */
+    while (ADC1->CR2 & (1<<2));   /* Wait the end of calibration, this bit is set by software and cleared by hardware */
 
-    ADC1->CR2 |= 1<<2;            /*开启AD校准*/
-    while (ADC1->CR2 & (1<<2));   /*等待校准结束，该位由软件设置以开始校准，并在校准结束时由硬件清除*/
-
-    Battery.TestVal          = 3.95;  /*单位为v 电池实际电压  校准电压时修改*/
-    Battery.ADInputVal       = 1.98;  /*单位为v R15和R17连接处电压 校准电压时修改*/
-    Battery.ADRefVal         = 3.26;  /*单位为v 单片机供电电压   校准电压时修改*/
-    Battery.Factor           = Battery.TestVal / Battery.ADInputVal;  /*计算电压计算系数*/
+    /* Unit: v, they are modified when calibrating voltage */
+    Battery.TestVal          = 3.95;
+    Battery.ADInputVal       = 1.98;
+    Battery.ADRefVal         = 3.26;
+    Battery.Factor           = Battery.TestVal / Battery.ADInputVal;
     Battery.OverDischargeCnt = 0;
 
     printf("Batter voltage AD init ...\r\n");
 }
 
-/*获得ADC值*/
-/*ch:通道值 0~16*/
-/*返回值:转换结果*/
+/* ch: 0~16 channel */
+/* Return: conversion result */
 u16 Battery_GetADC(u8 ch)
 {
-    /*设置转换序列*/
-    ADC1->SQR3 &= 0XFFFFFFE0;      /*规则序列1通道ch*/
+    /* Set conversion sequence */
+    ADC1->SQR3 &= 0XFFFFFFE0;     /* The channel of regular sequence 1 */
     ADC1->SQR3 |= ch;
-    ADC1->CR2  |= 1<<22;           /*启动规则转换通道*/
-    while (!(ADC1->SR & (1<<1)));  /*等待转换结束*/
-    return ADC1->DR;               /*返回adc值*/
+    ADC1->CR2  |= 1<<22;          /* Start the regular sequence conversion channel */
+    while (!(ADC1->SR & (1<<1))); /* Wait the end of conversion */
+    return ADC1->DR;              /* Return ADC value */
 }
 
-/*获取通道ch的转换值，取times次,然后平均*/
-/*ch:通道编号*/
-/*times:获取次数*/
-/*返回值:通道ch的times次转换结果平均值*/
+/* ch: channel id */
+/* times: the numbers of getting ADC */
+/* Return: the average value of channel ch */
 u16 Battery_GetADCAverage(u8 ch, u8 times)
 {
     u32 temp_val = 0;

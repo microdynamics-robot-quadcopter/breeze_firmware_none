@@ -7,7 +7,7 @@ Copyright (C), 2016-2016, Team MicroDynamics <microdynamics@126.com>
 Filename:    stm32f10x_system_monitor.h
 Author:      maksyuki
 Version:     0.1.0.20161231_release
-Create date: 2016.11.05
+Create date: 2016.10.31
 Description: declare the monitor function
 Others:      none
 Function List:

@@ -1,3 +1,35 @@
+/*******************************************************************************
+THIS PROGRAM IS FREE SOFTWARE. YOU CAN REDISTRIBUTE IT AND/OR MODIFY IT 
+UNDER THE TERMS OF THE GNU GPLV3 AS PUBLISHED BY THE FREE SOFTWARE FOUNDATION.
+
+Copyright (C), 2016-2016, Team MicroDynamics <microdynamics@126.com>
+
+Filename:    stm32f10x_system_monitor.c
+Author:      maksyuki
+Version:     0.1.0.20161231_release
+Create date: 2016.11.05
+Description: implement the monitor function
+Others:      none
+Function List:
+             1. void CommPC(uint8_t c);
+             2. void CommPCTest(void);
+             3. void CommPCUpload(uint8_t cmd);
+             4. void CommPCProcessCmd(void);
+             5. void ReturnPIDHead(uint8_t pidType);
+             6. void CommPCUploadHandle(void);
+             7. void DebugUploadHandle(void);
+             8. static void DebugUploadHandle2(void);
+             9. static void DebubUploadHandle3(void);
+            10. static void EndianConvert(uint8_t arr[], uint8_t len);
+            11. static void BufUpload(void);
+            12. static void BufAddArr(uint8_t* dat, uint8_t len);
+            13. static void BufAddInt16(int16_t a);
+            14. static void BufAdd8Chk(uint8_t a);
+History:
+1. <author>    <date>         <desc>
+   maksyuki  2016.12.31  modify the module
+*******************************************************************************/
+
 #include "stm32f10x_driver_usart.h"
 #include "stm32f10x_system_ms5611.h"
 #include "stm32f10x_system_rpdata.h"
@@ -16,15 +48,14 @@ uint8_t pcCmdFlag = 0;
 #define PC_PID_YAW    0x12
 #define PC_PID_ALT    0x14
 
-/*注意地址对齐问题，不对sum进行初始化*/
-HawkerPacket_t up = {{0xAA, 0xAA}, 0x01, 18};      /*upload packet*/
+/* Notice the address alignment, don't initialize 'sum' */
+HawkerPacket_t up = {{0xAA, 0xAA}, 0x01, 18};      /* Upload packet */
 DataPackage_t up2 = {{0xAA, 0xAA}, 0x02, 30, {0}};
 
-/*分包发送，分散cpu占用时间*/
+/* Send packet */
 static uint8_t sendPCBuf[64] = {0xAA, 0xAA, 0x01, 0x14, 0, 100, 0, 200, 0, 130
                                 , 0, 0, 0, 100, 0, 0, 0, 200, 0, 0, 0, 30, 0, 10, 0x6B};
 
-/*------------------New Send --------------------*/
 #define TEST_LEN 1 + 5
 //uint8_t testData[0x0C+5]={0xAA,0xAF,0x10,0x0C,0,1,0,0,0,0,0,0,0,0,0,0,(uint8_t)(0xAA+0xAF+0x10+0x0C+0x01)};
 uint8_t testData[1+5] = {0xAA, 0xAF, 0x02, 0x01, 0x01, (uint8_t)(0xAA + 0xAF + 0x02 + 1 + 1)};
@@ -33,11 +64,13 @@ static uint8_t checksum;
 
 extern uint8_t gParamsSaveEEPROMRequest;
 
-void testCommPC(void)
+void CommPCTest(void)
 {
     uint8_t i = 0;
     for (i = 0; i < TEST_LEN; i++)
+    {
         CommPC(testData[i]);
+    }
 }
 
 static void BufAdd8Chk(uint8_t a)
@@ -69,7 +102,6 @@ static void BufUpload(void)
     checksum = 0;
 }
 
-/*根据不同命令字上传*/
 void CommPCUpload(uint8_t cmd)
 {
     //USART_SendBuf(testData, 6);
@@ -85,7 +117,7 @@ void CommPCUpload(uint8_t cmd)
     switch (cmd)
     {
         case PC_PID_PITCH:
-            BufAdd8Chk(0x0C);   /*len*/
+            BufAdd8Chk(0x0C);   /* Len */
             BufAddInt16((int16_t)((pitch_rate_PID.P  * 100)));
             BufAddInt16((int16_t)((pitch_rate_PID.I  * 100)));
             BufAddInt16((int16_t)((pitch_rate_PID.D  * 100)));
@@ -95,7 +127,7 @@ void CommPCUpload(uint8_t cmd)
         break;
 
         case PC_PID_ROLL:
-            BufAdd8Chk(0x0C);   /*len*/
+            BufAdd8Chk(0x0C);   /* Len */
             BufAddInt16((int16_t)((roll_rate_PID.P  * 100)));
             BufAddInt16((int16_t)((roll_rate_PID.I  * 100)));
             BufAddInt16((int16_t)((roll_rate_PID.D  * 100)));
@@ -105,7 +137,7 @@ void CommPCUpload(uint8_t cmd)
         break;
 
         case PC_PID_YAW:
-            BufAdd8Chk(0x0C);   /*len*/
+            BufAdd8Chk(0x0C);   /* Len */
             BufAddInt16((int16_t)((yaw_rate_PID.P  * 100)));
             BufAddInt16((int16_t)((yaw_rate_PID.I  * 100)));
             BufAddInt16((int16_t)((yaw_rate_PID.D  * 100)));
@@ -115,7 +147,7 @@ void CommPCUpload(uint8_t cmd)
         break;
 
         case PC_PID_ALT:
-            BufAdd8Chk(0x0C);   /*len*/
+            BufAdd8Chk(0x0C);   /* Len */
             BufAddInt16((int16_t)((alt_vel_PID.P * 100)));
             BufAddInt16((int16_t)((alt_vel_PID.I * 100)));
             BufAddInt16((int16_t)((alt_vel_PID.D * 100)));
@@ -128,7 +160,7 @@ void CommPCUpload(uint8_t cmd)
     BufUpload();
 }
 
-/*接收*/
+/* Receive */
 #define DAT_MAX_LEN 32
 static uint8_t cmd    = 0;
 static uint8_t len    = 0;
@@ -164,8 +196,8 @@ void CommPC(uint8_t c)
         break;
 
         case HEADER2:
-                cmd = c;
-                ps  = CMD;
+            cmd = c;
+            ps  = CMD;
         break;
 
         case CMD:
@@ -189,8 +221,8 @@ void CommPC(uint8_t c)
         case CHK:
             if (chkSum == c)
             {
-                pcCmdFlag = 1;       /*specific cmd process executed in main, not in irq*/
-                //CommPCProcessCmd();/*process cmd*/
+                pcCmdFlag = 1;        /* Specific cmd process executed in main, not in irq */
+                //CommPCProcessCmd(); /* Process cmd */
                 datCnt = 0;
             }
             ps = IDLE;
@@ -198,14 +230,13 @@ void CommPC(uint8_t c)
     }
 }
 
-/*处理PC发过来的命令*/
 void CommPCProcessCmd(void)
 {
-    //USART_ClearBuf(&UartTxbuf);	/*以备发送*/
+    //USART_ClearBuf(&UartTxbuf);   /* Prepare for sending */
     switch (cmd)
     {
         case PC_REQ_PID:
-            if (datBuf[0] == 0x01)	/*read PID*/
+            if (datBuf[0] == 0x01)  /* Read PID */
             {
                 CommPCUpload(PC_PID_PITCH);
                 CommPCUpload(PC_PID_ROLL);
@@ -214,7 +245,7 @@ void CommPCProcessCmd(void)
             }
         break;
 
-        case PC_PID_PITCH:  /*pitch sub pid, main pid*/
+        case PC_PID_PITCH:  /* Pitch sub pid, main pid */
             pitch_rate_PID.P  = (int16_t)(datBuf[0]<<8  | datBuf[1]) * 0.01f;
             pitch_rate_PID.I  = (int16_t)(datBuf[2]<<8  | datBuf[3]) * 0.01f;
             pitch_rate_PID.D  = (int16_t)(datBuf[4]<<8  | datBuf[5]) * 0.01f;
@@ -228,7 +259,7 @@ void CommPCProcessCmd(void)
             gParamsSaveEEPROMRequest = 1;
         break;
 
-        case PC_PID_ROLL:   /*roll sub pid, main pid*/
+        case PC_PID_ROLL:   /* Roll sub pid, main pid */
             roll_rate_PID.P  = (int16_t)(datBuf[0]<<8  | datBuf[1]) * 0.01f;
             roll_rate_PID.I  = (int16_t)(datBuf[2]<<8  | datBuf[3]) * 0.01f;
             roll_rate_PID.D  = (int16_t)(datBuf[4]<<8  | datBuf[5]) * 0.01f;
@@ -241,7 +272,7 @@ void CommPCProcessCmd(void)
             gParamsSaveEEPROMRequest = 1;
         break;
 
-        case PC_PID_YAW:    /*yaw*/
+        case PC_PID_YAW:    /* Yaw */
             yaw_rate_PID.P  = (int16_t)(datBuf[0]<<8  | datBuf[1]) * 0.01f;
             yaw_rate_PID.I  = (int16_t)(datBuf[2]<<8  | datBuf[3]) * 0.01f;
             yaw_rate_PID.D  = (int16_t)(datBuf[4]<<8  | datBuf[5]) * 0.01f;
@@ -257,7 +288,7 @@ void CommPCProcessCmd(void)
         case 0x13:
         break;
 
-        case PC_PID_ALT: /*alt sub pid , main pid*/
+        case PC_PID_ALT: /* Alt sub pid, main pid */
             alt_vel_PID.P = (int16_t)(datBuf[0]<<8  | datBuf[1]) * 0.01f;
             alt_vel_PID.I = (int16_t)(datBuf[2]<<8  | datBuf[3]) * 0.01f;
             alt_vel_PID.D = (int16_t)(datBuf[4]<<8  | datBuf[5]) * 0.01f;
@@ -280,20 +311,18 @@ void ReturnPIDHead(uint8_t pidType)
     BufAdd8Chk(0xAA);
     BufAdd8Chk(pidType);
     BufAdd8Chk(0x0C);
-
     BufAddArr(datBuf, 12);
     BufAdd8Chk(checksum);
     BufUpload();
 }
 
-/*--- a little zzz*/
-/*interface with hawker*/
+/* Interface with hawker */
 void DebugUploadHandle(void)
 {
     up.roll.val  = imu.roll  * 100;
     up.pitch.val = imu.pitch * 100;
     up.yaw.val   = imu.yaw   * 100;
-    up.alti.val  = nav.z     * 100;     /*combined*/
+    up.alti.val  = nav.z     * 100;  /* Combined */
     up.temp.val  = MS5611_Temperature * 100;
     up.pres.val  = MS5611_Pressure;
     up.speed.val = nav.vz * 100;
@@ -309,8 +338,8 @@ void DebugUploadHandle(void)
 #endif
 }
 
-/*arm is high in front. convert to fit upper*/
-/*可以被优化!*/
+/* Arm is high in front, convert to fit upper */
+/* Notice: it can be improved!!! */
 static void EndianConvert(uint8_t arr[], uint8_t len)
 {
     uint8_t arrS[8], i;
@@ -325,31 +354,31 @@ static void EndianConvert(uint8_t arr[], uint8_t len)
     }
 }
 
-static void DebugUploadHandle2()
+static void DebugUploadHandle2(void)
 {
     checksum = 0;
     //USART_ClearBuf(&UartTxbuf);
     BufAdd8Chk(0xAA);
     BufAdd8Chk(0xAA);
-    BufAdd8Chk(0x02);   /*cmd*/
-    BufAdd8Chk(30);     /*len*/
+    BufAdd8Chk(0x02);  /* Cmd */
+    BufAdd8Chk(30);    /* Len */
 
-    /*acc*/
+    /* Acc */
     BufAddInt16(imu.accb[0] * 1000);
     BufAddInt16(imu.accb[1] * 1000);
     BufAddInt16(imu.accb[2] * 1000);
 
-    /*gyro*/
+    /* Gyro */
     BufAddInt16(imu.gyro[0] * 180.0f / M_PI_F * 100);
     BufAddInt16(imu.gyro[1] * 180.0f / M_PI_F * 100);
     BufAddInt16(imu.gyro[2] * 180.0f / M_PI_F * 100);
 
-    /*mag*/
+    /* Mag */
     BufAddInt16(0);
     BufAddInt16(0);
     BufAddInt16(0);
 
-    /*raw*/
+    /* Raw */
     BufAddInt16(imu.accRaw[0] * 1000);
     BufAddInt16(imu.accRaw[1] * 1000);
     BufAddInt16(imu.accRaw[2] * 1000);
@@ -362,22 +391,22 @@ static void DebugUploadHandle2()
     BufUpload();
 }
 
-static void DebubUploadHandle3()
+static void DebubUploadHandle3(void)
 {
     uint8_t i;
     up2.cmd = 0x08;
     up2.len = 6 * 2;
     up2.data[0]  = 0;
     up2.data[1]  = 0;
-    up2.data[2]  = 0;//((short)(MS5611_VerticalSpeed*1000))>>8;  /*baro_speed*/
+    up2.data[2]  = 0;//((short)(MS5611_VerticalSpeed*1000))>>8;  /* Baro_speed */
     up2.data[3]  = 0;//((short)(MS5611_VerticalSpeed*1000))&0xff;
-    up2.data[4]  = ((short)(-NRF_Data.pitch * 100))>>8;      /*acc speed*/
-    up2.data[5]  = ((short)(-NRF_Data.pitch * 100))&0xff;    /*pitch*/
+    up2.data[4]  = ((short)(-NRF_Data.pitch * 100))>>8;          /* Acc speed */
+    up2.data[5]  = ((short)(-NRF_Data.pitch * 100))&0xff;        /* Pitch */
     up2.data[6]  = ((short)(MS5611_Altitude * 1000))>>8;
     up2.data[7]  = ((short)(MS5611_Altitude * 1000))&0xff;
-    up2.data[8]  = ((short)(imu.accg[2] * 1000))>>8;         /*accz*/
+    up2.data[8]  = ((short)(imu.accg[2] * 1000))>>8;             /* Accz */
     up2.data[9]  = ((short)(imu.accg[2] * 1000))&0xff;
-    up2.data[10] = 0;                                        /*inte alt of accz*/
+    up2.data[10] = 0;                                            /* Inte alt of accz */
     up2.data[11] = 0;
     up2.sum = 0;
 
@@ -395,7 +424,7 @@ static void DebubUploadHandle3()
     USART_SendBuf(&(up2.sum), 1);
 }
 
-void CommPCUploadHandle()
+void CommPCUploadHandle(void)
 {
     static uint8_t pkgDivCnt = 0;
     uint8_t i = 0;
@@ -405,10 +434,10 @@ void CommPCUploadHandle()
     {
         pkgDivCnt = 0;
     }
-    if (pkgDivCnt == 0)     /*div time to send different datapacket to avoid use too much cpu at a time*/
+    if (pkgDivCnt == 0)  /* Div time to send different datapacket to avoid use too much cpu at a time */
     {
         DebugUploadHandle();
-        for (i = 0; i < 10; i++)        /*solove data in ram address align*/
+        for (i = 0; i < 10; i++)  /* Send data in ram address align */
         {
             sendPCBuf[i] = *((uint8_t *)(&up) + i);
         }

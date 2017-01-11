@@ -1,3 +1,37 @@
+/*******************************************************************************
+THIS PROGRAM IS FREE SOFTWARE. YOU CAN REDISTRIBUTE IT AND/OR MODIFY IT 
+UNDER THE TERMS OF THE GNU GPLV3 AS PUBLISHED BY THE FREE SOFTWARE FOUNDATION.
+
+Copyright (C), 2016-2016, Team MicroDynamics <microdynamics@126.com>
+
+Filename:    stm32f10x_algorithm_imu.c
+Author:      maksyuki
+Version:     0.1.0.20161231_release
+Create date: 2016.08.21
+Description: implement the imu function
+Others:      none
+Function List:
+             1. void IMU_Init(void);
+             2. void IMU_Process(void);
+             3. uint8_t IMU_Check(void);
+             4. uint8_t IMU_Calibrate(void);
+             5. void IMU_ReadSensorHandle(void);
+             6. static void EularToDCM(float DCM[3][3], float pitch,
+                                       float yaw, float roll);
+             7. static float InvSqrt(float num);
+             8. static void NonLinearSO3AHRSInit(float ax, float ay, float az,
+                                                 float mx, float my, float mz);
+             9. static void NonLinearSO3AHRSUpdate(float gx, float gy, float gz,
+                                                   float ax, float ay, float az,
+                                                   float mx, float my, float mz,
+                                                   float twoKp, float twoKi,
+                                                   float dt);
+            10. void IMU_SO3Thread(void);
+History:
+1. <author>    <date>         <desc>
+   maksyuki  2017.01.11  modify the module
+*******************************************************************************/
+
 #include "stm32f10x_system_mpu6050.h"
 #include "stm32f10x_algorithm_imu.h"
 #include "stm32f10x_algorithm_filter.h"
@@ -9,7 +43,7 @@ uint8_t imuCaliFlag = 0;
 
 void IMU_Init(void)
 {
-    imu.ready    = 0;  /*需要先校准陀螺*/
+    imu.ready    = 0;  /* Need to calibrate gyro */
     imu.caliPass = 1;
     LPF2pSetCutOffFreq_1(IMU_SAMPLE_RATE, IMU_FILTER_CUTOFF_FREQ);
     LPF2pSetCutOffFreq_2(IMU_SAMPLE_RATE, IMU_FILTER_CUTOFF_FREQ);
@@ -19,9 +53,9 @@ void IMU_Init(void)
     LPF2pSetCutOffFreq_6(IMU_SAMPLE_RATE, IMU_FILTER_CUTOFF_FREQ);
 }
 
-/*should place to a level surface and keep it stop for 1~2 second*/
-/*return 1 when finish*/
-uint8_t IMU_Calibrate(void)  /*检测时间为3s*/
+/* Should place to a level surface and keep it stop for 1~2 second */
+/* Return 1 when finish, calibration time is 3s */
+uint8_t IMU_Calibrate(void)
 {
     static float AccSum[3]     = {0, 0, 0};
     static float GyroSum[3]    = {0, 0, 0};
@@ -48,7 +82,7 @@ uint8_t IMU_Calibrate(void)  /*检测时间为3s*/
         }
     }
     
-    /*10ms*/
+    /* 10ms */
     if (dt >= 10)
     {
         if (cnt < 300)
@@ -76,15 +110,15 @@ uint8_t IMU_Calibrate(void)  /*检测时间为3s*/
     return ret;
 }
 
-#define SENSOR_MAX_G 8.0f     /*max constant g*/
-#define SENSOR_MAX_W 2000.0f  /*max deg/s*/
+#define SENSOR_MAX_G 8.0f     /* Max constant g */
+#define SENSOR_MAX_W 2000.0f  /* Max deg/s */
 #define ACC_SCALE (SENSOR_MAX_G / 32768.0f)
 #define GYRO_SCALE (SENSOR_MAX_W / 32768.0f)
 
 void IMU_ReadSensorHandle(void)
 {
     uint8_t i;
-    MPU6050_ReadAcc(imu.accADC);    /*read raw value*/
+    MPU6050_ReadAcc(imu.accADC);    /* Read raw value */
     MPU6050_ReadGyro(imu.gyroADC);
     
     for (i = 0; i < 3; i++)
@@ -101,7 +135,7 @@ void IMU_ReadSensorHandle(void)
     imu.gyro[2] = LPF2pApply_6(imu.gyroRaw[2]);
 }
 
-#define ACCZ_ERR_MAX 0.05 /*m/s^2*/
+#define ACCZ_ERR_MAX 0.05 /* m/s^2 */
 #define CHECK_CNT    5
 
 uint8_t IMU_Check(void)
@@ -134,7 +168,7 @@ in standard sequence , roll-pitch-yaw , x-y-z
 angle in rad
 get DCM for ground to body
 */
-/*这是使用DMP进行硬件解算才需要的函数*/
+/* DMP needs */
 static void EularToDCM(float DCM[3][3], float pitch, float yaw, float roll)
 {
     float cosx, cosy, cosz, sinx, siny, sinz;
@@ -164,18 +198,18 @@ static void EularToDCM(float DCM[3][3], float pitch, float yaw, float roll)
     DCM[2][2] = cosy * cosx;
 }
 
-/*Auxiliary variables to reduce number of repeated operations*/
+/* Auxiliary variables to reduce number of repeated operations */
 static float q0 = 1.0f;
-static float q1 = 0.0f;   /*quaternion of sensor frame relative to auxiliary frame*/
+static float q1 = 0.0f;   /* Quaternion of sensor frame relative to auxiliary frame */
 static float q2 = 0.0f;
 static float q3 = 0.0f;
 
 static float dq0 = 0.0f;
-static float dq1 = 0.0f;  /*quaternion of sensor frame relative to auxiliary frame*/
+static float dq1 = 0.0f;  /* Quaternion of sensor frame relative to auxiliary frame */
 static float dq2 = 0.0f;
 static float dq3 = 0.0f;
 
-static float gyro_bias[3] = {0.0f, 0.0f, 0.0f};  /*bias estimation*/
+static float gyro_bias[3] = {0.0f, 0.0f, 0.0f};  /* Bias estimation */
 static float q0q0, q0q1, q0q2, q0q3;
 static float q1q1, q1q2, q1q3;
 static float q2q2, q2q3;
@@ -183,9 +217,7 @@ static float q3q3;
 
 static uint8_t bFilterInit = 0;
 
-/*函数名：InvSqrt(void)*/
-/*描述：求平方根的倒数*/
-/*该函数是经典的Carmack求平方根算法，效率极高，使用魔数0x5f375a86*/
+/* Carmack algorithm */
 static float InvSqrt(float num)
 {
     volatile long  i;
@@ -202,8 +234,8 @@ static float InvSqrt(float num)
     return y;
 }
 
-/*Using accelerometer, sense the gravity vector*/
-/*Using magnetometer, sense yaw*/
+/* Using accelerometer, sense the gravity vector */
+/* Using magnetometer, sense yaw */
 static void NonLinearSO3AHRSInit(float ax, float ay, float az, float mx, float my, float mz)
 {
     float initialRoll, initialPitch;
@@ -238,7 +270,7 @@ static void NonLinearSO3AHRSInit(float ax, float ay, float az, float mx, float m
     q2 = cosRoll * sinPitch * cosHeading + sinRoll * cosPitch * sinHeading;
     q3 = cosRoll * cosPitch * sinHeading - sinRoll * sinPitch * cosHeading;
 
-    /*auxillary variables to reduce number of repeated operations, for 1st pass*/
+    /* Auxillary variables to reduce number of repeated operations, for 1st pass */
     q0q0 = q0 * q0;
     q0q1 = q0 * q1;
     q0q2 = q0 * q2;
@@ -251,11 +283,9 @@ static void NonLinearSO3AHRSInit(float ax, float ay, float az, float mx, float m
     q3q3 = q3 * q3;
 }
 
-/*函数名：NonLinearSO3AHRSUpdate()*/
-/*描述：姿态解算融合，是Crazepony和核心算法*/
-/*使用的是Mahony互补滤波算法，没有使用Kalman滤波算法*/
-/*改算法是直接参考pixhawk飞控的算法，可以在Github上看到出处*/
-/*https://github.com/hsteinhaus/PX4Firmware/blob/master/src/modules/attitude_estimator_so3/attitude_estimator_so3_main.cpp*/
+/* Desc：attitude calculation, key algorithm */
+/* Mahony complementary filtering algorithm */
+/* https://github.com/hsteinhaus/PX4Firmware/blob/master/src/modules/attitude_estimator_so3/attitude_estimator_so3_main.cpp */
 static void NonLinearSO3AHRSUpdate(float gx, float gy, float gz, float ax, float ay, float az, float mx, float my, float mz, float twoKp, float twoKi, float dt) 
 {
     float recipNorm;
@@ -263,102 +293,100 @@ static void NonLinearSO3AHRSUpdate(float gx, float gy, float gz, float ax, float
     float halfey = 0.0f;
     float halfez = 0.0f;
 
-    /*Make filter converge to initial solution faster*/
-    /*This function assumes you are in static position*/
-    /*WARNING : in case air reboot, this can cause problem. But this is very unlikely happen*/
+    /* Make filter converge to initial solution faster */
+    /* This function assumes you are in static position */
+    /* WARNING : in case air reboot, this can cause problem. But this is very unlikely happen */
     if (bFilterInit == 0)
     {
         NonLinearSO3AHRSInit(ax, ay, az, mx, my, mz);
         bFilterInit = 1;
     }
 
-    /*! If magnetometer measurement is available, use it.*/
+    /* ! If magnetometer measurement is available, use it. */
     if (!((mx == 0.0f) && (my == 0.0f) && (mz == 0.0f)))
     {
         float hx, hy, hz, bx, bz;
         float halfwx, halfwy, halfwz;
 
-        /*Normalise magnetometer measurement*/
-        /*Will sqrt work better? PX4 system is powerful enough?*/
+        /* Normalise magnetometer measurement */
+        /* Will sqrt work better? PX4 system is powerful enough? */
         recipNorm = InvSqrt(mx * mx + my * my + mz * mz);
         mx *= recipNorm;
         my *= recipNorm;
         mz *= recipNorm;
 
-        /*Reference direction of Earth's magnetic field*/
+        /* Reference direction of Earth's magnetic field */
         hx = 2.0f * (mx * (0.5f - q2q2 - q3q3) + my * (q1q2 - q0q3) + mz * (q1q3 + q0q2));
         hy = 2.0f * (mx * (q1q2 + q0q3) + my * (0.5f - q1q1 - q3q3) + mz * (q2q3 - q0q1));
         hz = 2.0f * mx * (q1q3 - q0q2) + 2.0f * my * (q2q3 + q0q1) + 2.0f * mz * (0.5f - q1q1 - q2q2);
         bx = sqrt(hx * hx + hy * hy);
         bz = hz;
 
-        /*Estimated direction of magnetic field*/
+        /* Estimated direction of magnetic field */
         halfwx = bx * (0.5f - q2q2 - q3q3) + bz * (q1q3 - q0q2);
         halfwy = bx * (q1q2 - q0q3) + bz * (q0q1 + q2q3);
         halfwz = bx * (q0q2 + q1q3) + bz * (0.5f - q1q1 - q2q2);
 
-        /*Error is sum of cross product between estimated direction and measured direction of field vectors*/
+        /* Error is sum of cross product between estimated direction and measured direction of field vectors */
         halfex += (my * halfwz - mz * halfwy);
         halfey += (mz * halfwx - mx * halfwz);
         halfez += (mx * halfwy - my * halfwx);
     }
 
-    /*增加一个条件：加速度的模量与G相差不远时。 0.75*G < normAcc < 1.25*G*/
-    /*Compute feedback only if accelerometer measurement valid (avoids NaN in accelerometer normalisation)*/
+    /* Compute feedback only if accelerometer measurement valid (avoids NaN in accelerometer normalisation) */
     if (!((ax == 0.0f) && (ay == 0.0f) && (az == 0.0f)))
     {
         float halfvx, halfvy, halfvz;
 
-        /*Normalise accelerometer measurement*/
-        /*归一化，得到单位加速度*/
+        /* Normalise accelerometer measurement */
         recipNorm = InvSqrt(ax * ax + ay * ay + az * az);
 
         ax *= recipNorm;
         ay *= recipNorm;
         az *= recipNorm;
 
-        /*Estimated direction of gravity and magnetic field*/
+        /* Estimated direction of gravity and magnetic field */
         halfvx = q1q3 - q0q2;
         halfvy = q0q1 + q2q3;
         halfvz = q0q0 - 0.5f + q3q3;
 
-        /*Error is sum of cross product between estimated direction and measured direction of field vectors*/
+        /* Error is sum of cross product between estimated direction and measured direction of field vectors */
         halfex += ay * halfvz - az * halfvy;
         halfey += az * halfvx - ax * halfvz;
         halfez += ax * halfvy - ay * halfvx;
     }
 
-    /*Apply feedback only when valid data has been gathered from the accelerometer or magnetometer*/
+    /* Apply feedback only when valid data has been gathered from the accelerometer or magnetometer */
     if (halfex != 0.0f && halfey != 0.0f && halfez != 0.0f)
     {
-        /*Compute and apply integral feedback if enabled*/
+        /* Compute and apply integral feedback if enabled */
         if (twoKi > 0.0f)
         {
-            gyro_bias[0] += twoKi * halfex * dt;    /*integral error scaled by Ki*/
+            gyro_bias[0] += twoKi * halfex * dt;  /* Integral error scaled by Ki */
             gyro_bias[1] += twoKi * halfey * dt;
             gyro_bias[2] += twoKi * halfez * dt;
 
-            /*apply integral feedback*/
+            /* Apply integral feedback */
             gx += gyro_bias[0];
             gy += gyro_bias[1];
             gz += gyro_bias[2];
         }
         else
         {
-            gyro_bias[0] = 0.0f;    /*prevent integral windup*/
+            gyro_bias[0] = 0.0f;  /* Prevent integral windup */
             gyro_bias[1] = 0.0f;
             gyro_bias[2] = 0.0f;
         }
 
-        /*Apply proportional feedback*/
+        /* Apply proportional feedback */
         gx += twoKp * halfex;
         gy += twoKp * halfey;
         gz += twoKp * halfez;
     }
 
-    /*Time derivative of quaternion. q_dot = 0.5*q\otimes omega.*/
-    /*! q_k = q_{k-1} + dt*\dot{q}*/
-    /*! \dot{q} = 0.5*q \otimes P(\omega)*/
+    /* Time derivative of quaternion. q_dot = 0.5*q\otimes omega. */
+    /* ! q_k = q_{k-1} + dt*\dot{q} */
+    /* ! \dot{q} = 0.5*q \otimes P(\omega) */
     dq0 = 0.5f * (-q1 * gx - q2 * gy - q3 * gz);
     dq1 = 0.5f * (q0 * gx + q2 * gz - q3 * gy);
     dq2 = 0.5f * (q0 * gy - q1 * gz + q3 * gx);
@@ -369,14 +397,14 @@ static void NonLinearSO3AHRSUpdate(float gx, float gy, float gz, float ax, float
     q2 += dt * dq2;
     q3 += dt * dq3;
 
-    /*Normalise quaternion*/
+    /* Normalise quaternion */
     recipNorm = InvSqrt(q0 * q0 + q1 * q1 + q2 * q2 + q3 * q3);
     q0 *= recipNorm;
     q1 *= recipNorm;
     q2 *= recipNorm;
     q3 *= recipNorm;
 
-    /*Auxiliary variables to avoid repeated arithmetic*/
+    /* Auxiliary variables to avoid repeated arithmetic */
     q0q0 = q0 * q0;
     q0q1 = q0 * q1;
     q0q2 = q0 * q2;
@@ -392,28 +420,27 @@ static void NonLinearSO3AHRSUpdate(float gx, float gy, float gz, float ax, float
 #define so3_comp_params_Kp  1.0f
 #define so3_comp_params_Ki  0.05f
 
-/*函数名：IMU_SO3Thread(void)*/
-/*描述：姿态软件解算融合函数*/
-/*该函数对姿态的融合是软件解算，Crazepony现在不使用DMP硬件解算*/
+/* Desc：attitude calculation, key algorithm */
+/* Software solution */
 void IMU_SO3Thread(void)
 {
-    /*time constant*/
-    float dt = 0.01f;                            /*s*/
-    static uint32_t PreTime = 0, StartTime = 0;  /*us*/
+    /* Time constant */
+    float dt = 0.01f;                            /* s */
+    static uint32_t PreTime = 0, StartTime = 0;  /* us */
     uint32_t NowTime;
     uint8_t i;
 
-    /*output euler angles*/
-    float euler[3] = {0.0f, 0.0f, 0.0f};         /*rad*/
+    /* Output euler angles */
+    float euler[3] = {0.0f, 0.0f, 0.0f};         /* rad */
 
-    /*initialization*/
-    float Rot_matrix[9] = {1.f,  0.0f,  0.0f, 0.0f,  1.f,  0.0f, 0.0f,  0.0f,  1.f };  /**< init: identity matrix */
-    float acc[3]        = {0.0f, 0.0f, 0.0f};    /*m/s^2*/
+    /* Initialization */
+    float Rot_matrix[9] = {1.f,  0.0f,  0.0f, 0.0f,  1.f,  0.0f, 0.0f,  0.0f,  1.f };  /* *< init: identity matrix */
+    float acc[3]        = {0.0f, 0.0f, 0.0f};    /* m/s^2 */
     float mag[3]        = {0.0f, 0.0f, 0.0f};
-    float gyro[3]       = {0.0f, 0.0f, 0.0f};    /*rad/s*/
+    float gyro[3]       = {0.0f, 0.0f, 0.0f};    /* rad/s */
 
-    /*need to calc gyro offset before imu start working*/
-    static float gyro_offsets_sum[3] = {0.0f, 0.0f, 0.0f};  /*gyro_offsets[3] = {0.0f, 0.0f, 0.0f}*/
+    /* Need to calc gyro offset before imu start working */
+    static float gyro_offsets_sum[3] = {0.0f, 0.0f, 0.0f};  /* gyro_offsets[3] = {0.0f, 0.0f, 0.0f} */
     static uint16_t offset_count = 0;
 
     NowTime = micros();
@@ -422,7 +449,7 @@ void IMU_SO3Thread(void)
 
     IMU_ReadSensorHandle();
 
-    if (!imu.ready)  /*为了标定陀螺*/
+    if (!imu.ready)  /* Need to calibrate gyro */
     {
         if (StartTime == 0)
         {
@@ -458,31 +485,31 @@ void IMU_SO3Thread(void)
     acc[1]  = -imu.accb[1];
     acc[2]  = -imu.accb[2];
 
-    /*NOTE : Accelerometer is reversed.*/
-    /*Because proper mount of PX4 will give you a reversed accelerometer readings.*/
+    /* NOTE : Accelerometer is reversed. */
+    /* Because proper mount of PX4 will give you a reversed accelerometer readings. */
     NonLinearSO3AHRSUpdate(gyro[0], gyro[1], gyro[2], -acc[0], -acc[1], -acc[2], mag[0], mag[1], mag[2],
                            so3_comp_params_Kp, so3_comp_params_Ki, dt);
 
-    /*Convert q->R, This R converts inertial frame to body frame.*/
-    Rot_matrix[0] = q0q0 + q1q1 - q2q2 - q3q3;  /*11*/
-    Rot_matrix[1] = 2.f * (q1 * q2 + q0 * q3);  /*12*/
-    Rot_matrix[2] = 2.f * (q1 * q3 - q0 * q2);  /*13*/
-    Rot_matrix[3] = 2.f * (q1 * q2 - q0 * q3);  /*21*/
-    Rot_matrix[4] = q0q0 - q1q1 + q2q2 - q3q3;  /*22*/
-    Rot_matrix[5] = 2.f * (q2 * q3 + q0 * q1);  /*23*/
-    Rot_matrix[6] = 2.f * (q1 * q3 + q0 * q2);  /*31*/
-    Rot_matrix[7] = 2.f * (q2 * q3 - q0 * q1);  /*32*/
-    Rot_matrix[8] = q0q0 - q1q1 - q2q2 + q3q3;  /*33*/
+    /* Convert q->R, This R converts inertial frame to body frame. */
+    Rot_matrix[0] = q0q0 + q1q1 - q2q2 - q3q3;  /* 11 */
+    Rot_matrix[1] = 2.f * (q1 * q2 + q0 * q3);  /* 12 */
+    Rot_matrix[2] = 2.f * (q1 * q3 - q0 * q2);  /* 13 */
+    Rot_matrix[3] = 2.f * (q1 * q2 - q0 * q3);  /* 21 */
+    Rot_matrix[4] = q0q0 - q1q1 + q2q2 - q3q3;  /* 22 */
+    Rot_matrix[5] = 2.f * (q2 * q3 + q0 * q1);  /* 23 */
+    Rot_matrix[6] = 2.f * (q1 * q3 + q0 * q2);  /* 31 */
+    Rot_matrix[7] = 2.f * (q2 * q3 - q0 * q1);  /* 32 */
+    Rot_matrix[8] = q0q0 - q1q1 - q2q2 + q3q3;  /* 33 */
 
-    /*1-2-3 Representation.*/
-    /*Equation (290)*/
-    /*Representing Attitude: Euler Angles, Unit Quaternions, and Rotation Vectors, James Diebel.*/
-    /*Existing PX4 EKF code was generated by MATLAB which uses coloum major order matrix.*/
-    euler[0] = atan2f(Rot_matrix[5], Rot_matrix[8]);  /*! Roll*/
-    euler[1] = -asinf(Rot_matrix[2]);                 /*! Pitch*/
+    /* 1-2-3 Representation. */
+    /* Equation (290) */
+    /* Representing Attitude: Euler Angles, Unit Quaternions, and Rotation Vectors, James Diebel. */
+    /* Existing PX4 EKF code was generated by MATLAB which uses coloum major order matrix. */
+    euler[0] = atan2f(Rot_matrix[5], Rot_matrix[8]);  /* ! Roll */
+    euler[1] = -asinf(Rot_matrix[2]);                 /* ! Pitch */
     euler[2] = atan2f(Rot_matrix[1], Rot_matrix[0]);
 
-    /*DCM . ground to body*/
+    /* DCM, ground to body */
     for (i = 0; i < 9; i++)
     {
         *(&(imu.DCMgb[0][0]) + i) = Rot_matrix[i];

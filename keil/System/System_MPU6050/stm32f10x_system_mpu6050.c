@@ -1,3 +1,21 @@
+/*******************************************************************************
+THIS PROGRAM IS FREE SOFTWARE. YOU CAN REDISTRIBUTE IT AND/OR MODIFY IT 
+UNDER THE TERMS OF THE GNU GPLV3 AS PUBLISHED BY THE FREE SOFTWARE FOUNDATION.
+
+Copyright (C), 2016-2016, Team MicroDynamics <microdynamics@126.com>
+
+Filename:    stm32f10x_system_mpu6050.c
+Author:      maksyuki
+Version:     0.1.0.20161231_release
+Create date: 2016.09.04
+Description: implement the mpu6050 function
+Others:      none
+Function List:
+History:
+1. <author>    <date>         <desc>
+   maksyuki  2017.01.11  modify the module
+*******************************************************************************/
+
 #include "stm32f10x_driver_iic.h"
 #include "stm32f10x_driver_delay.h"
 #include "stm32f10x_driver_usart.h"
@@ -10,11 +28,11 @@ int16_t Gx_offset = 0;
 int16_t Gy_offset = 0;
 int16_t Gz_offset = 0;
 
-/**************************实现函数********************************************
-*函数原型:      unsigned char MPU6050_IsDRY(void)
-*功    能:      检查MPU6050的中断引脚，测试是否完成转换
-return 1:       转换完成
-       0:       数据寄存器还没有更新
+/******************************************************************************
+*Function prototype:  unsigned char MPU6050_IsDRY(void)
+*Function:            Check interrupt pin of MPU6050
+return 1:             Transition is done
+       0:             Data register has not updated
 *******************************************************************************/
 unsigned char MPU6050_IsDRY(void)
 {
@@ -28,9 +46,9 @@ unsigned char MPU6050_IsDRY(void)
     }
 }
 
-/**************************实现函数********************************************
-*函数原型:      void MPU6050_SetClockSource(uint8_t source)
-*功　　能:      设置MPU6050的时钟源
+/******************************************************************************
+*Function prototype:  void MPU6050_SetClockSource(uint8_t source)
+*Function:            Set the clock source of MPU6050
  * CLK_SEL | Clock Source
  * --------+--------------------------------------
  * 0       | Internal oscillator
@@ -44,7 +62,8 @@ unsigned char MPU6050_IsDRY(void)
 *******************************************************************************/
 void MPU6050_SetClockSource(uint8_t source)
 {
-    IICWriteBits(DevAddr, MPU6050_RA_PWR_MGMT_1, MPU6050_PWR1_CLKSEL_BIT, MPU6050_PWR1_CLKSEL_LENGTH, source);
+    IICWriteBits(DevAddr, MPU6050_RA_PWR_MGMT_1, MPU6050_PWR1_CLKSEL_BIT,
+                          MPU6050_PWR1_CLKSEL_LENGTH, source);
 }
 
 /** Trigger a full device reset.
@@ -67,32 +86,34 @@ void MPU6050_Reset(void)
  */
 void MPU6050_SetFullScaleGyroRange(uint8_t range)
 {
-    IICWriteBits(DevAddr, MPU6050_RA_GYRO_CONFIG, MPU6050_GCONFIG_FS_SEL_BIT, MPU6050_GCONFIG_FS_SEL_LENGTH, range);
+    IICWriteBits(DevAddr, MPU6050_RA_GYRO_CONFIG, MPU6050_GCONFIG_FS_SEL_BIT,
+                          MPU6050_GCONFIG_FS_SEL_LENGTH, range);
 }
 
-/**************************实现函数********************************************
-*函数原型:      void MPU6050_SetFullScaleAccelRange(uint8_t range)
-*功    能:      设置MPU6050加速度计的最大量程
+/******************************************************************************
+*Function prototype:  void MPU6050_SetFullScaleAccelRange(uint8_t range)
+*Function:            Set the maximum range of MPU6050's accelerometer
 *******************************************************************************/
 void MPU6050_SetFullScaleAccelRange(uint8_t range)
 {
-    IICWriteBits(DevAddr, MPU6050_RA_ACCEL_CONFIG, MPU6050_ACONFIG_AFS_SEL_BIT, MPU6050_ACONFIG_AFS_SEL_LENGTH, range);
+    IICWriteBits(DevAddr, MPU6050_RA_ACCEL_CONFIG, MPU6050_ACONFIG_AFS_SEL_BIT,
+                          MPU6050_ACONFIG_AFS_SEL_LENGTH, range);
 }
 
-/**************************实现函数********************************************
-*函数原型:      void MPU6050_SetSleepEnabled(uint8_t enabled)
-*功    能:      设置MPU6050是否进入睡眠模式
-                enabled = 1   睡觉
-                enabled = 0   工作
+/******************************************************************************
+*Function prototype:  void MPU6050_SetSleepEnabled(uint8_t enabled)
+*Function:            Set MPU6050 whether to enter sleep mode
+                      enabled = 1   sleep
+                      enabled = 0   work
 *******************************************************************************/
 void MPU6050_SetSleepEnabled(uint8_t enabled)
 {
     IICWriteBit(DevAddr, MPU6050_RA_PWR_MGMT_1, MPU6050_PWR1_SLEEP_BIT, enabled);
 }
 
-/**************************实现函数********************************************
-*函数原型:      uint8_t MPU6050_GetDeviceID(void)
-*功     能:	    读取MPU6050 WHO_AM_I 标识   将返回 0x68
+/******************************************************************************
+*Function prototype:  uint8_t MPU6050_GetDeviceID(void)
+*Function:            Read the WHO_AM_I flag of MPU6050 and return 0x68
 *******************************************************************************/
 uint8_t MPU6050_GetDeviceID(void)
 {
@@ -100,13 +121,13 @@ uint8_t MPU6050_GetDeviceID(void)
     return buffer[0];
 }
 
-/**************************实现函数********************************************
-*函数原型:      uint8_t MPU6050_TestConnection(void)
-*功    能:      检测MPU6050是否已经连接
+/******************************************************************************
+*Function prototype:  uint8_t MPU6050_TestConnection(void)
+*Function:            Test MPU6050 whether have connected
 *******************************************************************************/
 uint8_t MPU6050_TestConnection(void)
 {
-    if (MPU6050_GetDeviceID() == 0x68)  /*0b01101000*/
+    if (MPU6050_GetDeviceID() == 0x68)  /* 0b01101000 */
     {
         return 1;
     }
@@ -116,27 +137,27 @@ uint8_t MPU6050_TestConnection(void)
     }
 }
 
-/**************************实现函数********************************************
-*函数原型:      void MPU6050_SetIICMasterModeEnabled(uint8_t enabled)
-*功    能:      设置MPU6050是否为AUX I2C线的主机
+/******************************************************************************
+*Function prototype:  void MPU6050_SetIICMasterModeEnabled(uint8_t enabled)
+*Function:            Set MPU6050 whether is the master of AUX I2C
 *******************************************************************************/
 void MPU6050_SetIICMasterModeEnabled(uint8_t enabled)
 {
     IICWriteBit(DevAddr, MPU6050_RA_USER_CTRL, MPU6050_USERCTRL_I2C_MST_EN_BIT, enabled);
 }
 
-/**************************实现函数********************************************
-*函数原型:      void MPU6050_SetIICBypassEnabled(uint8_t enabled)
-*功    能:      设置MPU6050是否为AUX I2C线的主机
+/******************************************************************************
+*Function prototype:  void MPU6050_SetIICBypassEnabled(uint8_t enabled)
+*Function:
 *******************************************************************************/
 void MPU6050_SetIICBypassEnabled(uint8_t enabled)
 {
     IICWriteBit(DevAddr, MPU6050_RA_INT_PIN_CFG, MPU6050_INTCFG_I2C_BYPASS_EN_BIT, enabled);
 }
 
-/**************************实现函数********************************************
-*函数原型:      void MPU6050_Check()
-*功    能:      检测IIC总线上的MPU6050是否存在
+/******************************************************************************
+*Function prototype:  void MPU6050_Check()
+*Function:            Test the MPU6050 whether is on IIC bus
 *******************************************************************************/
 void MPU6050_Check(void) 
 {
@@ -150,25 +171,24 @@ void MPU6050_Check(void)
     }
 } 
 
-/**************************实现函数********************************************
-*函数原型:      void MPU6050_Init(void)
-*功    能:      初始化MPU6050以进入可用状态
+/******************************************************************************
+*Function prototype:  void MPU6050_Init(void)
+*Function:            Initialize MPU6050
 *******************************************************************************/
 void MPU6050_Init(void)
 {
-    IICWriteByte(DevAddr, MPU6050_RA_PWR_MGMT_1, 0x80);      /*PWR_MGMT_1  -- DEVICE_RESET 1*/
+    IICWriteByte(DevAddr, MPU6050_RA_PWR_MGMT_1, 0x80);      /* PWR_MGMT_1  -- DEVICE_RESET 1 */
     delay_ms(50);
-    IICWriteByte(DevAddr, MPU6050_RA_SMPLRT_DIV, 0x00);      /*SMPLRT_DIV  -- SMPLRT_DIV = 0  Sample Rate = Gyroscope Output Rate / (1 + SMPLRT_DIV)*/
-    IICWriteByte(DevAddr, MPU6050_RA_PWR_MGMT_1, 0x03);      /*PWR_MGMT_1  -- SLEEP 0; CYCLE 0; TEMP_DIS 0; CLKSEL 3 (PLL with Z Gyro reference)*/
-    IICWriteByte(DevAddr, MPU6050_RA_INT_PIN_CFG, 0 << 7 | 0 << 6 | 0 << 5 | 0 << 4 | 0 << 3 | 0 << 2 | 1 << 1 | 0 << 0);  /*INT_PIN_CFG   -- INT_LEVEL_HIGH, INT_OPEN_DIS, LATCH_INT_DIS, INT_RD_CLEAR_DIS, FSYNC_INT_LEVEL_HIGH, FSYNC_INT_DIS, I2C_BYPASS_EN, CLOCK_DIS*/
-    IICWriteByte(DevAddr, MPU6050_RA_CONFIG, MPU6050_DLPF_BW_42);  /*CONFIG  -- EXT_SYNC_SET 0 (disable input pin for data sync) ; default DLPF_CFG = 0 => ACC bandwidth = 260Hz  GYRO bandwidth = 256Hz)*/
+    IICWriteByte(DevAddr, MPU6050_RA_SMPLRT_DIV, 0x00);      /* SMPLRT_DIV  -- SMPLRT_DIV = 0  Sample Rate = Gyroscope Output Rate / (1 + SMPLRT_DIV) */
+    IICWriteByte(DevAddr, MPU6050_RA_PWR_MGMT_1, 0x03);      /* PWR_MGMT_1  -- SLEEP 0; CYCLE 0; TEMP_DIS 0; CLKSEL 3 (PLL with Z Gyro reference) */
+    IICWriteByte(DevAddr, MPU6050_RA_INT_PIN_CFG, 0 << 7 | 0 << 6 | 0 << 5 | 0 << 4 | 0 << 3 | 0 << 2 | 1 << 1 | 0 << 0);  /* INT_PIN_CFG   -- INT_LEVEL_HIGH, INT_OPEN_DIS, LATCH_INT_DIS, INT_RD_CLEAR_DIS, FSYNC_INT_LEVEL_HIGH, FSYNC_INT_DIS, I2C_BYPASS_EN, CLOCK_DIS */
+    IICWriteByte(DevAddr, MPU6050_RA_CONFIG, MPU6050_DLPF_BW_42);  /* CONFIG  -- EXT_SYNC_SET 0 (disable input pin for data sync); default DLPF_CFG = 0 => ACC bandwidth = 260Hz  GYRO bandwidth = 256Hz) */
     MPU6050_SetFullScaleGyroRange(MPU6050_GYRO_FS_2000);
 
-    /*Accel scale 8g (4096 LSB/g)*/
+    /* Accel scale 8g (4096 LSB/g) */
     IICWriteByte(DevAddr, MPU6050_RA_ACCEL_CONFIG, 2 << 3);
 }
 
-/*读acc*/
 void MPU6050_ReadAcc(int16_t *accData)
 {
     uint8_t buf[6];
@@ -178,7 +198,6 @@ void MPU6050_ReadAcc(int16_t *accData)
     accData[2] = (int16_t)((buf[4] << 8) | buf[5]);
 }
 
-/*读gyro*/
 void MPU6050_ReadGyro(int16_t *gyroData)
 {
     uint8_t buf[6];
@@ -188,7 +207,7 @@ void MPU6050_ReadGyro(int16_t *gyroData)
     gyroData[2] = (int16_t)((buf[4] << 8) | buf[5]);
 }
 
-/*用于校准DMP的偏置值*/
+/* Calibrate the offset of DMP */
 void MPU6050_SetAccOffset(int16_t offset[3])
 {
     uint8_t buf[2];
@@ -213,7 +232,7 @@ void MPU6050_SetGyroOffset(int16_t offset[3])
     }
 }
 
-/*BANK_SEL register*/
+/* BANK_SEL register */
 void MPU6050_SetMemoryBank(uint8_t bank, uint8_t prefetchEnabled, uint8_t userBank)
 {
     bank &= 0x1F;
@@ -222,20 +241,20 @@ void MPU6050_SetMemoryBank(uint8_t bank, uint8_t prefetchEnabled, uint8_t userBa
     IICWriteByte(DevAddr, MPU6050_RA_BANK_SEL, bank);
 }
 
-/*MEM_START_ADDR register*/
+/* MEM_START_ADDR register */
 void MPU6050_SetMemoryStartAddress(uint8_t address)
 {
     IICWriteByte(DevAddr, MPU6050_RA_MEM_START_ADDR, address);
 }
 
-/*MEM_R_W register*/
+/* MEM_R_W register */
 uint8_t MPU6050_ReadMemoryByte(void)
 {
     IICReadBytes(DevAddr, MPU6050_RA_MEM_R_W, 1, buffer);
     return buffer[0];
 }
 
-/*XG_OFFS_USR* registers*/
+/* XG_OFFS_USR* registers */
 int16_t MPU6050_GetXGyroOffset(void)
 {
     IICReadBytes(DevAddr, MPU6050_RA_XG_OFFS_USRH, 2, buffer);
@@ -269,20 +288,20 @@ uint8_t MPU6050_WriteMemoryBlock(const uint8_t *data, uint16_t dataSize, uint8_t
 
     for (i = 0; i < dataSize;)
     {
-        /*determine correct chunk size according to bank position and data size*/
+        /* Determine correct chunk size according to bank position and data size */
         chunkSize = MPU6050_DMP_MEMORY_CHUNK_SIZE;
 
-        /*make sure we don't go past the data size*/
+        /* Make sure we don't go past the data size */
         if (i + chunkSize > dataSize) chunkSize = dataSize - i;
 
-        /*make sure this chunk doesn't go past the bank boundary (256 bytes)*/
+        /* Make sure this chunk doesn't go past the bank boundary (256 bytes) */
         if (chunkSize > 256 - address) chunkSize = 256 - address;
 
-        /*write the chunk of data as specified*/
+        /* Write the chunk of data as specified */
         tprogBuffer = (uint8_t*)data + i;
         IICWriteBytes(DevAddr, MPU6050_RA_MEM_R_W, chunkSize, tprogBuffer);
 
-        /*verify data if needed*/
+        /* Verify data if needed */
         if (verify)
         {
             MPU6050_SetMemoryBank(bank, 0, 0);
@@ -293,18 +312,18 @@ uint8_t MPU6050_WriteMemoryBlock(const uint8_t *data, uint16_t dataSize, uint8_t
             {
                 if (tprogBuffer[j] != verifyBuffer[j])
                 {
-                    return 0; /*uh oh*/
+                    return 0;
                 }
             }
         }
 
-        /*increase byte index by [chunkSize]*/
+        /* Increase byte index by [chunkSize] */
         i += chunkSize;
 
-        /*uint8_tautomatically wraps to 0 at 256*/
+        /* uint8_tautomatically wraps to 0 at 256 */
         address += chunkSize;
 
-        /*if we aren't done, update bank (if necessary) and address*/
+        /* If we aren't done, update bank (if necessary) and address */
         if (i < dataSize)
         {
             if (address == 0) bank++;
@@ -320,8 +339,8 @@ uint8_t MPU6050_WriteDMPConfigurationSet(const uint8_t *data, uint16_t dataSize,
     uint8_t *progBuffer, success, special;
     uint16_t i;
 
-    /*config set data is a long string of blocks with the following structure:*/
-    /*[bank] [offset] [length] [byte[0], byte[1], ..., byte[length]]*/
+    /* Config set data is a long string of blocks with the following structure: */
+    /* [bank] [offset] [length] [byte[0], byte[1], ..., byte[length]] */
     uint8_t bank, offset, length;
     for (i = 0; i < dataSize;)
     {
@@ -329,38 +348,38 @@ uint8_t MPU6050_WriteDMPConfigurationSet(const uint8_t *data, uint16_t dataSize,
         offset = data[i++];
         length = data[i++];
 
-        /*write data or perform special action*/
+        /* Write data or perform special action */
         if (length > 0)
         {
-            /*regular block of data to write*/
+            /* Regular block of data to write */
             progBuffer = (uint8_t*)data + i;
             success = MPU6050_WriteMemoryBlock(progBuffer, length, bank, offset, 1, 0);
             i += length;
         }
         else
         {
-            /*special instruction*/
-            /*NOTE: this kind of behavior (what and when to do certain things)*/
-            /*is totally undocumented. This code is in here based on observed*/
-            /*behavior only, and exactly why (or even whether) it has to be here*/
-            /*is anybody's guess for now.*/
+            /* Special instruction */
+            /* NOTE: this kind of behavior (what and when to do certain things) */
+            /* is totally undocumented. This code is in here based on observed */
+            /* behavior only, and exactly why (or even whether) it has to be here */
+            /* is anybody's guess for now. */
             special = data[i++];
             if (special == 0x01)
             {
-                /*enable DMP-related interrupts*/
-                IICWriteByte(DevAddr, MPU6050_RA_INT_ENABLE, 0x32);  /*single operation*/
+                /* Enable DMP-related interrupts */
+                IICWriteByte(DevAddr, MPU6050_RA_INT_ENABLE, 0x32);  /* Single operation */
                 success = 1;
             }
             else
             {
-                /*unknown special command*/
+                /* Unknown special command */
                 success = 0;
             }
         }
 
         if (!success)
         {
-            return 0;  /*uh oh*/
+            return 0;
         }
     }
     return 1;
@@ -409,7 +428,8 @@ void MPU6050_SetRate(uint8_t rate)
  */
 void MPU6050_SetDLPFMode(uint8_t mode)
 {
-    IICWriteBits(DevAddr, MPU6050_RA_CONFIG, MPU6050_CFG_DLPF_CFG_BIT, MPU6050_CFG_DLPF_CFG_LENGTH, mode);
+    IICWriteBits(DevAddr, MPU6050_RA_CONFIG, MPU6050_CFG_DLPF_CFG_BIT,
+                          MPU6050_CFG_DLPF_CFG_LENGTH, mode);
 }
 
 /** Set external FSYNC configuration.
@@ -419,7 +439,8 @@ void MPU6050_SetDLPFMode(uint8_t mode)
  */
 void MPU6050_SetExternalFrameSync(uint8_t sync)
 {
-    IICWriteBits(DevAddr, MPU6050_RA_CONFIG, MPU6050_CFG_EXT_SYNC_SET_BIT, MPU6050_CFG_EXT_SYNC_SET_LENGTH, sync);
+    IICWriteBits(DevAddr, MPU6050_RA_CONFIG, MPU6050_CFG_EXT_SYNC_SET_BIT,
+                          MPU6050_CFG_EXT_SYNC_SET_LENGTH, sync);
 }
 
 void MPU6050_SetDMPConfig1(uint8_t config)
@@ -531,25 +552,25 @@ void MPU6050_ReadMemoryBlock(uint8_t *data, uint16_t dataSize, uint8_t bank, uin
 
     for (i = 0; i < dataSize;)
     {
-        /*determine correct chunk size according to bank position and data size*/
+        /* Determine correct chunk size according to bank position and data size */
         chunkSize = MPU6050_DMP_MEMORY_CHUNK_SIZE;
 
-        /*make sure we don't go past the data size*/
+        /* Make sure we don't go past the data size */
         if (i + chunkSize > dataSize) chunkSize = dataSize - i;
 
-        /*make sure this chunk doesn't go past the bank boundary (256 bytes)*/
+        /* Make sure this chunk doesn't go past the bank boundary (256 bytes) */
         if (chunkSize > 256 - address) chunkSize = 256 - address;
 
-        /*read the chunk of data as specified*/
+        /* Read the chunk of data as specified */
         IICWriteBytes(DevAddr, MPU6050_RA_MEM_R_W, chunkSize, data + i);
 
-        /*increase byte index by [chunkSize]*/
+        /* Increase byte index by [chunkSize] */
         i += chunkSize;
 
-        /*uint8_tautomatically wraps to 0 at 256*/
+        /* uint8_tautomatically wraps to 0 at 256 */
         address += chunkSize;
 
-        /*if we aren't done, update bank (if necessary) and address*/
+        /* If we aren't done, update bank (if necessary) and address */
         if (i < dataSize)
         {
             if (address == 0) bank++;
@@ -599,7 +620,7 @@ void MPU6050_SetXGyroOffsetTC(int8_t offset)
     IICWriteBits(DevAddr, MPU6050_RA_XG_OFFS_TC, MPU6050_TC_OFFSET_BIT, MPU6050_TC_OFFSET_LENGTH, offset);
 }
 
-/*YG_OFFS_TC register*/
+/* YG_OFFS_TC register */
 int8_t MPU6050_GetYGyroOffsetTC(void)
 {
     uint8_t temp = IIC_ReadOneByte(DevAddr, MPU6050_RA_YG_OFFS_TC);
@@ -612,7 +633,7 @@ void MPU6050_SetYGyroOffsetTC(int8_t offset)
     IICWriteBits(DevAddr, MPU6050_RA_YG_OFFS_TC, MPU6050_TC_OFFSET_BIT, MPU6050_TC_OFFSET_LENGTH, offset);
 }
 
-/*ZG_OFFS_TC register*/
+/* ZG_OFFS_TC register */
 int8_t MPU6050_GetZGyroOffsetTC(void)
 {
     uint8_t temp = IIC_ReadOneByte(DevAddr, MPU6050_RA_ZG_OFFS_TC);

@@ -1,3 +1,21 @@
+/*******************************************************************************
+THIS PROGRAM IS FREE SOFTWARE. YOU CAN REDISTRIBUTE IT AND/OR MODIFY IT 
+UNDER THE TERMS OF THE GNU GPLV3 AS PUBLISHED BY THE FREE SOFTWARE FOUNDATION.
+
+Copyright (C), 2016-2016, Team MicroDynamics <microdynamics@126.com>
+
+Filename:    stm32f10x_system_mpu6050.h
+Author:      maksyuki
+Version:     0.1.0.20161231_release
+Create date: 2016.09.04
+Description: declare the mpu6050 function
+Others:      none
+Function List:
+History:
+1. <author>    <date>         <desc>
+   maksyuki  2017.01.11  modify the module
+*******************************************************************************/
+
 #ifndef __STM32F10X_SYSTEM_MPU6050_H__
 #define __STM32F10X_SYSTEM_MPU6050_H__
 
@@ -5,23 +23,23 @@
 
 #define DevAddr 0xD0
 
-#define MPU6050_RA_XG_OFFS_TC                  0x00  /*[7] PWR_MODE, [6:1] XG_OFFS_TC, [0] OTP_BNK_VLD*/
-#define MPU6050_RA_YG_OFFS_TC                  0x01  /*[7] PWR_MODE, [6:1] YG_OFFS_TC, [0] OTP_BNK_VLD*/
-#define MPU6050_RA_ZG_OFFS_TC                  0x02  /*[7] PWR_MODE, [6:1] ZG_OFFS_TC, [0] OTP_BNK_VLD*/
-#define MPU6050_RA_X_FINE_GAIN                 0x03  /*[7:0] X_FINE_GAIN*/
-#define MPU6050_RA_Y_FINE_GAIN                 0x04  /*[7:0] Y_FINE_GAIN*/
-#define MPU6050_RA_Z_FINE_GAIN                 0x05  /*[7:0] Z_FINE_GAIN*/
-#define MPU6050_RA_XA_OFFS_H                   0x06  /*[15:0] XA_OFFS*/
+#define MPU6050_RA_XG_OFFS_TC                  0x00  /* [7] PWR_MODE, [6:1] XG_OFFS_TC, [0] OTP_BNK_VLD */
+#define MPU6050_RA_YG_OFFS_TC                  0x01  /* [7] PWR_MODE, [6:1] YG_OFFS_TC, [0] OTP_BNK_VLD */
+#define MPU6050_RA_ZG_OFFS_TC                  0x02  /* [7] PWR_MODE, [6:1] ZG_OFFS_TC, [0] OTP_BNK_VLD */
+#define MPU6050_RA_X_FINE_GAIN                 0x03  /* [7:0] X_FINE_GAIN */
+#define MPU6050_RA_Y_FINE_GAIN                 0x04  /* [7:0] Y_FINE_GAIN */
+#define MPU6050_RA_Z_FINE_GAIN                 0x05  /* [7:0] Z_FINE_GAIN */
+#define MPU6050_RA_XA_OFFS_H                   0x06  /* [15:0] XA_OFFS */
 #define MPU6050_RA_XA_OFFS_L_TC                0x07
-#define MPU6050_RA_YA_OFFS_H                   0x08  /*[15:0] YA_OFFS*/
+#define MPU6050_RA_YA_OFFS_H                   0x08  /* [15:0] YA_OFFS */
 #define MPU6050_RA_YA_OFFS_L_TC                0x09
-#define MPU6050_RA_ZA_OFFS_H                   0x0A  /*[15:0] ZA_OFFS*/
+#define MPU6050_RA_ZA_OFFS_H                   0x0A  /* [15:0] ZA_OFFS */
 #define MPU6050_RA_ZA_OFFS_L_TC                0x0B
-#define MPU6050_RA_XG_OFFS_USRH                0x13  /*[15:0] XG_OFFS_USR*/
+#define MPU6050_RA_XG_OFFS_USRH                0x13  /* [15:0] XG_OFFS_USR */
 #define MPU6050_RA_XG_OFFS_USRL                0x14
-#define MPU6050_RA_YG_OFFS_USRH                0x15  /*[15:0] YG_OFFS_USR*/
+#define MPU6050_RA_YG_OFFS_USRH                0x15  /* [15:0] YG_OFFS_USR */
 #define MPU6050_RA_YG_OFFS_USRL                0x16
-#define MPU6050_RA_ZG_OFFS_USRH                0x17  /*[15:0] ZG_OFFS_USR*/
+#define MPU6050_RA_ZG_OFFS_USRH                0x17  /* [15:0] ZG_OFFS_USR */
 #define MPU6050_RA_ZG_OFFS_USRL                0x18
 #define MPU6050_RA_SMPLRT_DIV                  0x19
 #define MPU6050_RA_CONFIG                      0x1A
@@ -265,8 +283,8 @@
 #define MPU6050_INTERRUPT_DMP_INT_BIT          1
 #define MPU6050_INTERRUPT_DATA_RDY_BIT         0
 
-/*TODO: figure out what these actually do*/
-/*UMPL source code is not very obivous*/
+/* TODO: figure out what these actually do */
+/* UMPL source code is not very obivous */
 #define MPU6050_DMPINT_5_BIT                   5
 #define MPU6050_DMPINT_4_BIT                   4
 #define MPU6050_DMPINT_3_BIT                   3
@@ -358,13 +376,13 @@
 extern float Acc1G_Values;
 extern uint8_t buffer[14];
 
-/*供外部调用的API*/
-extern void MPU6050_Init(void);                   /*初始化*/
+/* API */
+extern void MPU6050_Init(void);
 extern void MPU6050_Reset(void);
 extern void MPU6050_ReadGyro(int16_t *gyroData);
 extern void MPU6050_ReadAcc(int16_t *accData);
 
-extern uint8_t MPU6050_TestConnection(void);     /*检测MPU6050是否存在*/
+extern uint8_t MPU6050_TestConnection(void);
 extern unsigned char MPU6050_IsDRY(void);
 
 extern void MPU6050_SetSleepEnabled(uint8_t enabled);

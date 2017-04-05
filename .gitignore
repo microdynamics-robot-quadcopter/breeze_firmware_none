@@ -32,7 +32,7 @@
 *.dSYM/
 *.su
 
-#Others
+# Others
 *.crf
 *.htm
 *.dep

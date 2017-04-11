@@ -192,10 +192,10 @@ void NRF_Matching(void)
     static uint32_t nTs, nT;
     static uint32_t writeOvertime = 2 * 1000000;  /* Unit: us */
 
-    LedA_On;
-    LedB_On;
-    LedC_On;
-    LedD_On;
+    LED_A_ON;
+    LED_B_ON;
+    LED_C_ON;
+    LED_D_ON;
     nTs = micros();
 
     do
@@ -235,8 +235,8 @@ void NRF_Matching(void)
         SaveParamsToEEPROM();  /* Write eeprom when current addr != original addr */
     }
 
-    LedA_Off;
-    LedB_Off;
-    LedC_Off;                  /* Matching end */
-    LedD_Off;
+    LED_A_OFF;
+    LED_B_OFF;
+    LED_C_OFF;                  /* Matching end */
+    LED_D_OFF;
 }

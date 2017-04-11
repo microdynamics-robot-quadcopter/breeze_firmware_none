@@ -101,7 +101,7 @@ void ProcessDataFromNRF(void)
             {
                 armState = ARMED;
                 FLY_ENABLE = 0xA5;
-                LedC_On;
+                LED_C_ON;
 
                 /* This is an unuseful process, because it will be assigned zero in 100Hz loop */
                 /* Setting in the flight module */

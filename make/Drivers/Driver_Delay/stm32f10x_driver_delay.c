@@ -1,5 +1,5 @@
 /*******************************************************************************
-THIS PROGRAM IS FREE SOFTWARE. YOU CAN REDISTRIBUTE IT AND/OR MODIFY IT 
+THIS PROGRAM IS FREE SOFTWARE. YOU CAN REDISTRIBUTE IT AND/OR MODIFY IT
 UNDER THE TERMS OF THE GNU GPLV3 AS PUBLISHED BY THE FREE SOFTWARE FOUNDATION.
 
 Copyright (C), 2016-2016, Team MicroDynamics <microdynamics@126.com>
@@ -23,8 +23,8 @@ History:
 #include "stm32f10x.h"
 #include "stm32f10x_it.h"
 
-//static u8 g_fac_us = 0;
-//static u16 g_fac_ms = 0;
+static u8 g_fac_us = 0;
+static u16 g_fac_ms = 0;
 
 char SysClock;
 
@@ -75,19 +75,19 @@ void delay_us(u32 nus)
     while(micros() - t0 < nus);
 }
 
-void delay_ms(u16 nms)
-{
-    u32 t0 = micros();
-    while(micros() - t0 < nms * 1000);
-}
+// void delay_ms(u16 nms)
+// {
+//     u32 t0 = micros();
+//     while(micros() - t0 < nms * 1000);
+// }
 
 /* Don't use this functions */
-//void delay_init(void)
-//{
-//	SysTick_CLKSourceConfig(SysTick_CLKSource_HCLK_Div8);  /* Select external clock HCLK/8 */
-//	g_fac_us = SystemCoreClock / 8000000;                  /* Clock time's 1/8 */
-//	g_fac_ms = (u16)g_fac_us * 1000;
-//}
+void delay_init(void)
+{
+	SysTick_CLKSourceConfig(SysTick_CLKSource_HCLK_Div8);  /* Select external clock HCLK/8 */
+	g_fac_us = SystemCoreClock / 8000000;                  /* Clock time's 1/8 */
+	g_fac_ms = (u16)g_fac_us * 1000;
+}
 
 //void delay_us(u32 nus)
 //{
@@ -106,19 +106,19 @@ void delay_ms(u16 nms)
 //	SysTick->VAL  = 0x00;                        /* Clear timer */
 //}
 
-//void delay_ms(u16 nms)
-//{
-//	u32 temp;
-//	SysTick->LOAD = (u32)nms * g_fac_ms;         /* Load time, SysTick->LOAD is 24bit */
-//	SysTick->VAL  = 0x00;                        /* Clear timer */
-//	SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;    /* Start countdown */
+void delay_ms(u16 nms)
+{
+	u32 temp;
+	SysTick->LOAD = (u32)nms * g_fac_ms;         /* Load time, SysTick->LOAD is 24bit */
+	SysTick->VAL  = 0x00;                        /* Clear timer */
+	SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;    /* Start countdown */
 
-//	do
-//	{
-//		temp = SysTick->CTRL;
-//	}
-//	while ((temp & 0x01) && !(temp & (1<<16)));  /* Wait time to arrive */
+	do
+	{
+		temp = SysTick->CTRL;
+	}
+	while ((temp & 0x01) && !(temp & (1<<16)));  /* Wait time to arrive */
 
-//	SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;   /* Disable timer */
-//	SysTick->VAL  = 0x00;                        /* Clear timer */
-//}
+	SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;   /* Disable timer */
+	SysTick->VAL  = 0x00;                        /* Clear timer */
+}

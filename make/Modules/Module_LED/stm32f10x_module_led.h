@@ -12,10 +12,12 @@ Description: Declare the led function
 Others:      none
 Function List:
              1. void LED_Init(void);
+             2. void LED_SetLight(LED_State LED_A, LED_State LED_B,
+                                  LED_State LED_C, LED_State LED_D)
 History:
-<author>    <date>         <desc>
-maksyuki    2016.12.20     Modify the module
-myyerrol    2017.04.11     Format the module
+<author>    <date>        <desc>
+maksyuki    2016.12.20    Modify the module
+myyerrol    2017.04.11    Format the module
 *******************************************************************************/
 
 #ifndef __STM32F10X_MODULE_LED_H__
@@ -44,6 +46,14 @@ myyerrol    2017.04.11     Format the module
 #define LED_D_TOGGLE GPIO_WriteBit(GPIOB, GPIO_Pin_3,  \
                                   !GPIO_ReadOutputDataBit(GPIOB, GPIO_Pin_3))
 
+typedef enum
+{
+    OFF = 0,
+    ON  = 1
+} LED_State;
+
 extern void LED_Init(void);
+extern void LED_SetLight(LED_State LED_A, LED_State LED_B, LED_State LED_C,
+                         LED_State LED_D);
 
 #endif

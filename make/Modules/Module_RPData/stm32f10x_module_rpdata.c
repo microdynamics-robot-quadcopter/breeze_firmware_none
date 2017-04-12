@@ -97,7 +97,7 @@ void ProcessDataFromNRF(void)
     switch (armState)
     {
         case REQ_ARM:
-            if (IMU_Check() && !Battery.AlarmFlag)
+            if (IMU_Check() && !Battery_InitStructure.Battery_FlagAlarm)
             {
                 armState = ARMED;
                 FLY_ENABLE = 0xA5;

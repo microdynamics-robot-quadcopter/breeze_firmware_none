@@ -8,18 +8,20 @@ Filename:    stm32f10x_module_battery.h
 Author:      maksyuki
 Version:     0.1.0.20161231_release
 Create date: 2016.08.14
-Description: declare the battery operation function
+Description: Declare the battery operation function
 Others:      none
 Function List:
-             1. int  Battery_GetAD(void);
-             2. int  Battery_GetTemp(void);
-             3. void Battery_Check(void);
-             4. void Battery_CheckInit(void);
-             5. u16  Battery_GetADC(u8 ch);
-             6. u16  Battery_GetADCAverage(u8 ch, u8 times);
+             1. void Battery_Init(void);
+             2. void Battery_Check(void);
+             3. u16  Battery_GetADC(u8 ch);
+             4. u16  Battery_GetADCAverage(u8 ch, u8 times);
+             5. int  Battery_GetAD(void);
+             6. int  Battery_GetTemp(void);
+
 History:
-1. <author>    <date>         <desc>
-   maksyuki  2016.12.30  modify the module
+<author>    <date>        <desc>
+maksyuki    2016.12.30    Modify the module
+myyerrol    2017.04.11    Format the module
 *******************************************************************************/
 
 #ifndef __STM32F10X_MODULE_BATTERY_H__
@@ -27,31 +29,43 @@ History:
 
 #include "stm32f10x.h"
 
-#define BAT_CHECK_PERIOD  5000  /* Unit: ms */
-#define BAT_ALARM_VAL     3.65  /* Threshold of starting motor, starting motor will lead to 0.3-0.4v voltage drop */
-#define BAT_CHARGE_VAL    1.0   /* Charge battery val unit: v */
-#define BAT_OVERDIS_VAL   3.15  /* Over discharge protect value, below this value long time will lead to land */
+// The Period of battery check. Unit is ms.
+#define BATTERY_CHECK_PERIOD    5000
+// The threshold of starting motors.
+// Starting motors will lead voltage to 0.3-0.4v drop.
+#define BATTERY_VOLTAGE_ALARM   3.65
+// The charged voltage.
+#define BATTERY_VOLTAGE_CHARGE  1.0
+// The protective voltage of over discharge.
+// Below the value long time will to lead quadcopter to land.
+#define BATTERY_VOLTAGE_OVERDIS 3.15
+
+typedef enum
+{
+    TRUE  = 0,
+    FALSE = 1
+} bool;
 
 typedef struct
 {
-    int   ADVal;
-    int   OverDischargeCnt;
-    char  AlarmFlag;
-    char  ChargeState;
-    float RealVal;
-    float TestVal;     /* Practice value, measured by multimeter */
-    float ADRefVal;    /* Supply voltage, about 3.3v, need to be measured */
-    float ADInputVal;  /* The pad voltage between R15 and R17 */
-    float Factor;      /* For voltage calibration */
-}Bat_TypedefStructure;
+    bool  Battery_FlagAlarm;
+    bool  Battery_FlagCharge;
+    int   Battery_VoltageAD;
+    int   Battery_OverDischargeCnt;
+    float Battery_VoltageCalculate;
+    float Battery_VoltageMeasure;
+    float Battery_VoltageAD_Ref;
+    float Battery_VoltageAD_In;
+    float Battery_VoltageFactor;
+} Battery_InitTypeDef;
 
-extern Bat_TypedefStructure Battery;
+extern Battery_InitTypeDef Battery_InitStructure;
 
-extern int  Battery_GetAD(void);
-extern int  Battery_GetTemp(void);
+extern void Battery_Init(void);
 extern void Battery_Check(void);
-extern void Battery_CheckInit(void);
 extern u16  Battery_GetADC(u8 ch);
 extern u16  Battery_GetADCAverage(u8 ch, u8 times);
+extern int  Battery_GetAD(void);
+extern int  Battery_GetTemp(void);
 
 #endif

@@ -12,8 +12,10 @@ Description: Implement the led function
 Others:      none
 Function List:
              1. void LED_Init(void);
-             2. void LED_SetLight(LED_State LED_A, LED_State LED_B,
-                                  LED_State LED_C, LED_State LED_D)
+             2. void LED_SetLight(LED_State led_a, LED_State led_b,
+                                  LED_State led_c, LED_State led_d);
+             3. void LED_UpdateLight(void);
+             4. void LED_JumpStateMachine(void);
 History:
 <author>    <date>        <desc>
 maksyuki    2016.12.20    Modify the
@@ -21,6 +23,10 @@ myyerrol    2017.04.11    Format the module
 *******************************************************************************/
 
 #include "stm32f10x_module_led.h"
+#include "stm32f10x_algorithm_imu.h"
+
+LED_Buffer       LED_BufferStructure;
+LED_StateMachine LED_StateMachineStructure;
 
 void LED_Init(void)
 {
@@ -45,11 +51,132 @@ void LED_Init(void)
     LED_D_OFF;
 }
 
-void LED_SetLight(LED_State LED_A, LED_State LED_B, LED_State LED_C,
-                  LED_State LED_D)
+void LED_SetLight(LED_State led_a, LED_State led_b, LED_State led_c,
+                  LED_State led_d)
 {
-    GPIO_WriteBit(GPIOA, GPIO_Pin_11, LED_A);
-    GPIO_WriteBit(GPIOA, GPIO_Pin_8,  LED_B);
-    GPIO_WriteBit(GPIOB, GPIO_Pin_1,  LED_C);
-    GPIO_WriteBit(GPIOB, GPIO_Pin_3,  LED_D);
+    GPIO_WriteBit(GPIOA, GPIO_Pin_11, led_a);
+    GPIO_WriteBit(GPIOA, GPIO_Pin_8,  led_b);
+    GPIO_WriteBit(GPIOB, GPIO_Pin_1,  led_c);
+    GPIO_WriteBit(GPIOB, GPIO_Pin_3,  led_d);
+}
+
+void LED_UpdateLight(void)
+{
+    if (LED_BufferStructure.bits.a)
+    {
+        LED_A_ON;
+    }
+    else
+    {
+        LED_A_OFF;
+    }
+    if (LED_BufferStructure.bits.b)
+    {
+        LED_B_ON;
+    }
+    else
+    {
+        LED_B_OFF;
+    }
+    if (LED_BufferStructure.bits.c)
+    {
+        LED_C_ON;
+    }
+    else
+    {
+        LED_C_OFF;
+    }
+    if (LED_BufferStructure.bits.d)
+    {
+        LED_D_ON;
+    }
+    else
+    {
+        LED_D_OFF;
+    }
+}
+
+void LED_JumpStateMachine(void)
+{
+    LED_StateMachineStructure.state = LED_STATE_READY;
+
+    if (!imu.ready)
+    {
+        // Start the calibration of IMU.
+        LED_StateMachineStructure.state = LED_STATE_CALI;
+    }
+    if (!imu.caliPass)
+    {
+        // Fail to calibrate the IMU.
+        LED_StateMachineStructure.state = LED_STATE_CALI_FAIL;
+    }
+    if (imuCaliFlag)
+    {
+        // Finish the calibrate of IMU.
+        LED_StateMachineStructure.state = LED_STATE_CALI;
+    }
+
+    switch (LED_StateMachineStructure.state)
+    {
+        case LED_STATE_READY:
+        {
+            if (++LED_StateMachineStructure.state_count >= 3)
+            {
+                LED_StateMachineStructure.state_count = 0;
+            }
+            if (LED_StateMachineStructure.state_count == 0)
+            {
+                LED_BufferStructure.byte = LED_A | LED_B;
+            }
+            else
+            {
+                LED_BufferStructure.byte = 0x00;
+            }
+            break;
+        }
+        case LED_STATE_CALI:
+        {
+            LED_BufferStructure.byte = LED_A | LED_B;
+            break;
+        }
+        case LED_STATE_CALI_FAIL:
+        {
+            if (++LED_StateMachineStructure.state_count >= 4)
+            {
+                LED_StateMachineStructure.state_count = 0;
+            }
+            if (LED_StateMachineStructure.state_count < 2)
+            {
+                LED_BufferStructure.byte = LED_A | LED_B;
+            }
+            else
+            {
+                LED_BufferStructure.byte = LED_C | LED_D;
+            }
+            break;
+        }
+        case LED_STATE_BAT_LOW:
+        {
+            if (++LED_StateMachineStructure.state_count >= 3)
+            {
+                LED_StateMachineStructure.state_count = 0;
+            }
+            if (LED_StateMachineStructure.state_count == 0)
+            {
+                LED_BufferStructure.byte = 0x0F;
+            }
+            else
+            {
+                LED_BufferStructure.byte = 0x00;
+            }
+            break;
+        }
+        case LED_STATE_BAT_CHG:
+        {
+            LED_BufferStructure.byte = 0x00;
+            break;
+        }
+    }
+
+    LED_UpdateLight();
 }

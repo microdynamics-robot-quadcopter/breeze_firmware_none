@@ -1,5 +1,5 @@
 /*******************************************************************************
-THIS PROGRAM IS FREE SOFTWARE. YOU CAN REDISTRIBUTE IT AND/OR MODIFY IT 
+THIS PROGRAM IS FREE SOFTWARE. YOU CAN REDISTRIBUTE IT AND/OR MODIFY IT
 UNDER THE TERMS OF THE GNU GPLV3 AS PUBLISHED BY THE FREE SOFTWARE FOUNDATION.
 
 Copyright (C), 2016-2016, Team MicroDynamics <microdynamics@126.com>
@@ -50,9 +50,9 @@ void IIC_Start(void)
     SDA_OUT();
     IIC_SDA = 1;
     IIC_SCL = 1;
-    delay_us(4);
+    Delay_TimeUs(4);
     IIC_SDA = 0;
-    delay_us(4);
+    Delay_TimeUs(4);
     IIC_SCL = 0;
 }
 
@@ -61,10 +61,10 @@ void IIC_Stop(void)
     SDA_OUT();
     IIC_SCL = 0;
     IIC_SDA = 0;
-    delay_us(4);
+    Delay_TimeUs(4);
     IIC_SCL = 1;
     IIC_SDA = 1;
-    delay_us(4);
+    Delay_TimeUs(4);
 }
 
 u8 IIC_WaitAck(void)
@@ -72,9 +72,9 @@ u8 IIC_WaitAck(void)
     u8 ucErrTime = 0;
     SDA_IN();
     IIC_SDA = 1;
-    delay_us(1);
+    Delay_TimeUs(1);
     IIC_SCL = 1;
-    delay_us(1);
+    Delay_TimeUs(1);
 
     while (READ_SDA)
     {
@@ -84,7 +84,7 @@ u8 IIC_WaitAck(void)
             IIC_Stop();
             return 1;
         }
-        delay_us(1);
+        Delay_TimeUs(1);
     }
     IIC_SCL = 0;
     return 0;
@@ -95,9 +95,9 @@ void IIC_Ack(void)
     IIC_SCL = 0;
     SDA_OUT();
     IIC_SDA = 0;
-    delay_us(1);
+    Delay_TimeUs(1);
     IIC_SCL = 1;
-    delay_us(1);
+    Delay_TimeUs(1);
     IIC_SCL = 0;
 }
 
@@ -106,9 +106,9 @@ void IIC_NAck(void)
     IIC_SCL = 0;
     SDA_OUT();
     IIC_SDA = 1;
-    delay_us(1);
+    Delay_TimeUs(1);
     IIC_SCL = 1;
-    delay_us(1);
+    Delay_TimeUs(1);
     IIC_SCL = 0;
 }
 
@@ -122,11 +122,11 @@ void IIC_SendByte(u8 txd)
     {
         IIC_SDA = (txd & 0x80) >> 7;
         txd <<= 1;
-        delay_us(1);
+        Delay_TimeUs(1);
         IIC_SCL = 1;
-        delay_us(1);
+        Delay_TimeUs(1);
         IIC_SCL = 0;
-        delay_us(1);
+        Delay_TimeUs(1);
     }
 }
 
@@ -139,14 +139,14 @@ u8 IIC_ReadByte(u8 ack)
     for (i = 0; i < 8; i++)
     {
         IIC_SCL = 0;
-        delay_us(1);
+        Delay_TimeUs(1);
         IIC_SCL = 1;
         receive <<= 1;
         if (READ_SDA)
         {
             receive++;
         }
-        delay_us(1);
+        Delay_TimeUs(1);
     }
 
     if (ack)

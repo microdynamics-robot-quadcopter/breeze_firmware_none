@@ -80,7 +80,7 @@ void AltitudeCombineThread(void)
     float accel_bias_corr[3] = {0.0f, 0.0f, 0.0f};
     uint8_t i, j;
 
-    NowTime = micros();
+    NowTime = Delay_GetRuntimeUs();
     dt = (PreTime > 0) ? ((NowTime - PreTime) / 1000000.0f) : 0;
     PreTime = NowTime;
 

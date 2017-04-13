@@ -74,7 +74,7 @@ u8 STMFLASH_WaitDone(u16 time)
         {
             break;    /* Not busy */
         }
-        delay_us(1);
+        Delay_TimeUs(1);
         time--;
     }
     while (time);

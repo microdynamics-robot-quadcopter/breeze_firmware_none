@@ -67,7 +67,7 @@ uint8_t IMU_Calibrate(void)
     uint16_t dt                = 0;
     uint16_t NowTime           = 0;
 
-    NowTime = millis();
+    NowTime = Delay_GetRuntimeMs();
     dt = NowTime - PreTime;
 
     if (!calibrating)
@@ -443,7 +443,7 @@ void IMU_SO3Thread(void)
     static float gyro_offsets_sum[3] = {0.0f, 0.0f, 0.0f};  /* gyro_offsets[3] = {0.0f, 0.0f, 0.0f} */
     static uint16_t offset_count = 0;
 
-    NowTime = micros();
+    NowTime = Delay_GetRuntimeUs();
     dt = (PreTime > 0) ? (NowTime - PreTime) / 1000000.0f : 0;
     PreTime = NowTime;
 

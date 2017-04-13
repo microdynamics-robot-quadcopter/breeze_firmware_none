@@ -119,7 +119,7 @@ void ControlAttiAng(void)
     float angTarget[3]      = {0, 0, 0};
     static uint32_t PreTime = 0;
 
-    NowTime = micros();
+    NowTime = Delay_GetRuntimeUs();
     dt = (PreTime > 0) ? (NowTime - PreTime) : 0;
     PreTime = NowTime;
 
@@ -160,7 +160,7 @@ void ControlAttiRate(void)
     float yawRateTarget     = 0;
     static uint32_t PreTime = 0;
 
-    NowTime = micros();
+    NowTime = Delay_GetRuntimeUs();
     dt = (PreTime > 0) ? (NowTime - PreTime) : 0;
     PreTime = NowTime;
     yawRateTarget = -(float)NRF_Data.yaw;
@@ -289,12 +289,12 @@ void ControlAlti(void)
     /* otherwise dt is too large and integration will saturate */
     if (PreTime == 0)
     {
-        PreTime = micros();
+        PreTime = Delay_GetRuntimeUs();
         return;
     }
     else
     {
-        NowTime = micros();
+        NowTime = Delay_GetRuntimeUs();
         dt = (NowTime - PreTime) / 1000000.0f;
         PreTime = NowTime;
     }

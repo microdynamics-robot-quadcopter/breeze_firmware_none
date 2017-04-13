@@ -320,8 +320,8 @@ uint8_t MS5611_WaitBaroInitOffset(void)
 
     while (!PaOffsetInited)
     {
-        //printf("This is PaOffsetInited: %d", PaOffsetInited);  /*debug*/
-        //printf("  This is now: %d", now);
+        // printf("This is PaOffsetInited: %d", PaOffsetInited);  /*debug*/
+        // printf("  This is now: %d", now);
         MS5611_Thread();
         now = micros();
         if ((now - starttime) / 1000 >= PA_OFFSET_INIT_NUM * 50)  /*超时*/

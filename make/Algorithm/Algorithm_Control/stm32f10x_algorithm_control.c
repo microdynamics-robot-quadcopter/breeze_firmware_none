@@ -207,22 +207,22 @@ float EstimateHoverThru(void)
     float hoverHru = -0.55f;
 
     /* Check battery voltage */
-    Battery_InitStructure.Battery_VoltageAD   = Battery_GetAD();
-    Battery_InitStructure.Battery_VoltageCalculate = Battery_InitStructure.Battery_VoltageFactor * (Battery_InitStructure.Battery_VoltageAD / 4096.0) * Battery_InitStructure.Battery_VoltageAD_Ref;  /* Calculate actual voltage */
+    Battery_InformationStructure.voltage_ad   = Battery_GetAD();
+    Battery_InformationStructure.voltage_calculate = Battery_InformationStructure.voltage_factor * (Battery_InformationStructure.voltage_ad / 4096.0) * Battery_InformationStructure.voltage_ad_ref;  /* Calculate actual voltage */
 
-    if (Battery_InitStructure.Battery_VoltageCalculate > 4.05)
+    if (Battery_InformationStructure.voltage_calculate > 4.05)
     {
         hoverHru = -0.25f;
     }
-    else if (Battery_InitStructure.Battery_VoltageCalculate > 3.90)
+    else if (Battery_InformationStructure.voltage_calculate > 3.90)
     {
         hoverHru = -0.40f;
     }
-    else if (Battery_InitStructure.Battery_VoltageCalculate > 3.80)
+    else if (Battery_InformationStructure.voltage_calculate > 3.80)
     {
         hoverHru = -0.45f;
     }
-    else if (Battery_InitStructure.Battery_VoltageCalculate > 3.70)
+    else if (Battery_InformationStructure.voltage_calculate > 3.70)
     {
         hoverHru = -0.50f;
     }
@@ -242,14 +242,14 @@ float EstimateMinThru(void)
     float minThru = -0.55f;
 
     /* Check battery voltage */
-    Battery_InitStructure.Battery_VoltageAD   = Battery_GetAD();
-    Battery_InitStructure.Battery_VoltageCalculate = Battery_InitStructure.Battery_VoltageFactor * (Battery_InitStructure.Battery_VoltageAD / 4096.0) * Battery_InitStructure.Battery_VoltageAD_Ref;  /* Calculate actual voltage */
+    Battery_InformationStructure.voltage_ad   = Battery_GetAD();
+    Battery_InformationStructure.voltage_calculate = Battery_InformationStructure.voltage_factor * (Battery_InformationStructure.voltage_ad / 4096.0) * Battery_InformationStructure.voltage_ad_ref;  /* Calculate actual voltage */
 
-    if (Battery_InitStructure.Battery_VoltageCalculate > 4.05)
+    if (Battery_InformationStructure.voltage_calculate > 4.05)
     {
         minThru = -0.30f;
     }
-    else if (Battery_InitStructure.Battery_VoltageCalculate > 3.90)
+    else if (Battery_InformationStructure.voltage_calculate > 3.90)
     {
         minThru = -0.40f;
     }

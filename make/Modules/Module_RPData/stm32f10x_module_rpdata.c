@@ -82,8 +82,8 @@ void ProcessDataFromNRF(void)
     NRF_Data.pitch = ANGLE_MAX    * CutDBScaleToLinear((rcData[PITCH] - 1500), 500, APP_PR_DB);
     NRF_Data.roll  = ANGLE_MAX    * CutDBScaleToLinear((rcData[ROLL] - 1500), 500, APP_PR_DB);
 
-    //printf("This is the value of the armState:\n");  /* Debug */
-    //printf("%d\n", armState);
+    // printf("This is the value of the armState:\n");  /* Debug */
+    // printf("%d\n", armState);
 
 //    if (armState == REQ_ARM)
 //    {
@@ -97,7 +97,7 @@ void ProcessDataFromNRF(void)
     switch (armState)
     {
         case REQ_ARM:
-            if (IMU_Check() && !Battery_InitStructure.Battery_FlagAlarm)
+            if (IMU_Check() && !Battery_InformationStructure.flag_alarm)
             {
                 armState = ARMED;
                 FLY_ENABLE = 0xA5;

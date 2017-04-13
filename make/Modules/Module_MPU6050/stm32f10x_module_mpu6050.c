@@ -19,6 +19,7 @@ History:
 #include "stm32f10x_driver_iic.h"
 #include "stm32f10x_driver_delay.h"
 #include "stm32f10x_driver_usart.h"
+#include "stm32f10x_module_led.h"
 #include "stm32f10x_module_mpu6050.h"
 #include "stdio.h"
 
@@ -163,10 +164,10 @@ void MPU6050_Check(void)
 {
     switch (MPU6050_TestConnection())
     {
-        case 0: printf("MPU6050 not found...\r\n");
+        case 0: // printf("MPU6050 not found...\r\n");
         break;
 
-        case 1: printf("MPU6050 check success...\r\n");
+        case 1: // printf("MPU6050 check success...\r\n");
         break;
     }
 }
@@ -178,6 +179,7 @@ void MPU6050_Check(void)
 void MPU6050_Init(void)
 {
     IICWriteByte(DevAddr, MPU6050_RA_PWR_MGMT_1, 0x80);      /* PWR_MGMT_1  -- DEVICE_RESET 1 */
+    // LED_SetLight(ON, ON, ON, ON);
     delay_ms(50);
     IICWriteByte(DevAddr, MPU6050_RA_SMPLRT_DIV, 0x00);      /* SMPLRT_DIV  -- SMPLRT_DIV = 0  Sample Rate = Gyroscope Output Rate / (1 + SMPLRT_DIV) */
     IICWriteByte(DevAddr, MPU6050_RA_PWR_MGMT_1, 0x03);      /* PWR_MGMT_1  -- SLEEP 0; CYCLE 0; TEMP_DIS 0; CLKSEL 3 (PLL with Z Gyro reference) */

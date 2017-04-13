@@ -67,7 +67,7 @@ void SetRX_Mode(void)
     NRF_Write_Reg(NRF_WRITE_REG + RF_SETUP, 0x0f);                                   /* Set parameters of TX: 0db, 2Mbps, enable low noise gain */
     NRF_Write_Reg(NRF_WRITE_REG + CONFIG, 0x0f);                                     /* Set parameters: PWR_UP, EN_CRC, 16BIT_CRC, receive mode */
     SPI_CE_H();
-    //printf("NRF24L01 Set to Receiving Mode,RX_ADDR 0x%x...\r\n",RX_ADDRESS[4]);
+    // printf("NRF24L01 Set to Receiving Mode,RX_ADDR 0x%x...\r\n",RX_ADDRESS[4]);
 }
 
 void NRF_TxPacket(uint8_t *tx_buf, uint8_t len)
@@ -179,8 +179,15 @@ u8 NRF24L01_Check(void)
         }
     }
 
-    if (i == 5) {printf("NRF24L01 found...\r\n"); return 1;}         /* MCU connects to NRF successfully */
-    else        {printf("NRF24L01 check failed...\r\n"); return 0;}  /* MCU connects to NRF unsuccessfully */
+    if (i == 5)
+    {
+        // printf("NRF24L01 found...\r\n"); return 1;
+    }         /* MCU connects to NRF successfully */
+    else
+    {
+        // printf("NRF24L01 check failed...\r\n"); return 0;
+    }
+        /* MCU connects to NRF unsuccessfully */
 }
 
 static uint8_t sta;

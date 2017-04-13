@@ -180,7 +180,7 @@ void MPU6050_Init(void)
 {
     IICWriteByte(DevAddr, MPU6050_RA_PWR_MGMT_1, 0x80);      /* PWR_MGMT_1  -- DEVICE_RESET 1 */
     // LED_SetLight(ON, ON, ON, ON);
-    delay_ms(50);
+    Delay_TimeMs(50);
     IICWriteByte(DevAddr, MPU6050_RA_SMPLRT_DIV, 0x00);      /* SMPLRT_DIV  -- SMPLRT_DIV = 0  Sample Rate = Gyroscope Output Rate / (1 + SMPLRT_DIV) */
     IICWriteByte(DevAddr, MPU6050_RA_PWR_MGMT_1, 0x03);      /* PWR_MGMT_1  -- SLEEP 0; CYCLE 0; TEMP_DIS 0; CLKSEL 3 (PLL with Z Gyro reference) */
     IICWriteByte(DevAddr, MPU6050_RA_INT_PIN_CFG, 0 << 7 | 0 << 6 | 0 << 5 | 0 << 4 | 0 << 3 | 0 << 2 | 1 << 1 | 0 << 0);  /* INT_PIN_CFG   -- INT_LEVEL_HIGH, INT_OPEN_DIS, LATCH_INT_DIS, INT_RD_CLEAR_DIS, FSYNC_INT_LEVEL_HIGH, FSYNC_INT_DIS, I2C_BYPASS_EN, CLOCK_DIS */

@@ -203,12 +203,12 @@ void NRF_Matching(void)
     LED_B_ON;
     LED_C_ON;
     LED_D_ON;
-    nTs = micros();
+    nTs = Delay_GetRuntimeUs();
 
     do
     {
         NRFMatched = 0;
-        nT = micros() - nTs;
+        nT = Delay_GetRuntimeUs() - nTs;
 
         if (nT >= writeOvertime)
         {
@@ -217,7 +217,7 @@ void NRF_Matching(void)
         }
 
         SetRX_Mode(); /* Reset RX mode write RX panel address */
-        delay_ms(4);  /* Delay is needed after reset NRF */
+        Delay_TimeMs(4);  /* Delay is needed after reset NRF */
         sta = NRF_Read_Reg(NRF_READ_REG + NRFRegSTATUS);
 
         if ((sta & 0x0E) == 0x00)

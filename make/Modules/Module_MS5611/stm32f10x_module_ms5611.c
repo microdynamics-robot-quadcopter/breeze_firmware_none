@@ -71,7 +71,7 @@ volatile float MS5611_Altitude;
 volatile float MS5611_Temperature;
 
 /* Delay table: different sampling precision is with different delay time */
-uint32_t MS5611_Delay_Us[9] = {
+uint32_t MS5611_Delay_TimeUs[9] = {
     1500,  /* MS5611_OSR_256  0.9ms  0x00 */
     1500,  /* MS5611_OSR_256  0.9ms       */
     2000,  /* MS5611_OSR_512  1.2ms  0x02 */
@@ -139,13 +139,13 @@ void MS5611_ReadPROM(void)
         IIC_SendByte(MS5611_PROM_BASE_ADDR + (i * MS5611_PROM_REG_SIZE));
         IIC_WaitAck();
         IIC_Stop();
-        delay_us(5);
+        Delay_TimeUs(5);
         IIC_Start();
         IIC_SendByte(MS5611_ADDR + 1);  /* Enter receiving mode */
-        delay_us(1);
+        Delay_TimeUs(1);
         IIC_WaitAck();
         inth = IIC_ReadByte(1);         /* Read the data with ACK */
-        delay_us(1);
+        Delay_TimeUs(1);
         intl = IIC_ReadByte(0);         /* The last byte is with NACK */
         IIC_Stop();
         PROM_C[i] = (((uint16_t)inth << 8) | intl);
@@ -205,7 +205,7 @@ uint32_t MS5611_GetConversion(void)
 void MS5611_Init(void)
 {
     MS5611_Reset();
-    delay_ms(100);
+    Delay_TimeMs(100);
     MS5611_ReadPROM();
 }
 
@@ -278,30 +278,30 @@ void MS5611_Thread(void)
     {
         case StartConvertTemp:
             MS5611_StartConversion(MS5611_D2 + MS5611_Temp_OSR);
-            CurDelay = MS5611_Delay_Us[MS5611_Temp_OSR];
-            StartConvertTime = micros();
+            CurDelay = MS5611_Delay_TimeUs[MS5611_Temp_OSR];
+            StartConvertTime = Delay_GetRuntimeUs();
             CurState = ConvertTemping;
         break;
 
         case ConvertTemping:
-            if ((micros() - StartConvertTime) > CurDelay)
+            if ((Delay_GetRuntimeUs() - StartConvertTime) > CurDelay)
             {
                 MS5611_GetTemperature();
                 MS5611_StartConversion(MS5611_D1 + MS5611_Press_OSR);
-                CurDelay = MS5611_Delay_Us[MS5611_Press_OSR];  /* Conversion time */
-                StartConvertTime = micros();                   /* Start timing */
+                CurDelay = MS5611_Delay_TimeUs[MS5611_Press_OSR];  /* Conversion time */
+                StartConvertTime = Delay_GetRuntimeUs();                   /* Start timing */
                 CurState = ConvertPressing;
             }
         break;
 
         case ConvertPressing:
-            if ((micros() - StartConvertTime) > CurDelay)
+            if ((Delay_GetRuntimeUs() - StartConvertTime) > CurDelay)
             {
                 MS5611_GetPressure();
                 Baro_Alt_Updated = 0xFF;                              /* The update of height is completed */
                 MS5611_StartConversion(MS5611_D2 + MS5611_Temp_OSR);
-                CurDelay = MS5611_Delay_Us[MS5611_Temp_OSR];          /* Conversion time */
-                StartConvertTime = micros();                          /* Start timing */
+                CurDelay = MS5611_Delay_TimeUs[MS5611_Temp_OSR];          /* Conversion time */
+                StartConvertTime = Delay_GetRuntimeUs();                          /* Start timing */
                 CurState = ConvertTemping;
             }
         break;
@@ -316,14 +316,14 @@ uint8_t MS5611_WaitBaroInitOffset(void)
 {
     uint32_t now = 0;
     uint32_t starttime = 0;
-    starttime = micros();
+    starttime = Delay_GetRuntimeUs();
 
     while (!PaOffsetInited)
     {
         // printf("This is PaOffsetInited: %d", PaOffsetInited);  /*debug*/
         // printf("  This is now: %d", now);
         MS5611_Thread();
-        now = micros();
+        now = Delay_GetRuntimeUs();
         if ((now - starttime) / 1000 >= PA_OFFSET_INIT_NUM * 50)  /*超时*/
         {
             return 0;

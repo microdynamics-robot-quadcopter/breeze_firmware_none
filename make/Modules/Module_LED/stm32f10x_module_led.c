@@ -23,6 +23,7 @@ myyerrol    2017.04.11    Format the module
 *******************************************************************************/
 
 #include "stm32f10x_module_led.h"
+#include "stm32f10x_module_battery.h"
 #include "stm32f10x_algorithm_imu.h"
 
 LED_Buffer       LED_BufferStructure;
@@ -110,10 +111,18 @@ void LED_JumpStateMachine(void)
         // Fail to calibrate the IMU.
         LED_StateMachineStructure.state = LED_STATE_CALI_FAIL;
     }
+    if (Battery_InformationStructure.flag_alarm)
+    {
+        LED_StateMachineStructure.state = LED_STATE_BAT_LOW;
+    }
     if (imuCaliFlag)
     {
         // Finish the calibrate of IMU.
         LED_StateMachineStructure.state = LED_STATE_CALI;
+    }
+    if (Battery_InformationStructure.flag_charge)
+    {
+        LED_StateMachineStructure.state = LED_STATE_BAT_CHG;
     }
 
     switch (LED_StateMachineStructure.state)

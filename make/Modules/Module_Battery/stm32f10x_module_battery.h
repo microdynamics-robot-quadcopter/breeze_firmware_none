@@ -15,8 +15,8 @@ Function List:
              2. void Battery_Init(void);
              3. u16  Battery_GetADC(u8 ch);
              4. u16  Battery_GetADCAverage(u8 ch, u8 times);
-             5. int  Battery_GetAD(void);
-             6. int  Battery_GetTemp(void);
+             5. s32  Battery_GetAD(void);
+             6. s32  Battery_GetTemp(void);
 
 History:
 <author>    <date>        <desc>
@@ -50,8 +50,8 @@ typedef struct
 {
     bool  flag_alarm;
     bool  flag_charge;
-    int   over_discharge_cnt;
-    int   voltage_ad;
+    s32   over_discharge_cnt;
+    s32   voltage_ad;
     float voltage_ad_ref;
     float voltage_ad_in;
     float voltage_calculate;
@@ -65,7 +65,7 @@ extern void Battery_Check(void);
 extern void Battery_Init(void);
 extern u16  Battery_GetADC(u8 ch);
 extern u16  Battery_GetADCAverage(u8 ch, u8 times);
-extern int  Battery_GetAD(void);
-extern int  Battery_GetTemp(void);
+extern s32  Battery_GetAD(void);
+extern s32  Battery_GetTemp(void);
 
 #endif

@@ -12,10 +12,11 @@ Description: Declare the led function
 Others:      none
 Function List:
              1. void LED_Init(void);
-             2. void LED_SetLight(LED_State led_a, LED_State led_b,
+             2. void LED_JumpStateMachine(void);
+             3. void LED_SetInitialLight(void);
+             4. void LED_SetLight(LED_State led_a, LED_State led_b,
                                   LED_State led_c, LED_State led_d);
-             3. void LED_UpdateLight(void);
-             4. void LED_JumpStateMachine(void);
+             5. void LED_UpdateLight(void);
 History:
 <author>    <date>        <desc>
 maksyuki    2016.12.20    Modify the module
@@ -86,9 +87,10 @@ typedef struct
 } LED_StateMachine;
 
 extern void LED_Init(void);
+extern void LED_JumpStateMachine(void);
+extern void LED_SetInitialLight(void);
 extern void LED_SetLight(LED_State led_a, LED_State led_b, LED_State led_c,
                          LED_State led_d);
 extern void LED_UpdateLight(void);
-extern void LED_JumpStateMachine(void);
 
 #endif

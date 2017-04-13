@@ -12,18 +12,20 @@ Description: Implement the led function
 Others:      none
 Function List:
              1. void LED_Init(void);
-             2. void LED_SetLight(LED_State led_a, LED_State led_b,
+             2. void LED_JumpStateMachine(void);
+             3. void LED_SetInitialLight(void);
+             4. void LED_SetLight(LED_State led_a, LED_State led_b,
                                   LED_State led_c, LED_State led_d);
-             3. void LED_UpdateLight(void);
-             4. void LED_JumpStateMachine(void);
+             5. void LED_UpdateLight(void);
 History:
 <author>    <date>        <desc>
 maksyuki    2016.12.20    Modify the
 myyerrol    2017.04.11    Format the module
 *******************************************************************************/
 
-#include "stm32f10x_module_led.h"
+#include "stm32f10x_driver_delay.h"
 #include "stm32f10x_module_battery.h"
+#include "stm32f10x_module_led.h"
 #include "stm32f10x_algorithm_imu.h"
 
 LED_Buffer       LED_BufferStructure;
@@ -50,51 +52,6 @@ void LED_Init(void)
     LED_B_OFF;
     LED_C_OFF;
     LED_D_OFF;
-}
-
-void LED_SetLight(LED_State led_a, LED_State led_b, LED_State led_c,
-                  LED_State led_d)
-{
-    GPIO_WriteBit(GPIOA, GPIO_Pin_11, led_a);
-    GPIO_WriteBit(GPIOA, GPIO_Pin_8,  led_b);
-    GPIO_WriteBit(GPIOB, GPIO_Pin_1,  led_c);
-    GPIO_WriteBit(GPIOB, GPIO_Pin_3,  led_d);
-}
-
-void LED_UpdateLight(void)
-{
-    if (LED_BufferStructure.bits.a)
-    {
-        LED_A_ON;
-    }
-    else
-    {
-        LED_A_OFF;
-    }
-    if (LED_BufferStructure.bits.b)
-    {
-        LED_B_ON;
-    }
-    else
-    {
-        LED_B_OFF;
-    }
-    if (LED_BufferStructure.bits.c)
-    {
-        LED_C_ON;
-    }
-    else
-    {
-        LED_C_OFF;
-    }
-    if (LED_BufferStructure.bits.d)
-    {
-        LED_D_ON;
-    }
-    else
-    {
-        LED_D_OFF;
-    }
 }
 
 void LED_JumpStateMachine(void)
@@ -188,4 +145,74 @@ void LED_JumpStateMachine(void)
     }
 
     LED_UpdateLight();
+}
+
+void LED_SetInitialLight(void)
+{
+    u8 i;
+
+    for (i = 0; i < 4; i++)
+    {
+        LED_SetLight(ON, OFF, OFF, OFF);
+        Delay_TimeMs(100);
+        LED_SetLight(OFF, ON, OFF, OFF);
+        Delay_TimeMs(100);
+        LED_SetLight(OFF, OFF, ON, OFF);
+        Delay_TimeMs(100);
+        LED_SetLight(OFF, OFF, OFF, ON);
+        Delay_TimeMs(100);
+    }
+
+    for (i = 0; i < 4; i++)
+    {
+        LED_SetLight(ON, ON, ON, ON);
+        Delay_TimeMs(100);
+        LED_SetLight(OFF, OFF, OFF, OFF);
+        Delay_TimeMs(100);
+    }
+}
+
+void LED_SetLight(LED_State led_a, LED_State led_b, LED_State led_c,
+                  LED_State led_d)
+{
+    GPIO_WriteBit(GPIOA, GPIO_Pin_11, led_a);
+    GPIO_WriteBit(GPIOA, GPIO_Pin_8,  led_b);
+    GPIO_WriteBit(GPIOB, GPIO_Pin_1,  led_c);
+    GPIO_WriteBit(GPIOB, GPIO_Pin_3,  led_d);
+}
+
+void LED_UpdateLight(void)
+{
+    if (LED_BufferStructure.bits.a)
+    {
+        LED_A_ON;
+    }
+    else
+    {
+        LED_A_OFF;
+    }
+    if (LED_BufferStructure.bits.b)
+    {
+        LED_B_ON;
+    }
+    else
+    {
+        LED_B_OFF;
+    }
+    if (LED_BufferStructure.bits.c)
+    {
+        LED_C_ON;
+    }
+    else
+    {
+        LED_C_OFF;
+    }
+    if (LED_BufferStructure.bits.d)
+    {
+        LED_D_ON;
+    }
+    else
+    {
+        LED_D_OFF;
+    }
 }

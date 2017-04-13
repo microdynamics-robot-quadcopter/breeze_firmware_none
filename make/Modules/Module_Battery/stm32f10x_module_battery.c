@@ -25,19 +25,41 @@ myyerrol    2017.04.11    Format the module
 *******************************************************************************/
 
 #include "stdio.h"
-#include "stm32f10x_module_led.h"
 #include "stm32f10x_module_battery.h"
 #include "stm32f10x_module_rpdata.h"
 #include "stm32f10x_algorithm_control.h"
 
 extern uint8_t FLY_ENABLE;
 
-Battery_InitTypeDef Battery_InitStructure;
+Battery_Information Battery_InformationStructure;
 
 void Battery_Init(void)
 {
     // ADC_InitTypeDef  ADC_InitStructure;
     // GPIO_InitTypeDef GPIO_InitStructure;
+    //
+    // RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_ADC1, ENABLE);
+    // RCC_ADCCLKConfig(RCC_PCLK2_Div6);
+    //
+    // GPIO_InitStructure.GPIO_Pin  = GPIO_Pin_0;
+    // GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
+    // GPIO_Init(GPIOB, &GPIO_InitStructure);
+    //
+    // ADC_DeInit(ADC1);
+    // ADC_InitStructure.ADC_Mode               = ADC_Mode_Independent;
+    // ADC_InitStructure.ADC_ScanConvMode       = DISABLE;
+    // ADC_InitStructure.ADC_ContinuousConvMode = DISABLE;
+    // ADC_InitStructure.ExternalTrigConv       = ADC_ExternalTrigConv_None;
+    // ADC_InitStructure.DataAlign              = ADC_DataAlign_Right;
+    // ADC_InitStructure.NbrOfChannel           = 1;
+    //
+    // ADC_Cmd(ADC1, ENABLE);
+    //
+    // ADC_ResetCalibration(ADC1);
+    // while (ADC_GetResetCalibrationStatus(ADC1));
+    //
+    // ADC_StartCalibration(ADC1);
+    // while (ADC_GetCalibrationStatus(ADC1));
 
     // Initialize the PB0 and set it become analog input mode.
     // Enable the clock of PORTB.
@@ -107,13 +129,13 @@ void Battery_Init(void)
     // hardware.
     while (ADC1->CR2 & (1<<2));
 
-    Battery_InitStructure.Battery_VoltageMeasure   = 3.95;
-    Battery_InitStructure.Battery_VoltageAD_In     = 1.98;
-    Battery_InitStructure.Battery_VoltageAD_Ref    = 3.26;
-    Battery_InitStructure.Battery_VoltageFactor    =
-        Battery_InitStructure.Battery_VoltageMeasure
-      / Battery_InitStructure.Battery_VoltageAD_In;
-    Battery_InitStructure.Battery_OverDischargeCnt = 0;
+    Battery_InformationStructure.voltage_measure    = 3.95;
+    Battery_InformationStructure.voltage_ad_in      = 1.98;
+    Battery_InformationStructure.voltage_ad_ref     = 3.26;
+    Battery_InformationStructure.voltage_factor     =
+        Battery_InformationStructure.voltage_measure
+      / Battery_InformationStructure.voltage_ad_in;
+    Battery_InformationStructure.over_discharge_cnt = 0;
 
     // printf("Init the module of battery successfully!\r\n");
 }
@@ -121,30 +143,30 @@ void Battery_Init(void)
 void Battery_Check(void)
 {
     // Detect the voltage of battery.
-    Battery_InitStructure.Battery_VoltageAD = Battery_GetAD();
+    Battery_InformationStructure.voltage_ad = Battery_GetAD();
     // Calculate the real voltage of battery.
-    Battery_InitStructure.Battery_VoltageCalculate =
-        Battery_InitStructure.Battery_VoltageFactor * (
-        Battery_InitStructure.Battery_VoltageAD / 4096.0) *
-        Battery_InitStructure.Battery_VoltageAD_Ref;
+    Battery_InformationStructure.voltage_calculate =
+        Battery_InformationStructure.voltage_factor
+     * (Battery_InformationStructure.voltage_ad / 4096.0)
+     *  Battery_InformationStructure.voltage_ad_ref;
 
     if (FLY_ENABLE)
     {
-        if (Battery_InitStructure.Battery_VoltageCalculate
+        if (Battery_InformationStructure.voltage_calculate
         <= (BATTERY_VOLTAGE_OVERDIS + 0.03))
         {
-            Battery_InitStructure.Battery_FlagAlarm = TRUE;
+            Battery_InformationStructure.flag_alarm = TRUE;
         }
         else
         {
-            Battery_InitStructure.Battery_FlagAlarm = FALSE;
+            Battery_InformationStructure.flag_alarm = FALSE;
         }
 
-        if (Battery_InitStructure.Battery_VoltageCalculate
+        if (Battery_InformationStructure.voltage_calculate
         <=  BATTERY_VOLTAGE_OVERDIS)
         {
-            Battery_InitStructure.Battery_OverDischargeCnt++;
-            if (Battery_InitStructure.Battery_OverDischargeCnt > 8)
+            Battery_InformationStructure.over_discharge_cnt++;
+            if (Battery_InformationStructure.over_discharge_cnt > 8)
             {
                 altCtrlMode = LANDING;
                 rcData[0]   = 1500;
@@ -155,36 +177,43 @@ void Battery_Check(void)
         }
         else
         {
-            Battery_InitStructure.Battery_OverDischargeCnt = 0;
+            Battery_InformationStructure.over_discharge_cnt = 0;
         }
     }
     else
     {
-        if ((Battery_InitStructure.Battery_VoltageCalculate
+        if ((Battery_InformationStructure.voltage_calculate
         < BATTERY_VOLTAGE_ALARM)
-        && (Battery_InitStructure.Battery_VoltageCalculate
+        && (Battery_InformationStructure.voltage_calculate
         > BATTERY_VOLTAGE_CHARGE))
         {
-            Battery_InitStructure.Battery_FlagAlarm = TRUE;
+            Battery_InformationStructure.flag_alarm = TRUE;
         }
         else
         {
-            Battery_InitStructure.Battery_FlagAlarm = FALSE;
+            Battery_InformationStructure.flag_alarm = FALSE;
         }
     }
 
-    if (Battery_InitStructure.Battery_VoltageCalculate < BATTERY_VOLTAGE_CHARGE)
+    if (Battery_InformationStructure.voltage_calculate < BATTERY_VOLTAGE_CHARGE)
     {
-        Battery_InitStructure.Battery_FlagCharge = TRUE;
+        Battery_InformationStructure.flag_charge = TRUE;
     }
     else
     {
-        Battery_InitStructure.Battery_FlagCharge = FALSE;
+        Battery_InformationStructure.flag_charge = FALSE;
     }
 }
 
 u16 Battery_GetADC(u8 ch)
 {
+    // ADC_RegularChannelConfig(ADC1, ch, 1, ADC_SampleTime_239Cycles5);
+    // ADC_SoftwareStartConvCmd(ADC1, ENABLE);
+    //
+    // while (!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
+    //
+    // return ADC_GetConversionValue(ADC1);
+
     // Set conversion sequence.
     // The channel of regular sequence 1.
     ADC1->SQR3 &= 0XFFFFFFE0;

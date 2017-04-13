@@ -48,18 +48,18 @@ typedef enum
 
 typedef struct
 {
-    bool  Battery_FlagAlarm;
-    bool  Battery_FlagCharge;
-    int   Battery_VoltageAD;
-    int   Battery_OverDischargeCnt;
-    float Battery_VoltageCalculate;
-    float Battery_VoltageMeasure;
-    float Battery_VoltageAD_Ref;
-    float Battery_VoltageAD_In;
-    float Battery_VoltageFactor;
-} Battery_InitTypeDef;
+    bool  flag_alarm;
+    bool  flag_charge;
+    int   over_discharge_cnt;
+    int   voltage_ad;
+    float voltage_ad_ref;
+    float voltage_ad_in;
+    float voltage_calculate;
+    float voltage_factor;
+    float voltage_measure;
+} Battery_Information;
 
-extern Battery_InitTypeDef Battery_InitStructure;
+extern Battery_Information Battery_InformationStructure;
 
 extern void Battery_Init(void);
 extern void Battery_Check(void);

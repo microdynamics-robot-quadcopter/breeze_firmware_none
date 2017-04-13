@@ -11,8 +11,8 @@ Create date: 2016.08.14
 Description: Implement the battery operation function
 Others:      none
 Function List:
-             1. void Battery_Init(void);
-             2. void Battery_Check(void);
+             1. void Battery_Check(void);
+             2. void Battery_Init(void);
              3. u16  Battery_GetADC(u8 ch);
              4. u16  Battery_GetADCAverage(u8 ch, u8 times);
              5. int  Battery_GetAD(void);
@@ -32,6 +32,71 @@ myyerrol    2017.04.11    Format the module
 extern uint8_t FLY_ENABLE;
 
 Battery_Information Battery_InformationStructure;
+
+void Battery_Check(void)
+{
+    // Detect the voltage of battery.
+    Battery_InformationStructure.voltage_ad = Battery_GetAD();
+    // Calculate the real voltage of battery.
+    Battery_InformationStructure.voltage_calculate =
+        Battery_InformationStructure.voltage_factor
+     * (Battery_InformationStructure.voltage_ad / 4096.0)
+     *  Battery_InformationStructure.voltage_ad_ref;
+
+    if (FLY_ENABLE)
+    {
+        if (Battery_InformationStructure.voltage_calculate
+        <= (BATTERY_VOLTAGE_OVERDIS + 0.03))
+        {
+            Battery_InformationStructure.flag_alarm = TRUE;
+        }
+        else
+        {
+            Battery_InformationStructure.flag_alarm = FALSE;
+        }
+
+        if (Battery_InformationStructure.voltage_calculate
+        <=  BATTERY_VOLTAGE_OVERDIS)
+        {
+            Battery_InformationStructure.over_discharge_cnt++;
+            if (Battery_InformationStructure.over_discharge_cnt > 8)
+            {
+                altCtrlMode = LANDING;
+                rcData[0]   = 1500;
+                rcData[1]   = 1500;
+                rcData[2]   = 1500;
+                rcData[3]   = 1500;
+            }
+        }
+        else
+        {
+            Battery_InformationStructure.over_discharge_cnt = 0;
+        }
+    }
+    else
+    {
+        if ((Battery_InformationStructure.voltage_calculate
+        < BATTERY_VOLTAGE_ALARM)
+        && (Battery_InformationStructure.voltage_calculate
+        > BATTERY_VOLTAGE_CHARGE))
+        {
+            Battery_InformationStructure.flag_alarm = TRUE;
+        }
+        else
+        {
+            Battery_InformationStructure.flag_alarm = FALSE;
+        }
+    }
+
+    if (Battery_InformationStructure.voltage_calculate < BATTERY_VOLTAGE_CHARGE)
+    {
+        Battery_InformationStructure.flag_charge = TRUE;
+    }
+    else
+    {
+        Battery_InformationStructure.flag_charge = FALSE;
+    }
+}
 
 void Battery_Init(void)
 {
@@ -138,71 +203,6 @@ void Battery_Init(void)
     Battery_InformationStructure.over_discharge_cnt = 0;
 
     // printf("Init the module of battery successfully!\r\n");
-}
-
-void Battery_Check(void)
-{
-    // Detect the voltage of battery.
-    Battery_InformationStructure.voltage_ad = Battery_GetAD();
-    // Calculate the real voltage of battery.
-    Battery_InformationStructure.voltage_calculate =
-        Battery_InformationStructure.voltage_factor
-     * (Battery_InformationStructure.voltage_ad / 4096.0)
-     *  Battery_InformationStructure.voltage_ad_ref;
-
-    if (FLY_ENABLE)
-    {
-        if (Battery_InformationStructure.voltage_calculate
-        <= (BATTERY_VOLTAGE_OVERDIS + 0.03))
-        {
-            Battery_InformationStructure.flag_alarm = TRUE;
-        }
-        else
-        {
-            Battery_InformationStructure.flag_alarm = FALSE;
-        }
-
-        if (Battery_InformationStructure.voltage_calculate
-        <=  BATTERY_VOLTAGE_OVERDIS)
-        {
-            Battery_InformationStructure.over_discharge_cnt++;
-            if (Battery_InformationStructure.over_discharge_cnt > 8)
-            {
-                altCtrlMode = LANDING;
-                rcData[0]   = 1500;
-                rcData[1]   = 1500;
-                rcData[2]   = 1500;
-                rcData[3]   = 1500;
-            }
-        }
-        else
-        {
-            Battery_InformationStructure.over_discharge_cnt = 0;
-        }
-    }
-    else
-    {
-        if ((Battery_InformationStructure.voltage_calculate
-        < BATTERY_VOLTAGE_ALARM)
-        && (Battery_InformationStructure.voltage_calculate
-        > BATTERY_VOLTAGE_CHARGE))
-        {
-            Battery_InformationStructure.flag_alarm = TRUE;
-        }
-        else
-        {
-            Battery_InformationStructure.flag_alarm = FALSE;
-        }
-    }
-
-    if (Battery_InformationStructure.voltage_calculate < BATTERY_VOLTAGE_CHARGE)
-    {
-        Battery_InformationStructure.flag_charge = TRUE;
-    }
-    else
-    {
-        Battery_InformationStructure.flag_charge = FALSE;
-    }
 }
 
 u16 Battery_GetADC(u8 ch)

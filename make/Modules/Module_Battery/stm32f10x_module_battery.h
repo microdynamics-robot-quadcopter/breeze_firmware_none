@@ -11,8 +11,8 @@ Create date: 2016.08.14
 Description: Declare the battery operation function
 Others:      none
 Function List:
-             1. void Battery_Init(void);
-             2. void Battery_Check(void);
+             1. void Battery_Check(void);
+             2. void Battery_Init(void);
              3. u16  Battery_GetADC(u8 ch);
              4. u16  Battery_GetADCAverage(u8 ch, u8 times);
              5. int  Battery_GetAD(void);
@@ -61,8 +61,8 @@ typedef struct
 
 extern Battery_Information Battery_InformationStructure;
 
-extern void Battery_Init(void);
 extern void Battery_Check(void);
+extern void Battery_Init(void);
 extern u16  Battery_GetADC(u8 ch);
 extern u16  Battery_GetADCAverage(u8 ch, u8 times);
 extern int  Battery_GetAD(void);

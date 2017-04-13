@@ -7,6 +7,7 @@ DDEFS   += -DHSE_VALUE=8000000 -DUSE_STDPERIPH_DRIVER
 
 SRC_ASM := ../Libraries/CMSIS/startup/gcc/startup_stm32f10x_md.s
 
+DIR_DRIVERS += ../Drivers/Driver_Clock/
 DIR_DRIVERS += ../Drivers/Driver_Delay/
 DIR_DRIVERS += ../Drivers/Driver_EEPROM/
 DIR_DRIVERS += ../Drivers/Driver_Flash/

@@ -6,7 +6,7 @@ Copyright (C), 2016-2016, Team MicroDynamics <microdynamics@126.com>
 
 Filename:    stm32f10x_driver_clock.c
 Author:      myyerrol
-Version:     0.1.0.20161231_release
+Version:     none
 Create date: 2017.04.13
 Description: Implement the system clock function
 Others:      none

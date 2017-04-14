@@ -62,6 +62,8 @@ BIN  := $(CP) -O binary -S
 OPT  += -Os
 OPT  += -fsingle-precision-constant
 OPT  += -fno-common
+OPT  += -ffunction-sections
+OPT  += -fdata-sections
 
 DEFS := $(DDEFS) -DRUN_FROM_FLASH=1
 
@@ -70,12 +72,11 @@ SPECS := --specs=rdimon.specs -u _printf_float
 FLAGS_MCU := -mcpu=$(MCU)
 FLAGS_AS  := $(SPECS) $(FLAGS_MCU) $(OPT) -c -g -gdwarf-2 -mthumb
 FLAGS_C   := $(SPECS) $(FLAGS_MCU) $(OPT) -c -g -gdwarf-2 -mthumb \
-             -ffunction-sections -fomit-frame-pointer -Wall -fverbose-asm \
-             $(DEFS)
+             -fomit-frame-pointer -Wall -fverbose-asm $(DEFS)
 FLAGS_CXX := $(SPECS) $(FLAGS_MCU) $(OPT) -c -g -gdwarf-2 -mthumb \
-             -std=c++11 -ffunction-sections -fomit-frame-pointer -Wall \
-             -fverbose-asm -fno-exceptions -fno-rtti -fno-threadsafe-statics \
-             -fvisibility=hidden $(DEFS)
+             -fomit-frame-pointer -Wall -fverbose-asm -fno-exceptions \
+             -fno-rtti -fno-threadsafe-statics -fvisibility=hidden -std=c++11 \
+             $(DEFS)
 FLAGS_LD  := $(SPECS) $(FLAGS_MCU) $(OPT) -lm -g -gdwarf-2 -mthumb \
              -nostartfiles -Xlinker --gc-sections -T$(LINK_SCRIPT) \
              -Wl,-Map=$(PROJECT).map,--cref,--no-warn-mismatch

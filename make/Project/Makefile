@@ -12,6 +12,7 @@ DIR_DRIVERS += ../Drivers/Driver_Delay/
 DIR_DRIVERS += ../Drivers/Driver_EEPROM/
 DIR_DRIVERS += ../Drivers/Driver_Flash/
 DIR_DRIVERS += ../Drivers/Driver_IIC/
+DIR_DRIVERS += ../Drivers/Driver_NVIC/
 DIR_DRIVERS += ../Drivers/Driver_PWM/
 DIR_DRIVERS += ../Drivers/Driver_SPI/
 DIR_DRIVERS += ../Drivers/Driver_Sys/

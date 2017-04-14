@@ -54,6 +54,9 @@ void Clock_DeInit(void)
 void Clock_Init(void)
 {
     Clock_InitSystemClockHSE(9);
+    // SysTick open system tick timer and initialize its interrupt.
+    // Interrupt overflow time is 1ms
+    SysTick_Config(SystemCoreClock / 1000);
 }
 
 // Use the internal HSI clock two divider (4MHz) as the PLL input.

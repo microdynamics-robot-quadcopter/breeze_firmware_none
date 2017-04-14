@@ -1,5 +1,5 @@
 /*******************************************************************************
-THIS PROGRAM IS FREE SOFTWARE. YOU CAN REDISTRIBUTE IT AND/OR MODIFY IT 
+THIS PROGRAM IS FREE SOFTWARE. YOU CAN REDISTRIBUTE IT AND/OR MODIFY IT
 UNDER THE TERMS OF THE GNU GPLV3 AS PUBLISHED BY THE FREE SOFTWARE FOUNDATION.
 
 Copyright (C), 2016-2016, Team MicroDynamics <microdynamics@126.com>
@@ -8,212 +8,154 @@ Filename:    stm32f10x_driver_usart.c
 Author:      maksyuki
 Version:     0.1.0.20161231_release
 Create date: 2016.08.15
-Description: implement the serial port operation
+Description: Implement the serial port operation
 Others:      none
 Function List:
-             1. void usart_Init(u32 bound);
-             2. void USART_ClearBuf(UartBuf* RingBuf);
-             3. void USART_SendOneBytes(unsigned char dat);
-             4. uint8_t USART_SendOneBytesReturn(unsigned char dat);
-             5. uint8_t USART_ReadBuf(UartBuf* RingBuf);
-             6. uint16_t USART_CountBuf(UartBuf* RingBuf);
-             7. void USART_WriteBuf(UartBuf* RingBuf, uint8_t dat);
-             8. void USART_SendBuf(uint8_t* dat, uint8_t len);
+             1. void USART_ClearBuffer(USART_RingBuffer *ring_buffer);
+             2. void USART_InitUSART(u32 baud_rate);
+             3. void USART_InitUSART1(u32 baud_rate);
+             4. void USART_SendBuffer(u8 *bytes, u8 length);
+             5. void USART_SendByte(u8 byte);
+             6. void USART_WriteBuffer(USART_RingBuffer *ring_buffer, u8 byte);
+             7. u8   USART_ReadBuffer(USART_RingBuffer *ring_buffer);
+             8. u16  USART_CountBuffer(USART_RingBuffer *ring_buffer);
 History:
-1. <author>    <date>         <desc>
-   maksyuki  2016.12.12  modify the module
+<author>    <date>        <desc>
+maksyuki    2016.12.06    Modify the module
+myyerrol    2017.04.14    Format the module
 *******************************************************************************/
 
+#include <stdio.h>
+#include "stm32f10x_driver_nvic.h"
 #include "stm32f10x_driver_usart.h"
-#include "stdio.h"
 
-/* Add the below code to support 'printf' function */
-#if 1
-#pragma import(__use_no_semihosting)
+USART_RingBuffer USART_RingBufferRxStructure;
+USART_RingBuffer USART_RingBufferTxStructure;
 
-/* The support function is needed by standard library */
-struct __FILE
+u8 ring_buffer_rx[BUFFER_SIZE];
+u8 ring_buffer_tx[BUFFER_SIZE];
+
+// /* Add the below code to support 'printf' function */
+// #if 1
+// #pragma import(__use_no_semihosting)
+//
+// /* The support function is needed by standard library */
+// struct __FILE
+// {
+//     int handle;
+// };
+//
+// FILE __stdout;
+//
+// /* Define _sys_exit() to avoid to use semihosting */
+// _sys_exit(int x)
+// {
+//     x = x;
+// }
+//
+// /* Redefine 'fputc' function */
+// int fputc(int ch, FILE *f)
+// {
+//     while ((USART1->SR & 0x40) == 0);  /* Cyclic send until complete */
+//     USART1->DR = (u8)ch;
+//     return ch;
+// }
+//
+// #endif
+
+void USART_ClearBuffer(USART_RingBuffer *ring_buffer)
 {
-    int handle;
-};
-
-FILE __stdout;
-
-/* Define _sys_exit() to avoid to use semihosting */
-_sys_exit(int x)
-{
-    x = x;
+    ring_buffer->index_rd = ring_buffer->index_wt;
 }
 
-/* Redefine 'fputc' function */
-int fputc(int ch, FILE *f)
+void USART_InitUSART(u32 baud_rate)
 {
-    while ((USART1->SR & 0x40) == 0);  /* Cyclic send until complete */
-    USART1->DR = (u8)ch;
-    return ch;
+    USART_InitUSART1(baud_rate);
 }
 
-#endif
-
-/* Notice: read USARTx->SR can avoid bizarre error */
-u8 USART_RX_BUF[USART_REC_LEN];
-
-/* Receive status */
-/* bit15     complete flag */
-/* bit14     receive 0x0d */
-/* bit13~0   receive the number of effective byte */
-u16 USART_RX_STA = 0;
-
-void usart_Init(u32 bound)
+void USART_InitUSART1(u32 baud_rate)
 {
-    GPIO_InitTypeDef GPIO_InitStructure;
-    NVIC_InitTypeDef NVIC_InitStructure;
+    GPIO_InitTypeDef  GPIO_InitStructure;
     USART_InitTypeDef USART_InitStructure;
 
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1 | RCC_APB2Periph_GPIOA, ENABLE);
-
-    /* Reset the USART1 */
-    USART_DeInit(USART1);
-
-    /* USART1_TX  GPIOA.9 */
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1 | RCC_APB2Periph_GPIOA,
+                           ENABLE);
+    // USART1_TX: GPIOA.9.
     GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_9;
     GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF_PP;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
-
-    /* USART1_RX  GPIOA.10 */
+    // USART1_RX: GPIOA.10.
     GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_10;
     GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_IN_FLOATING;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 
-    /* USART1 NVIC configuration */
-    NVIC_InitStructure.NVIC_IRQChannel                   = USART1_IRQn;              /* USART1 channel interrupt */
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 3;                        /* Preemption priority level */
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority        = 3;                        /* SubPriority */
-    NVIC_InitStructure.NVIC_IRQChannelCmd                = ENABLE;                   /* Enable IRQ channel */
-    NVIC_Init(&NVIC_InitStructure);                                                  /* Initialize  NVIC */
+    NVIC_InitUSART1();
 
-    /* USART initialization settings */
-    USART_InitStructure.USART_BaudRate            = bound;
+    // USART initialization settings.
+    USART_InitStructure.USART_BaudRate            = baud_rate;
     USART_InitStructure.USART_WordLength          = USART_WordLength_8b;
-    USART_InitStructure.USART_StopBits            = USART_StopBits_1;                /* One stop bit */
-    USART_InitStructure.USART_Parity              = USART_Parity_No;                 /* No parity bit */
+    USART_InitStructure.USART_StopBits            = USART_StopBits_1;
+    USART_InitStructure.USART_Parity              = USART_Parity_No;
     USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-    USART_InitStructure.USART_Mode                = USART_Mode_Rx | USART_Mode_Tx;   /* Send-receive mode */
+    USART_InitStructure.USART_Mode                = USART_Mode_Rx | USART_Mode_Tx;
 
     USART_Init(USART1, &USART_InitStructure);
-    USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);  /* Enable serial port interrupt to read data */
-    USART_Cmd(USART1, ENABLE);                      /* Enable USART1 */
+    // Enable USART1 interrupt to read data.
+    USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
+    // Enable USART1.
+    USART_Cmd(USART1, ENABLE);
 
-    UartTxbuf.Wd_Indx = 0;                          /* Initialize ring queue */
-    UartTxbuf.Rd_Indx = 0;
-    UartTxbuf.Mask    = TX_BUFFER_SIZE - 1;
-    UartTxbuf.pbuf    = &tx_buffer[0];
+    USART_RingBufferRxStructure.index_rd = 0;
+    USART_RingBufferRxStructure.index_wt = 0;
+    USART_RingBufferRxStructure.mask     = BUFFER_SIZE - 1;
+    USART_RingBufferRxStructure.buffer   = &ring_buffer_rx[0];
+
+    USART_RingBufferTxStructure.index_rd = 0;
+    USART_RingBufferTxStructure.index_wt = 0;
+    USART_RingBufferTxStructure.mask     = BUFFER_SIZE - 1;
+    USART_RingBufferTxStructure.buffer   = &ring_buffer_tx[0];
 }
 
-/* Interrupt service routine */
-void USART1_IRQHandler(void)
+void USART_SendBuffer(u8 *bytes, u8 length)
 {
-    u8 res;
+    u8 i;
 
-    /* Receive interrupt(the data must end with [0x0d 0x0a] */
-    if (USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)
+    for (i = 0; i < length; i++)
     {
-        res = USART_ReceiveData(USART1);                    /* Read received data */
-        if ((USART_RX_STA & 0x8000) == 0)                   /* Receiving is not completed */
-        {
-            if (USART_RX_STA & 0x4000)                      /* Receive 0x0d */
-            {
-                if (res != 0x0A)
-                {
-                    USART_RX_STA = 0;                       /* Receiving error, restart */
-                }
-                else
-                {
-                    USART_RX_STA |= 0x8000;                 /* Receiving is completed */
-                }
-            }
-            else
-            {
-                if (res == 0x0D)
-                {
-                    USART_RX_STA |= 0x4000;
-                }
-                else
-                {
-                    USART_RX_BUF[USART_RX_STA&0x3FFF] = res;
-                    USART_RX_STA++;
-                    if (USART_RX_STA > (USART_REC_LEN - 1))
-                    {
-                        USART_RX_STA = 0;                   /* Data error, restart receiving */
-                    }
-                }
-            }
-        }
+        USART_WriteBuffer(&USART_RingBufferTxStructure, *bytes);
+        bytes++;
     }
-    else if (USART_GetITStatus(USART1, USART_IT_TXE) != RESET)
-    {
-        USART_SendData(USART1, USART_ReadBuf(&UartTxbuf));  /* Ring-send queue sends data with buffer */
-        if (USART_CountBuf(&UartTxbuf) == 0)
-        {
-            USART_ITConfig(USART1, USART_IT_TXE, DISABLE);  /* If buffer is empty, disable serial port interrupt */
-        }
-    }
+
+    USART_ITConfig(USART1, USART_IT_TXE, ENABLE);
 }
 
-UartBuf UartTxbuf;
-UartBuf UartRxbuf;
-
-unsigned char rx_buffer[RX_BUFFER_SIZE];
-unsigned char tx_buffer[TX_BUFFER_SIZE];
-
-
-void USART_SendOneBytes(unsigned char dat)
+void USART_SendByte(u8 byte)
 {
-    USART_WriteBuf(&UartTxbuf, dat);               /* Place data into Ring-send queue */
-    USART_ITConfig(USART1, USART_IT_TXE, ENABLE);  /* Enable serial port interrupt to send data */
+    // Write data into ring buffer.
+    USART_WriteBuffer(&USART_RingBufferTxStructure, byte);
+    // Enable USART1 interrupt to send data.
+    USART_ITConfig(USART1, USART_IT_TXE, ENABLE);
 }
 
-uint8_t USART_SendOneBytesReturn(unsigned char dat)
+void USART_WriteBuffer(USART_RingBuffer *ring_buffer, u8 byte)
 {
-    USART_WriteBuf(&UartTxbuf, dat);               /* Place data into Ring-send queue */
-    USART_ITConfig(USART1, USART_IT_TXE, ENABLE);  /* Enable serial port interrupt to send data */
-    return dat;
+    // According to the mask, write data to buffer.
+    ring_buffer->buffer[ring_buffer->index_wt & ring_buffer->mask] = byte;
+    ring_buffer->index_wt++;
 }
 
-/* Read one byte in Ring-send queue */
-uint8_t USART_ReadBuf(UartBuf* RingBuf)
+u8 USART_ReadBuffer(USART_RingBuffer *ring_buffer)
 {
-    uint8_t temp;
-    temp = RingBuf->pbuf[RingBuf->Rd_Indx&RingBuf->Mask];  /* Length mask is vital */
-    RingBuf->Rd_Indx++;
+    u8 temp;
+    // According to the mask, write data to buffer.
+    temp = ring_buffer->buffer[ring_buffer->index_rd & ring_buffer->mask];
+    ring_buffer->index_rd++;
     return temp;
 }
 
-/* Write one byte in Ring-send queue */
-void USART_WriteBuf(UartBuf* RingBuf, uint8_t dat)
+u16 USART_CountBuffer(USART_RingBuffer *ring_buffer)
 {
-    RingBuf->pbuf[RingBuf->Wd_Indx&RingBuf->Mask] = dat;   /* Length mask is vital */
-    RingBuf->Wd_Indx++;
-}
-
-uint16_t USART_CountBuf(UartBuf* RingBuf)
-{
-    return (RingBuf->Wd_Indx - RingBuf->Rd_Indx) & RingBuf->Mask;
-}
-
-void USART_ClearBuf(UartBuf* RingBuf)
-{
-    RingBuf->Rd_Indx = RingBuf->Wd_Indx;
-}
-
-void USART_SendBuf(uint8_t* dat, uint8_t len)
-{
-    uint8_t i;
-    for (i = 0; i < len; i++)
-    {
-        USART_WriteBuf(&UartTxbuf, *dat);
-        dat++;
-    }
-    USART_ITConfig(USART1, USART_IT_TXE, ENABLE);  /* Enable serial port interrupt to send data */
+    // Return the length of available bytes.
+    return (ring_buffer->index_wt - ring_buffer->index_rd) & ring_buffer->mask;
 }

@@ -23,8 +23,27 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x_it.h"
+#include "stm32f10x_driver_usart.h"
 
 vu32 systick_uptime = 0;
+
+void USART1_IRQHandler(void)
+{
+    if (USART_GetITStatus(USART1, USART_IT_TXE) == SET)
+    {
+        USART_SendData(USART1, USART_ReadBuffer(&USART_RingBufferTxStructure));
+        if (USART_CountBuffer(&USART_RingBufferTxStructure) == 0)
+        {
+            USART_ITConfig(USART1, USART_IT_TXE, DISABLE);
+        }
+    }
+    else if (USART_GetITStatus(USART1, USART_IT_RXNE) == SET)
+    {
+        USART_WriteBuffer(&USART_RingBufferRxStructure,
+                          (u8)USART_ReceiveData(USART1));
+        USART_ClearITPendingBit(USART1, USART_IT_RXNE);
+    }
+}
 
 /** @addtogroup STM32F10x_StdPeriph_Template
   * @{

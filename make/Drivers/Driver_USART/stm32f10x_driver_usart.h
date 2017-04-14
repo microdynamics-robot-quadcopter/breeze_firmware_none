@@ -1,5 +1,5 @@
 /*******************************************************************************
-THIS PROGRAM IS FREE SOFTWARE. YOU CAN REDISTRIBUTE IT AND/OR MODIFY IT 
+THIS PROGRAM IS FREE SOFTWARE. YOU CAN REDISTRIBUTE IT AND/OR MODIFY IT
 UNDER THE TERMS OF THE GNU GPLV3 AS PUBLISHED BY THE FREE SOFTWARE FOUNDATION.
 
 Copyright (C), 2016-2016, Team MicroDynamics <microdynamics@126.com>
@@ -8,20 +8,21 @@ Filename:    stm32f10x_driver_usart.h
 Author:      maksyuki
 Version:     0.1.0.20161231_release
 Create date: 2016.08.15
-Description: define the serial port operation
+Description: Define the serial port operation
 Others:      none
 Function List:
-             1. void usart_Init(u32 bound);
-             2. void USART_ClearBuf(UartBuf* RingBuf);
-             3. void USART_SendOneBytes(unsigned char dat);
-             4. uint8_t USART_SendOneBytesReturn(unsigned char dat);
-             5. uint8_t USART_ReadBuf(UartBuf* RingBuf);
-             6. uint16_t USART_CountBuf(UartBuf* RingBuf);
-             7. void USART_WriteBuf(UartBuf* RingBuf, uint8_t dat);
-             8. void USART_SendBuf(uint8_t* dat, uint8_t len);
+             1. void USART_ClearBuffer(USART_RingBuffer *ring_buffer);
+             2. void USART_InitUSART(u32 baud_rate);
+             3. void USART_InitUSART1(u32 baud_rate);
+             4. void USART_SendBuffer(u8 *bytes, u8 length);
+             5. void USART_SendByte(u8 byte);
+             6. void USART_WriteBuffer(USART_RingBuffer *ring_buffer, u8 byte);
+             7. u8   USART_ReadBuffer(USART_RingBuffer *ring_buffer);
+             8. u16  USART_CountBuffer(USART_RingBuffer *ring_buffer);
 History:
-1. <author>    <date>         <desc>
-   maksyuki  2016.12.06  modify the module
+<author>    <date>        <desc>
+maksyuki    2016.12.06    Modify the module
+myyerrol    2017.04.14    Format the module
 *******************************************************************************/
 
 #ifndef __STM32F10X_DRIVER_USART_H__
@@ -29,39 +30,29 @@ History:
 
 #include "stm32f10x.h"
 
-#define USART_REC_LEN 200               /* The maximum number of bytes received */
+#define BUFFER_SIZE 128
 
-extern u8 USART_RX_BUF[USART_REC_LEN];  /* Receive buffer, the last char is newline */
-extern u16 USART_RX_STA;                /* The flag of receiving status */
-
-/* USART receiver buffer */
-#define RX_BUFFER_SIZE   128
-#define TX_BUFFER_SIZE   128
-
-extern unsigned char rx_buffer[RX_BUFFER_SIZE];
-extern unsigned char tx_buffer[TX_BUFFER_SIZE];
+extern u8 ring_buffer_rx[BUFFER_SIZE];
+extern u8 ring_buffer_tx[BUFFER_SIZE];
 
 typedef struct
 {
-    uint16_t volatile Wd_Indx;
-    uint16_t volatile Rd_Indx;
-    uint16_t Mask;
-    uint8_t* pbuf;
-}UartBuf;
+    u8  *buffer;
+    u16  mask;
+    vu16 index_rd;
+    vu16 index_wt;
+} USART_RingBuffer;
 
-extern UartBuf UartTxbuf;  /* Ring-send queue */
-extern UartBuf UartRxbuf;  /* Ring-receive queue */
+extern USART_RingBuffer USART_RingBufferRxStructure;
+extern USART_RingBuffer USART_RingBufferTxStructure;
 
-/* USART_Init() exists in the official library */
-extern void usart_Init(u32 bound);      
-
-extern void USART_ClearBuf(UartBuf* RingBuf);
-extern void USART_SendOneBytes(unsigned char dat);
-extern uint8_t USART_SendOneBytesReturn(unsigned char dat);
-
-extern uint8_t USART_ReadBuf(UartBuf* RingBuf);
-extern uint16_t USART_CountBuf(UartBuf* RingBuf);
-extern void USART_WriteBuf(UartBuf* RingBuf, uint8_t dat);
-extern void USART_SendBuf(uint8_t* dat, uint8_t len);
+extern void USART_ClearBuffer(USART_RingBuffer *ring_buffer);
+extern void USART_InitUSART(u32 baud_rate);
+extern void USART_InitUSART1(u32 baud_rate);
+extern void USART_SendBuffer(u8 *bytes, u8 length);
+extern void USART_SendByte(u8 byte);
+extern void USART_WriteBuffer(USART_RingBuffer *ring_buffer, u8 byte);
+extern u8   USART_ReadBuffer(USART_RingBuffer *ring_buffer);
+extern u16  USART_CountBuffer(USART_RingBuffer *ring_buffer);
 
 #endif

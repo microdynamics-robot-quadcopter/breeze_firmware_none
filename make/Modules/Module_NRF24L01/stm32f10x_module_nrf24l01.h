@@ -98,6 +98,7 @@ extern void NRF_Irq(void);
 extern u8 NRF24L01_Check(void);
 
 extern u8 NRFMatched;
+extern u8 RX_ADDRESS[RX_ADR_WIDTH];
 extern uint8_t NRF24L01_RXDATA[RX_PLOAD_WIDTH];
 extern uint8_t NRF24L01_TXDATA[TX_PLOAD_WIDTH];
 

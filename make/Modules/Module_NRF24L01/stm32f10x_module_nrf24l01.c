@@ -212,7 +212,7 @@ void NRF_Matching(void)
 
         if (nT >= writeOvertime)
         {
-            RX_ADDRESS[4] = table.NRFAddr[4];
+            RX_ADDRESS[4] = EEPROM_TableStructure.nrf_addr[4];
             break;    /* Exit when time out, and do not change original address */
         }
 
@@ -237,7 +237,7 @@ void NRF_Matching(void)
 
     SetRX_Mode();              /* Reset RX mode */
 
-    if ((NRFMatched == 1) && (RX_ADDRESS[4] != table.NRFAddr[4]))
+    if ((NRFMatched == 1) && (RX_ADDRESS[4] != EEPROM_TableStructure.nrf_addr[4]))
     {
         SaveParamsToEEPROM();  /* Write eeprom when current addr != original addr */
     }

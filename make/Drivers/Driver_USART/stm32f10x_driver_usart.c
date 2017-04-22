@@ -35,34 +35,6 @@ USART_RingBuffer USART_RingBufferTxStructure;
 u8 ring_buffer_rx[BUFFER_SIZE];
 u8 ring_buffer_tx[BUFFER_SIZE];
 
-// /* Add the below code to support 'printf' function */
-// #if 1
-// #pragma import(__use_no_semihosting)
-//
-// /* The support function is needed by standard library */
-// struct __FILE
-// {
-//     int handle;
-// };
-//
-// FILE __stdout;
-//
-// /* Define _sys_exit() to avoid to use semihosting */
-// _sys_exit(int x)
-// {
-//     x = x;
-// }
-//
-// /* Redefine 'fputc' function */
-// int fputc(int ch, FILE *f)
-// {
-//     while ((USART1->SR & 0x40) == 0);  /* Cyclic send until complete */
-//     USART1->DR = (u8)ch;
-//     return ch;
-// }
-//
-// #endif
-
 void USART_ClearBuffer(USART_RingBuffer *ring_buffer)
 {
     ring_buffer->index_rd = ring_buffer->index_wt;
@@ -78,8 +50,8 @@ void USART_InitUSART1(u32 baud_rate)
     GPIO_InitTypeDef  GPIO_InitStructure;
     USART_InitTypeDef USART_InitStructure;
 
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1 | RCC_APB2Periph_GPIOA,
-                           ENABLE);
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1 | RCC_APB2Periph_GPIOA |
+                           RCC_APB2Periph_AFIO, ENABLE);
     // USART1_TX: GPIOA.9.
     GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_9;
     GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF_PP;
@@ -103,6 +75,8 @@ void USART_InitUSART1(u32 baud_rate)
     USART_Init(USART1, &USART_InitStructure);
     // Enable USART1 interrupt to read data.
     USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
+    //  Clear bits.
+    USART_ClearITPendingBit(USART1, USART_IT_RXNE);
     // Enable USART1.
     USART_Cmd(USART1, ENABLE);
 
@@ -132,7 +106,7 @@ void USART_SendBuffer(u8 *bytes, u8 length)
 
 void USART_SendByte(u8 byte)
 {
-    // Write data into ring buffer.
+    // Write data to ring buffer.
     USART_WriteBuffer(&USART_RingBufferTxStructure, byte);
     // Enable USART1 interrupt to send data.
     USART_ITConfig(USART1, USART_IT_TXE, ENABLE);

@@ -40,7 +40,7 @@ void USART1_IRQHandler(void)
     else if (USART_GetITStatus(USART1, USART_IT_RXNE) == SET)
     {
         USART_WriteBuffer(&USART_RingBufferRxStructure,
-                          (u8)USART_ReceiveData(USART1));
+                         (u8)USART_ReceiveData(USART1));
         USART_ClearITPendingBit(USART1, USART_IT_RXNE);
     }
 }

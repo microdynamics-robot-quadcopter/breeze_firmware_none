@@ -32,6 +32,7 @@ myyerrol    2017.04.22    Format the module
 #include "stm32f10x_algorithm_control.h"
 
 EEPROM_Table EEPROM_TableStructure;
+// Request to save the parameters to the EEPROM.
 u8 eeprom_params_request = 0;
 
 void LoadParamsFromEEPROM(void)

@@ -131,13 +131,13 @@ void Flash_Write(u32 write_addr, u16 *buffer, u16 numbers)
                 Flash_Buffer[sector_offset + i] = buffer[i];
             }
             // Write data to whole sector.
-            Flash_Write_NoCheck(sector_addr * FLASH_SECTOR_SIZE + FLASH_BASE,
+            Flash_WriteNoCheck(sector_addr * FLASH_SECTOR_SIZE + FLASH_BASE,
                                 Flash_Buffer, FLASH_SECTOR_SIZE / 2);
         }
         else
         {
             // Write data that be erased to remain sector.
-            Flash_Write_NoCheck(write_addr, buffer, sector_remain);
+            Flash_WriteNoCheck(write_addr, buffer, sector_remain);
         }
         // Writing is over.
         if (numbers == sector_remain)

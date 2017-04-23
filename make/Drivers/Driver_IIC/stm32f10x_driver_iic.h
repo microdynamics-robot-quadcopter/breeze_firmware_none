@@ -16,11 +16,11 @@ Function List:
              3.  void IIC_SendStartSignal(void);
              4.  void IIC_SendStopSignal(void);
              5.  void IIC_SendNAckSignal(void);
-             6.  u8   IIC_ReadByte(u8 iic_addr, u8 reg_addr);
-             7.  u8   IIC_ReadBytes(u8 dev_addr, u8 reg_addr, u8 byte_nums,
+             6.  void IIC_WaitAckSignal(void);
+             7.  u8   IIC_ReadByte(u8 iic_addr, u8 reg_addr);
+             8.  u8   IIC_ReadBytes(u8 dev_addr, u8 reg_addr, u8 byte_nums,
                                     u8 *data);
-             8.  u8   IIC_ReadOneByte(u8 ack);
-             9.  u8   IIC_WaitAckSignal(void);
+             9.  u8   IIC_ReadOneByte(u8 ack);
              10. u8   IIC_WriteBit(u8 dev_addr, u8 reg_addr, u8 bit_index,
                                    u8 data);
              11. u8   IIC_WriteBits(u8 dev_addr, u8 reg_addr, u8 bit_start,
@@ -62,10 +62,10 @@ extern void IIC_SendAckSignal(void);
 extern void IIC_SendStartSignal(void);
 extern void IIC_SendStopSignal(void);
 extern void IIC_SendNAckSignal(void);
+extern void IIC_WaitAckSignal(void);
 extern u8   IIC_ReadByte(u8 iic_addr, u8 reg_addr);
 extern u8   IIC_ReadBytes(u8 dev_addr, u8 reg_addr, u8 byte_nums, u8 *data);
 extern u8   IIC_ReadOneByte(u8 ack);
-extern u8   IIC_WaitAckSignal(void);
 extern u8   IIC_WriteBit(u8 dev_addr, u8 reg_addr, u8 bit_index, u8 data);
 extern u8   IIC_WriteBits(u8 dev_addr, u8 reg_addr, u8 bit_start, u8 bit_len,
                           u8 data);

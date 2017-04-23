@@ -16,11 +16,12 @@ Function List:
              3.  void IIC_SendStartSignal(void);
              4.  void IIC_SendStopSignal(void);
              5.  void IIC_SendNAckSignal(void);
-             6.  u8   IIC_ReadByte(u8 iic_addr, u8 reg_addr);
-             7.  u8   IIC_ReadBytes(u8 dev_addr, u8 reg_addr, u8 byte_nums,
+             6.  u8   IIC_WaitAckSignal(void);
+             7.  u8   IIC_ReadByte(u8 iic_addr, u8 reg_addr);
+             8.  u8   IIC_ReadBytes(u8 dev_addr, u8 reg_addr, u8 byte_nums,
                                     u8 *data);
-             8.  u8   IIC_ReadOneByte(u8 ack);
-             9.  u8   IIC_WaitAckSignal(void);
+             9.  u8   IIC_ReadOneByte(u8 ack);
+
              10. u8   IIC_WriteBit(u8 dev_addr, u8 reg_addr, u8 bit_index,
                                    u8 data);
              11. u8   IIC_WriteBits(u8 dev_addr, u8 reg_addr, u8 bit_start,
@@ -92,6 +93,32 @@ void IIC_SendNAckSignal(void)
     IIC_SCL = 1;
     Delay_TimeUs(1);
     IIC_SCL = 0;
+}
+
+void IIC_WaitAckSignal(void)
+{
+    u8 error_time = 0;
+
+    IIC_SDA_IN();
+    IIC_SDA = 1;
+    Delay_TimeUs(1);
+    IIC_SCL = 1;
+    Delay_TimeUs(1);
+
+    while (IIC_SDA_READ)
+    {
+        error_time++;
+        if (error_time > 50)
+        {
+            IIC_SendStopSignal();
+            return ;
+        }
+        Delay_TimeUs(1);
+    }
+
+    IIC_SCL = 0;
+
+    return ;
 }
 
 u8 IIC_ReadByte(u8 iic_addr, u8 reg_addr)
@@ -179,32 +206,6 @@ u8 IIC_ReadOneByte(u8 ack)
     return byte;
 }
 
-u8 IIC_WaitAckSignal(void)
-{
-    u8 error_time = 0;
-
-    IIC_SDA_IN();
-    IIC_SDA = 1;
-    Delay_TimeUs(1);
-    IIC_SCL = 1;
-    Delay_TimeUs(1);
-
-    while (IIC_SDA_READ)
-    {
-        error_time++;
-        if (error_time > 50)
-        {
-            IIC_SendStopSignal();
-            return 1;
-        }
-        Delay_TimeUs(1);
-    }
-
-    IIC_SCL = 0;
-
-    return 0;
-}
-
 u8 IIC_WriteBit(u8 dev_addr, u8 reg_addr, u8 bit_index, u8 data)
 {
     u8 byte;
@@ -274,4 +275,6 @@ u8 IIC_WriteOneByte(u8 byte)
         IIC_SCL = 0;
         Delay_TimeUs(1);
     }
+
+    return ;
 }

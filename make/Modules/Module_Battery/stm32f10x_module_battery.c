@@ -46,11 +46,11 @@ void Battery_Check(void)
         if (Battery_InformationStructure.voltage_calculate
         <= (BATTERY_VOLTAGE_OVERDIS + 0.03))
         {
-            Battery_InformationStructure.flag_alarm = TRUE;
+            Battery_InformationStructure.flag_alarm = true;
         }
         else
         {
-            Battery_InformationStructure.flag_alarm = FALSE;
+            Battery_InformationStructure.flag_alarm = false;
         }
 
         if (Battery_InformationStructure.voltage_calculate
@@ -78,21 +78,21 @@ void Battery_Check(void)
         && (Battery_InformationStructure.voltage_calculate
         > BATTERY_VOLTAGE_CHARGE))
         {
-            Battery_InformationStructure.flag_alarm = TRUE;
+            Battery_InformationStructure.flag_alarm = true;
         }
         else
         {
-            Battery_InformationStructure.flag_alarm = FALSE;
+            Battery_InformationStructure.flag_alarm = false;
         }
     }
 
     if (Battery_InformationStructure.voltage_calculate < BATTERY_VOLTAGE_CHARGE)
     {
-        Battery_InformationStructure.flag_charge = TRUE;
+        Battery_InformationStructure.flag_charge = true;
     }
     else
     {
-        Battery_InformationStructure.flag_charge = FALSE;
+        Battery_InformationStructure.flag_charge = false;
     }
 }
 

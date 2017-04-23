@@ -27,6 +27,7 @@ myyerrol    2017.04.11    Format the module
 #ifndef __STM32F10X_MODULE_BATTERY_H__
 #define __STM32F10X_MODULE_BATTERY_H__
 
+#include <stdbool.h>
 #include "stm32f10x.h"
 
 // The Period of battery check. Unit is ms.
@@ -39,12 +40,6 @@ myyerrol    2017.04.11    Format the module
 // The protective voltage of over discharge.
 // Below the value long time will to lead quadcopter to land.
 #define BATTERY_VOLTAGE_OVERDIS 3.15
-
-typedef enum
-{
-    TRUE  = 0,
-    FALSE = 1
-} bool;
 
 typedef struct
 {

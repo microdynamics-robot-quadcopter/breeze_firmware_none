@@ -13,7 +13,6 @@ DIR_DRIVERS += ../Drivers/Driver_EEPROM/
 DIR_DRIVERS += ../Drivers/Driver_Flash/
 DIR_DRIVERS += ../Drivers/Driver_IIC/
 DIR_DRIVERS += ../Drivers/Driver_NVIC/
-DIR_DRIVERS += ../Drivers/Driver_PWM/
 DIR_DRIVERS += ../Drivers/Driver_SPI/
 DIR_DRIVERS += ../Drivers/Driver_Sys/
 DIR_DRIVERS += ../Drivers/Driver_Tim/
@@ -22,6 +21,7 @@ DIR_DRIVERS += ../Drivers/Driver_USART/
 DIR_MODULES += ../Modules/Module_Battery/
 DIR_MODULES += ../Modules/Module_LED/
 DIR_MODULES += ../Modules/Module_Monitor/
+DIR_MODULES += ../Modules/Module_Motor/
 DIR_MODULES += ../Modules/Module_MPU6050/
 DIR_MODULES += ../Modules/Module_MS5611/
 DIR_MODULES += ../Modules/Module_NRF24L01/
@@ -121,7 +121,7 @@ openocd_swd_flash: $(PROJECT).bin
 
 openocd_swd_debug: $(PROJECT).bin
 	xterm -e openocd -f interface/jlink.cfg -c "transport select swd" -f target/stm32f1x.cfg -c "init" -c "halt" -c "reset halt" &
-	$(GDB) --eval-command="target remote localhost:3333" $(PROJECT).elf
+	$(GDB) --eval-command="target extended-remote localhost:3333" $(PROJECT).elf
 
 openocd_swd_erase:
 	openocd -f interface/jlink.cfg -c "transport select swd" -f target/stm32f1x.cfg  -c "init" -c "reset halt" -c "sleep 100" -c "stm32f1x mass_erase 0" -c "sleep 100" -c shutdown

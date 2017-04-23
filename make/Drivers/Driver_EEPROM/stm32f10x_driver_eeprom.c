@@ -53,15 +53,15 @@ void LoadParamsFromEEPROM(void)
 
 extern void EEPROM_ResetDefaultTable(void)
 {
-    STMFLASH_Write(EEPROM_TABLE_ADDRESS,
-                  (u16 *)(&(EEPROM_TableStructure.version)), 2);
+    Flash_Write(EEPROM_TABLE_ADDRESS,
+               (u16 *)(&(EEPROM_TableStructure.version)), 2);
 }
 
 void EEPROM_ReadTableFromEEPROM(void)
 {
     u8 params_num = sizeof(EEPROM_TableStructure) / sizeof(float);
-    STMFLASH_Read(EEPROM_TABLE_ADDRESS, (u16 *)(&EEPROM_TableStructure),
-                  params_num * 2);
+    Flash_Read(EEPROM_TABLE_ADDRESS, (u16 *)(&EEPROM_TableStructure),
+               params_num * 2);
 }
 
 void EEPROM_SaveParamsToEEPROM(void)
@@ -196,13 +196,13 @@ void EEPROM_TransTableToParams(void)
 void EEPROM_WriteTableToEEPROM(void)
 {
     u8 params_num = sizeof(EEPROM_TableStructure) / sizeof(float);
-    STMFLASH_Write(EEPROM_TABLE_ADDRESS, (u16 *)(&EEPROM_TableStructure),
-                   params_num * 2);
+    Flash_Write(EEPROM_TABLE_ADDRESS, (u16 *)(&EEPROM_TableStructure),
+                params_num * 2);
 }
 
 extern u8 EEPROM_IsValid(void)
 {
-    STMFLASH_Read(EEPROM_TABLE_ADDRESS, (u16 *)(&EEPROM_TableStructure), 2);
+    Flash_Read(EEPROM_TABLE_ADDRESS, (u16 *)(&EEPROM_TableStructure), 2);
 
     if ((s16)EEPROM_TableStructure.version == EEPROM_DEFAULT_VERSION)
     {

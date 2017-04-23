@@ -32,7 +32,7 @@ myyerrol    2017.04.22    Format the module
 #include "stm32f10x.h"
 
 #define EEPROM_DEFAULT_VERSION 1
-#define EEPROM_TABLE_ADDRESS   (STM32_FLASH_BASE + STM32_FLASH_OFFEST + 0)
+#define EEPROM_TABLE_ADDRESS   (FLASH_BASE + FLASH_OFFEST + 0)
 
 typedef struct
 {

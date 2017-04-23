@@ -11,21 +11,24 @@ Create date: 2016.08.03
 Description: Implement the IIC operation function
 Others:      none
 Function List:
-             1. void IIC_Init(void);
-             2. void IIC_Start(void);
-             3. void IIC_Stop(void);
-             4. void IIC_SendByte(u8 byte);
-             5. u8 IIC_ReadByte(u8 ack);
-             6. u8 IIC_WaitAck(void);
-             7. void IIC_Ack(void);
-             8. void IIC_NAck(void);
-             9. u8 IIC_ReadOneByte(u8 IIC_Addr, u8 addr);
-             10.u8 IICReadBytes(u8 dev, u8 reg, u8 length, u8 *data);
-             11.u8 IICWriteBytes(u8 dev, u8 reg, u8 length, u8 *data);
-             12.u8 IICReadByte(u8 dev, u8 reg, u8 *data);
-             13.u8 IICWriteByte(u8 dev, u8 reg, u8 data);
-             14.u8 IICWriteBits(u8 dev, u8 reg, u8 bitStart, u8 length, u8 data);
-             15.u8 IICWriteBit(u8 dev, u8 reg, u8 bitNum, u8 data);
+             1.  void IIC_Init(void);
+             2.  void IIC_SendAckSignal(void);
+             3.  void IIC_SendStartSignal(void);
+             4.  void IIC_SendStopSignal(void);
+             5.  void IIC_SendNAckSignal(void);
+             6.  u8   IIC_ReadByte(u8 iic_addr, u8 reg_addr);
+             7.  u8   IIC_ReadBytes(u8 dev_addr, u8 reg_addr, u8 byte_nums,
+                                    u8 *data);
+             8.  u8   IIC_ReadOneByte(u8 ack);
+             9.  u8   IIC_WaitAckSignal(void);
+             10. u8   IIC_WriteBit(u8 dev_addr, u8 reg_addr, u8 bit_index,
+                                   u8 data);
+             11. u8   IIC_WriteBits(u8 dev_addr, u8 reg_addr, u8 bit_start,
+                                    u8 bit_len,  u8 data);
+             12. u8   IIC_WriteByte(u8 dev_addr, u8 reg_addr, u8 data);
+             13. u8   IIC_WriteBytes(u8 dev_addr, u8 reg_addr, u8 byte_nums,
+                                     u8 *data);
+             14. u8   IIC_WriteOneByte(u8 byte);
 History:
 <author>    <date>        <desc>
 maksyuki    2016.11.30    Modify the module

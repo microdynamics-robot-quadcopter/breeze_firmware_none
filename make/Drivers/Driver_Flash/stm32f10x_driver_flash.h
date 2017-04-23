@@ -12,10 +12,13 @@ Description: Declare the flash operation function
 Others:      none
 Function List:
              1.  void Flash_Lock(void);
-             2.  void Flash_Read(u32 read_addr, u16 *buffer, u16 half_word_nums);
+             2.  void Flash_Read(u32 read_addr, u16 *buffer,
+                                 u16 half_word_nums);
              3.  void Flash_Unlock(void);
-             4.  void Flash_Write(u32 write_addr, u16 *buffer, u16 half_word_nums);
-             5.  void Flash_WriteNoCheck(u32 write_addr, u16 *buffer, u16 half_word_nums);
+             4.  void Flash_Write(u32 write_addr, u16 *buffer,
+                                  u16 half_word_nums);
+             5.  void Flash_WriteNoCheck(u32 write_addr, u16 *buffer,
+                                         u16 half_word_nums);
              6.  u8   Flash_ErasePage(u32 page_addr);
              7.  u8   Flash_GetStatus(void);
              8.  u8   Flash_WaitDone(u16 time);

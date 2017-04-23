@@ -133,21 +133,21 @@ void MS5611_ReadPROM(void)
     int i;
     for (i = 0; i < MS5611_PROM_REG_COUNT; i++)
     {
-        IIC_Start();
-        IIC_SendByte(MS5611_ADDR);
-        IIC_WaitAck();
-        IIC_SendByte(MS5611_PROM_BASE_ADDR + (i * MS5611_PROM_REG_SIZE));
-        IIC_WaitAck();
-        IIC_Stop();
+        IIC_SendStartSignal();
+        IIC_WriteOneByte(MS5611_ADDR);
+        IIC_WaitAckSignal();
+        IIC_WriteOneByte(MS5611_PROM_BASE_ADDR + (i * MS5611_PROM_REG_SIZE));
+        IIC_WaitAckSignal();
+        IIC_SendStopSignal();
         Delay_TimeUs(5);
-        IIC_Start();
-        IIC_SendByte(MS5611_ADDR + 1);  /* Enter receiving mode */
+        IIC_SendStartSignal();
+        IIC_WriteOneByte(MS5611_ADDR + 1);  /* Enter receiving mode */
         Delay_TimeUs(1);
-        IIC_WaitAck();
-        inth = IIC_ReadByte(1);         /* Read the data with ACK */
+        IIC_WaitAckSignal();
+        inth = IIC_ReadOneByte(1);         /* Read the data with ACK */
         Delay_TimeUs(1);
-        intl = IIC_ReadByte(0);         /* The last byte is with NACK */
-        IIC_Stop();
+        intl = IIC_ReadOneByte(0);         /* The last byte is with NACK */
+        IIC_SendStopSignal();
         PROM_C[i] = (((uint16_t)inth << 8) | intl);
     }
 }
@@ -155,12 +155,12 @@ void MS5611_ReadPROM(void)
 /* Send reset instruction to MS561101B */
 void MS5611_Reset(void)
 {
-    IIC_Start();
-    IIC_SendByte(MS5611_ADDR);   /* Write address */
-    IIC_WaitAck();
-    IIC_SendByte(MS5611_RESET);
-    IIC_WaitAck();
-    IIC_Stop();
+    IIC_SendStartSignal();
+    IIC_WriteOneByte(MS5611_ADDR);   /* Write address */
+    IIC_WaitAckSignal();
+    IIC_WriteOneByte(MS5611_RESET);
+    IIC_WaitAckSignal();
+    IIC_SendStopSignal();
 }
 
 /* Send starting conversion instruction to MS561101B */
@@ -168,12 +168,12 @@ void MS5611_Reset(void)
         MS5611_D2  conversion temperature */
 void MS5611_StartConversion(uint8_t cmd)
 {
-    IIC_Start();
-    IIC_SendByte(MS5611_ADDR);  /* Write address */
-    IIC_WaitAck();
-    IIC_SendByte(cmd);          /* Write conversion instruction */
-    IIC_WaitAck();
-    IIC_Stop();
+    IIC_SendStartSignal();
+    IIC_WriteOneByte(MS5611_ADDR);  /* Write address */
+    IIC_WaitAckSignal();
+    IIC_WriteOneByte(cmd);          /* Write conversion instruction */
+    IIC_WaitAckSignal();
+    IIC_SendStopSignal();
 }
 
 #define CMD_ADC_READ 0x00
@@ -184,20 +184,20 @@ uint32_t MS5611_GetConversion(void)
     uint32_t res = 0;
     u8 temp[3];
 
-    IIC_Start();
-    IIC_SendByte(MS5611_ADDR);      /* Write address */
-    IIC_WaitAck();
-    IIC_SendByte(0);                /* Start reading sequence */
-    IIC_WaitAck();
-    IIC_Stop();
+    IIC_SendStartSignal();
+    IIC_WriteOneByte(MS5611_ADDR);      /* Write address */
+    IIC_WaitAckSignal();
+    IIC_WriteOneByte(0);                /* Start reading sequence */
+    IIC_WaitAckSignal();
+    IIC_SendStopSignal();
 
-    IIC_Start();
-    IIC_SendByte(MS5611_ADDR + 1);  /* Enter receiving mode */
-    IIC_WaitAck();
-    temp[0] = IIC_ReadByte(1);      /* Read data with ACK  bit 23-16 */
-    temp[1] = IIC_ReadByte(1);      /* Read data with ACK  bit 8-15 */
-    temp[2] = IIC_ReadByte(0);      /* Read data with NACK bit 0-7 */
-    IIC_Stop();
+    IIC_SendStartSignal();
+    IIC_WriteOneByte(MS5611_ADDR + 1);  /* Enter receiving mode */
+    IIC_WaitAckSignal();
+    temp[0] = IIC_ReadOneByte(1);      /* Read data with ACK  bit 23-16 */
+    temp[1] = IIC_ReadOneByte(1);      /* Read data with ACK  bit 8-15 */
+    temp[2] = IIC_ReadOneByte(0);      /* Read data with NACK bit 0-7 */
+    IIC_SendStopSignal();
     res = (unsigned long)temp[0] * 65536 + (unsigned long)temp[1] * 256 + (unsigned long)temp[2];
     return res;
 }

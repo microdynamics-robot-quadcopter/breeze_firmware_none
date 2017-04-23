@@ -12,10 +12,10 @@ Description: Implement the flash operation function
 Others:      none
 Function List:
              1.  void Flash_Lock(void);
-             2.  void Flash_Read(u32 read_addr, u16 *buffer, u16 numbers);
+             2.  void Flash_Read(u32 read_addr, u16 *buffer, u16 half_word_nums);
              3.  void Flash_Unlock(void);
-             4.  void Flash_Write(u32 write_addr, u16 *buffer, u16 numbers);
-             5.  void Flash_WriteNoCheck(u32 write_addr, u16 *buffer, u16 numbers);
+             4.  void Flash_Write(u32 write_addr, u16 *buffer, u16 half_word_nums);
+             5.  void Flash_WriteNoCheck(u32 write_addr, u16 *buffer, u16 half_word_nums);
              6.  u8   Flash_ErasePage(u32 page_addr);
              7.  u8   Flash_GetStatus(void);
              8.  u8   Flash_WaitDone(u16 time);
@@ -40,11 +40,11 @@ void Flash_Lock(void)
 }
 
 // Read specified numbers of data in specified start address.
-void Flash_Read(u32 read_addr, u16 *buffer, u16 numbers)
+void Flash_Read(u32 read_addr, u16 *buffer, u16 half_word_nums)
 {
     u16 i;
 
-    for (i = 0; i < numbers; i++)
+    for (i = 0; i < half_word_nums; i++)
     {
         // Read two bytes.
         buffer[i]  = Flash_ReadHalfWord(read_addr);
@@ -72,7 +72,7 @@ void Flash_Unlock(void)
 u16 Flash_Buffer[FLASH_SECTOR_SIZE / 2];
 
 // Write specified numbers of data in specified start address.
-void Flash_Write(u32 write_addr, u16 *buffer, u16 numbers)
+void Flash_Write(u32 write_addr, u16 *buffer, u16 half_word_nums)
 {
     u16 i;
     // The offset address in sector(16 bits).
@@ -101,9 +101,9 @@ void Flash_Write(u32 write_addr, u16 *buffer, u16 numbers)
     // The remain range in sector.
     sector_remain = FLASH_SECTOR_SIZE / 2 - sector_offset;
 
-    if (numbers <= sector_remain)
+    if (half_word_nums <= sector_remain)
     {
-        sector_remain = numbers;
+        sector_remain = half_word_nums;
     }
 
     while (1)
@@ -140,18 +140,18 @@ void Flash_Write(u32 write_addr, u16 *buffer, u16 numbers)
             Flash_WriteNoCheck(write_addr, buffer, sector_remain);
         }
         // Writing is over.
-        if (numbers == sector_remain)
+        if (half_word_nums == sector_remain)
         {
             break;
         }
         else
         {
-            sector_addr  += 1;
-            sector_offset = 0;
-            buffer       += sector_remain;
-            write_addr   += sector_remain;
-            numbers      -= sector_remain;
-            if (numbers > (FLASH_SECTOR_SIZE / 2))
+            sector_addr    += 1;
+            sector_offset   = 0;
+            buffer         += sector_remain;
+            write_addr     += sector_remain;
+            half_word_nums -= sector_remain;
+            if (half_word_nums > (FLASH_SECTOR_SIZE / 2))
             {
                 // The next sector cannot be writen fully.
                 sector_remain = FLASH_SECTOR_SIZE / 2;
@@ -159,7 +159,7 @@ void Flash_Write(u32 write_addr, u16 *buffer, u16 numbers)
             else
             {
                 // The next sector can be writen fully.
-                sector_remain = numbers;
+                sector_remain = half_word_nums;
             }
         }
     }
@@ -167,11 +167,11 @@ void Flash_Write(u32 write_addr, u16 *buffer, u16 numbers)
     Flash_Lock();
 }
 
-void Flash_WriteNoCheck(u32 write_addr, u16 *buffer, u16 numbers)
+void Flash_WriteNoCheck(u32 write_addr, u16 *buffer, u16 half_word_nums)
 {
     u16 i;
 
-    for (i = 0; i < numbers; i++)
+    for (i = 0; i < half_word_nums; i++)
     {
         Flash_WriteHalfWord(write_addr, buffer[i]);
         write_addr += 2;

@@ -8,12 +8,13 @@ Filename:    stm32f10x_module_mpu6050.h
 Author:      maksyuki
 Version:     0.1.0.20161231_release
 Create date: 2016.09.04
-Description: declare the mpu6050 function
+Description: Declare the mpu6050 function
 Others:      none
 Function List:
 History:
-1. <author>    <date>         <desc>
-   maksyuki  2017.01.11  modify the module
+<author>    <date>        <desc>
+maksyuki    2017.01.11    Modify the module
+myyerrol    2017.04.22    Format the module
 *******************************************************************************/
 
 #ifndef __STM32F10X_MODULE_MPU6050_H__
@@ -374,9 +375,8 @@ History:
 #define MPU6050_DMP_MEMORY_CHUNK_SIZE          16
 
 extern float Acc1G_Values;
-extern uint8_t buffer[14];
+extern u8 buffer[14];
 
-/* API */
 extern void MPU6050_Init(void);
 extern void MPU6050_Reset(void);
 extern void MPU6050_ReadGyro(int16_t *gyroData);

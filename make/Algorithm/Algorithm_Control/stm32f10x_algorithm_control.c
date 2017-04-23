@@ -25,9 +25,9 @@ History:
    maksyuki  2017.01.11  modify the module
 *******************************************************************************/
 
-#include "stm32f10x_driver_pwm.h"
 #include "stm32f10x_module_rpdata.h"
 #include "stm32f10x_module_battery.h"
+#include "stm32f10x_module_motor.h"
 #include "stm32f10x_algorithm_imu.h"
 #include "stm32f10x_algorithm_bar.h"
 #include "stm32f10x_algorithm_control.h"
@@ -474,10 +474,10 @@ void ControlMotor(void)
 
     if (FLY_ENABLE)
     {
-        PWM_MotorFlash(Motor[0], Motor[1], Motor[2], Motor[3]);
+        Motor_SetPWM(Motor[0], Motor[1], Motor[2], Motor[3]);
     }
     else
     {
-        PWM_MotorFlash(0, 0, 0, 0);
+        Motor_SetPWM(0, 0, 0, 0);
     }
 }

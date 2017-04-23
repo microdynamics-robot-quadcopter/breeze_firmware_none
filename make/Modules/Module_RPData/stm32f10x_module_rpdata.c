@@ -20,11 +20,11 @@ History:
    maksyuki  2016.12.22  modify the module
 *******************************************************************************/
 
-#include "stm32f10x_driver_pwm.h"
 #include "stm32f10x_driver_usart.h"
 #include "stm32f10x_module_led.h"  /* Debug */
 #include "stm32f10x_module_rpdata.h"
 #include "stm32f10x_module_battery.h"
+#include "stm32f10x_module_motor.h"
 #include "stm32f10x_module_nrf24l01.h"
 #include "stm32f10x_algorithm_imu.h"
 #include "stm32f10x_algorithm_control.h"
@@ -87,12 +87,12 @@ void ProcessDataFromNRF(void)
 
 //    if (armState == REQ_ARM)
 //    {
-//        PWM_MotorFlash(200, 200, 200, 200);
+//        Motor_SetPWM(200, 200, 200, 200);
 //    }
 //
 //    if (armState == REQ_DISARM)
 //    {
-//        PWM_MotorFlash(0, 0, 0, 0);
+//        Motor_SetPWM(0, 0, 0, 0);
 //    }
     switch (armState)
     {
@@ -105,7 +105,7 @@ void ProcessDataFromNRF(void)
 
                 /* This is an unuseful process, because it will be assigned zero in 100Hz loop */
                 /* Setting in the flight module */
-                //PWM_MotorFlash(200, 200, 200, 200);
+                //Motor_SetPWM(200, 200, 200, 200);
             }
             else
             {

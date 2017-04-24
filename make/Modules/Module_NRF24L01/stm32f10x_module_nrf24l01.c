@@ -46,7 +46,7 @@ u8 RX_ADDRESS[RX_ADR_WIDTH] = {0x34, 0xc3, 0x10, 0x10, 0x00};   /* Receiving add
 
 void NRF24L01_Init(void)
 {
-    SPI_INIT();
+    SPI_InitSPI();
 
     /* Check if NRF24L01 is in the SPI bus */
     NRF24L01_Check();
@@ -81,8 +81,8 @@ uint8_t NRF_Write_Reg(uint8_t reg, uint8_t val)
 {
     uint8_t status;
     SPI_CSN_L();
-    status = SPI_RW(reg);
-    SPI_RW(val);            /* Write data */
+    status = SPI_ReadAndWrite(reg);
+    SPI_ReadAndWrite(val);            /* Write data */
     SPI_CSN_H();            /* Disable this component */
     return status;
 }
@@ -91,8 +91,8 @@ uint8_t NRF_Read_Reg(uint8_t reg)
 {
     uint8_t reg_val;
     SPI_CSN_L();
-    SPI_RW(reg);
-    reg_val = SPI_RW(0);    /* Read data */
+    SPI_ReadAndWrite(reg);
+    reg_val = SPI_ReadAndWrite(0);    /* Read data */
     SPI_CSN_H();
     return reg_val;
 }
@@ -102,11 +102,11 @@ uint8_t NRF_Read_Buf(uint8_t reg, uint8_t *pBuf, uint8_t len)
     uint8_t i;
     uint8_t status;
     SPI_CSN_L();              /* Enable this component */
-    status = SPI_RW(reg);     /* Write register address */
+    status = SPI_ReadAndWrite(reg);     /* Write register address */
 
     for (i = 0; i < len; i++)
     {
-        pBuf[i] = SPI_RW(0);  /* Read data */
+        pBuf[i] = SPI_ReadAndWrite(0);  /* Read data */
     }
 
     SPI_CSN_H();              /* Disable this component */
@@ -118,11 +118,11 @@ uint8_t NRF_Write_Buf(uint8_t reg, uint8_t *pBuf, uint8_t len)
     uint8_t i;
     uint8_t status;
     SPI_CSN_L();           /* Enable this component */
-    status = SPI_RW(reg);  /* Write register address */
+    status = SPI_ReadAndWrite(reg);  /* Write register address */
 
     for (i = 0; i < len; i++)
     {
-        SPI_RW(pBuf[i]);   /* Write data */
+        SPI_ReadAndWrite(pBuf[i]);   /* Write data */
     }
 
     SPI_CSN_H();           /* Disable this component */

@@ -97,14 +97,14 @@ static void BufAddArr(uint8_t* dat, uint8_t len)
 
 static void BufUpload(void)
 {
-    USART_SendBuf(sendPCBuf, sendCnt);
+    USART_SendBuffer(sendPCBuf, sendCnt);
     sendCnt  = 0;
     checksum = 0;
 }
 
 void CommPCUpload(uint8_t cmd)
 {
-    //USART_SendBuf(testData, 6);
+    //USART_SendBuffer(testData, 6);
     //sendPCBuf[0] = 0xAA;
     //sendPCBuf[1] = 0xAA;
     //sendPCBuf[2] = cmd;
@@ -254,7 +254,7 @@ void CommPCProcessCmd(void)
             pitch_angle_PID.D = (int16_t)(datBuf[10]<<8 | datBuf[11]) * 0.01f;
 
             //CommPCUpload(PC_PID_PITCH);
-            //USART_SendBuf(0xAA,1);
+            //USART_SendBuffer(0xAA,1);
             ReturnPIDHead(PC_PID_PITCH);
             gParamsSaveEEPROMRequest = 1;
         break;
@@ -420,8 +420,8 @@ static void DebubUploadHandle3(void)
         up2.sum += up2.data[i];
     }
 
-    USART_SendBuf((uint8_t *)(&up2), up2.len + 4);
-    USART_SendBuf(&(up2.sum), 1);
+    USART_SendBuffer((uint8_t *)(&up2), up2.len + 4);
+    USART_SendBuffer(&(up2.sum), 1);
 }
 
 void CommPCUploadHandle(void)
@@ -457,7 +457,7 @@ void CommPCUploadHandle(void)
         {
             sendPCBuf[22] += sendPCBuf[i];
         }
-        USART_SendBuf(sendPCBuf, 23);
+        USART_SendBuffer(sendPCBuf, 23);
     }
     else if (pkgDivCnt == 1)
     {

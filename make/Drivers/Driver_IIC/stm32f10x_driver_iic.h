@@ -39,7 +39,7 @@ myyerrol    2017.04.23    Format the module
 #define __STM32F10X_DRIVER_IIC_H__
 
 #include "stm32f10x.h"
-#include "stm32f10x_driver_sys.h"
+#include "stm32f10x_driver_io.h"
 
 #define IIC_SDA_IN()          \
 {                             \
@@ -53,9 +53,9 @@ myyerrol    2017.04.23    Format the module
     GPIOB->CRL |= 0x30000000; \
 }
 
-#define IIC_SCL      PBout(6)
-#define IIC_SDA      PBout(7)
-#define IIC_SDA_READ PBin(7)
+#define IIC_SCL      PB_OUT(6)
+#define IIC_SDA      PB_OUT(7)
+#define IIC_SDA_READ PB_IN(7)
 
 extern void IIC_Init(void);
 extern void IIC_SendAckSignal(void);

@@ -40,10 +40,8 @@ myyerrol    2017.04.23    Format the module
 #define FLASH_SIZE            64
 // Enable flash writing(0:disable).
 #define FLASH_WREN            1
-// The start address.
-#define FLASH_BASE            0x08000000
 // The relative offset to start addfress.
-#define FLASH_OFFEST          0x0000fc00
+#define FLASH_OFFEST          0X0000FC00
 // The unlock key value.
 #define FLASH_KEY1            0X45670123
 #define FLASH_KEY2            0XCDEF89AB

@@ -63,7 +63,7 @@ unsigned char MPU6050_IsDRY(void)
 *******************************************************************************/
 void MPU6050_SetClockSource(uint8_t source)
 {
-    IICWriteBits(DevAddr, MPU6050_RA_PWR_MGMT_1, MPU6050_PWR1_CLKSEL_BIT,
+    IIC_WriteBits(DevAddr, MPU6050_RA_PWR_MGMT_1, MPU6050_PWR1_CLKSEL_BIT,
                           MPU6050_PWR1_CLKSEL_LENGTH, source);
 }
 
@@ -74,7 +74,7 @@ void MPU6050_SetClockSource(uint8_t source)
  */
 void MPU6050_Reset(void)
 {
-    IICWriteBit(DevAddr, MPU6050_RA_PWR_MGMT_1, MPU6050_PWR1_DEVICE_RESET_BIT, 1);
+    IIC_WriteBit(DevAddr, MPU6050_RA_PWR_MGMT_1, MPU6050_PWR1_DEVICE_RESET_BIT, 1);
 }
 
 /** Set full-scale gyroscope range.
@@ -87,7 +87,7 @@ void MPU6050_Reset(void)
  */
 void MPU6050_SetFullScaleGyroRange(uint8_t range)
 {
-    IICWriteBits(DevAddr, MPU6050_RA_GYRO_CONFIG, MPU6050_GCONFIG_FS_SEL_BIT,
+    IIC_WriteBits(DevAddr, MPU6050_RA_GYRO_CONFIG, MPU6050_GCONFIG_FS_SEL_BIT,
                           MPU6050_GCONFIG_FS_SEL_LENGTH, range);
 }
 
@@ -97,7 +97,7 @@ void MPU6050_SetFullScaleGyroRange(uint8_t range)
 *******************************************************************************/
 void MPU6050_SetFullScaleAccelRange(uint8_t range)
 {
-    IICWriteBits(DevAddr, MPU6050_RA_ACCEL_CONFIG, MPU6050_ACONFIG_AFS_SEL_BIT,
+    IIC_WriteBits(DevAddr, MPU6050_RA_ACCEL_CONFIG, MPU6050_ACONFIG_AFS_SEL_BIT,
                           MPU6050_ACONFIG_AFS_SEL_LENGTH, range);
 }
 
@@ -109,7 +109,7 @@ void MPU6050_SetFullScaleAccelRange(uint8_t range)
 *******************************************************************************/
 void MPU6050_SetSleepEnabled(uint8_t enabled)
 {
-    IICWriteBit(DevAddr, MPU6050_RA_PWR_MGMT_1, MPU6050_PWR1_SLEEP_BIT, enabled);
+    IIC_WriteBit(DevAddr, MPU6050_RA_PWR_MGMT_1, MPU6050_PWR1_SLEEP_BIT, enabled);
 }
 
 /******************************************************************************
@@ -118,7 +118,7 @@ void MPU6050_SetSleepEnabled(uint8_t enabled)
 *******************************************************************************/
 uint8_t MPU6050_GetDeviceID(void)
 {
-    IICReadBytes(DevAddr, MPU6050_RA_WHO_AM_I, 1, buffer);
+    IIC_ReadBytes(DevAddr, MPU6050_RA_WHO_AM_I, 1, buffer);
     return buffer[0];
 }
 
@@ -144,7 +144,7 @@ uint8_t MPU6050_TestConnection(void)
 *******************************************************************************/
 void MPU6050_SetIICMasterModeEnabled(uint8_t enabled)
 {
-    IICWriteBit(DevAddr, MPU6050_RA_USER_CTRL, MPU6050_USERCTRL_I2C_MST_EN_BIT, enabled);
+    IIC_WriteBit(DevAddr, MPU6050_RA_USER_CTRL, MPU6050_USERCTRL_I2C_MST_EN_BIT, enabled);
 }
 
 /******************************************************************************
@@ -153,7 +153,7 @@ void MPU6050_SetIICMasterModeEnabled(uint8_t enabled)
 *******************************************************************************/
 void MPU6050_SetIICBypassEnabled(uint8_t enabled)
 {
-    IICWriteBit(DevAddr, MPU6050_RA_INT_PIN_CFG, MPU6050_INTCFG_I2C_BYPASS_EN_BIT, enabled);
+    IIC_WriteBit(DevAddr, MPU6050_RA_INT_PIN_CFG, MPU6050_INTCFG_I2C_BYPASS_EN_BIT, enabled);
 }
 
 /******************************************************************************
@@ -178,23 +178,23 @@ void MPU6050_Check(void)
 *******************************************************************************/
 void MPU6050_Init(void)
 {
-    IICWriteByte(DevAddr, MPU6050_RA_PWR_MGMT_1, 0x80);      /* PWR_MGMT_1  -- DEVICE_RESET 1 */
+    IIC_WriteByte(DevAddr, MPU6050_RA_PWR_MGMT_1, 0x80);      /* PWR_MGMT_1  -- DEVICE_RESET 1 */
     // LED_SetLight(ON, ON, ON, ON);
     Delay_TimeMs(50);
-    IICWriteByte(DevAddr, MPU6050_RA_SMPLRT_DIV, 0x00);      /* SMPLRT_DIV  -- SMPLRT_DIV = 0  Sample Rate = Gyroscope Output Rate / (1 + SMPLRT_DIV) */
-    IICWriteByte(DevAddr, MPU6050_RA_PWR_MGMT_1, 0x03);      /* PWR_MGMT_1  -- SLEEP 0; CYCLE 0; TEMP_DIS 0; CLKSEL 3 (PLL with Z Gyro reference) */
-    IICWriteByte(DevAddr, MPU6050_RA_INT_PIN_CFG, 0 << 7 | 0 << 6 | 0 << 5 | 0 << 4 | 0 << 3 | 0 << 2 | 1 << 1 | 0 << 0);  /* INT_PIN_CFG   -- INT_LEVEL_HIGH, INT_OPEN_DIS, LATCH_INT_DIS, INT_RD_CLEAR_DIS, FSYNC_INT_LEVEL_HIGH, FSYNC_INT_DIS, I2C_BYPASS_EN, CLOCK_DIS */
-    IICWriteByte(DevAddr, MPU6050_RA_CONFIG, MPU6050_DLPF_BW_42);  /* CONFIG  -- EXT_SYNC_SET 0 (disable input pin for data sync); default DLPF_CFG = 0 => ACC bandwidth = 260Hz  GYRO bandwidth = 256Hz) */
+    IIC_WriteByte(DevAddr, MPU6050_RA_SMPLRT_DIV, 0x00);      /* SMPLRT_DIV  -- SMPLRT_DIV = 0  Sample Rate = Gyroscope Output Rate / (1 + SMPLRT_DIV) */
+    IIC_WriteByte(DevAddr, MPU6050_RA_PWR_MGMT_1, 0x03);      /* PWR_MGMT_1  -- SLEEP 0; CYCLE 0; TEMP_DIS 0; CLKSEL 3 (PLL with Z Gyro reference) */
+    IIC_WriteByte(DevAddr, MPU6050_RA_INT_PIN_CFG, 0 << 7 | 0 << 6 | 0 << 5 | 0 << 4 | 0 << 3 | 0 << 2 | 1 << 1 | 0 << 0);  /* INT_PIN_CFG   -- INT_LEVEL_HIGH, INT_OPEN_DIS, LATCH_INT_DIS, INT_RD_CLEAR_DIS, FSYNC_INT_LEVEL_HIGH, FSYNC_INT_DIS, I2C_BYPASS_EN, CLOCK_DIS */
+    IIC_WriteByte(DevAddr, MPU6050_RA_CONFIG, MPU6050_DLPF_BW_42);  /* CONFIG  -- EXT_SYNC_SET 0 (disable input pin for data sync); default DLPF_CFG = 0 => ACC bandwidth = 260Hz  GYRO bandwidth = 256Hz) */
     MPU6050_SetFullScaleGyroRange(MPU6050_GYRO_FS_2000);
 
     /* Accel scale 8g (4096 LSB/g) */
-    IICWriteByte(DevAddr, MPU6050_RA_ACCEL_CONFIG, 2 << 3);
+    IIC_WriteByte(DevAddr, MPU6050_RA_ACCEL_CONFIG, 2 << 3);
 }
 
 void MPU6050_ReadAcc(int16_t *accData)
 {
     uint8_t buf[6];
-    IICReadBytes(DevAddr, MPU6050_RA_ACCEL_XOUT_H, 6, buf);
+    IIC_ReadBytes(DevAddr, MPU6050_RA_ACCEL_XOUT_H, 6, buf);
     accData[0] = (int16_t)((buf[0] << 8) | buf[1]);
     accData[1] = (int16_t)((buf[2] << 8) | buf[3]);
     accData[2] = (int16_t)((buf[4] << 8) | buf[5]);
@@ -203,7 +203,7 @@ void MPU6050_ReadAcc(int16_t *accData)
 void MPU6050_ReadGyro(int16_t *gyroData)
 {
     uint8_t buf[6];
-    IICReadBytes(DevAddr, MPU6050_RA_GYRO_XOUT_H, 6, buf);
+    IIC_ReadBytes(DevAddr, MPU6050_RA_GYRO_XOUT_H, 6, buf);
     gyroData[0] = (int16_t)((buf[0] << 8) | buf[1]);
     gyroData[1] = (int16_t)((buf[2] << 8) | buf[3]);
     gyroData[2] = (int16_t)((buf[4] << 8) | buf[5]);
@@ -218,7 +218,7 @@ void MPU6050_SetAccOffset(int16_t offset[3])
     {
         buf[0] = offset[i] >> 8;
         buf[1] = offset[i];
-        IICWriteBytes(DevAddr, MPU6050_RA_XA_OFFS_H + i * 2, 2, buf);
+        IIC_WriteBytes(DevAddr, MPU6050_RA_XA_OFFS_H + i * 2, 2, buf);
     }
 }
 
@@ -230,7 +230,7 @@ void MPU6050_SetGyroOffset(int16_t offset[3])
     {
         buf[0] = offset[i] >> 8;
         buf[1] = offset[i];
-        IICWriteBytes(DevAddr, MPU6050_RA_XG_OFFS_USRH + i * 2, 2, buf);
+        IIC_WriteBytes(DevAddr, MPU6050_RA_XG_OFFS_USRH + i * 2, 2, buf);
     }
 }
 
@@ -240,38 +240,38 @@ void MPU6050_SetMemoryBank(uint8_t bank, uint8_t prefetchEnabled, uint8_t userBa
     bank &= 0x1F;
     if (userBank) bank |= 0x20;
     if (prefetchEnabled) bank |= 0x40;
-    IICWriteByte(DevAddr, MPU6050_RA_BANK_SEL, bank);
+    IIC_WriteByte(DevAddr, MPU6050_RA_BANK_SEL, bank);
 }
 
 /* MEM_START_ADDR register */
 void MPU6050_SetMemoryStartAddress(uint8_t address)
 {
-    IICWriteByte(DevAddr, MPU6050_RA_MEM_START_ADDR, address);
+    IIC_WriteByte(DevAddr, MPU6050_RA_MEM_START_ADDR, address);
 }
 
 /* MEM_R_W register */
 uint8_t MPU6050_ReadMemoryByte(void)
 {
-    IICReadBytes(DevAddr, MPU6050_RA_MEM_R_W, 1, buffer);
+    IIC_ReadBytes(DevAddr, MPU6050_RA_MEM_R_W, 1, buffer);
     return buffer[0];
 }
 
 /* XG_OFFS_USR* registers */
 int16_t MPU6050_GetXGyroOffset(void)
 {
-    IICReadBytes(DevAddr, MPU6050_RA_XG_OFFS_USRH, 2, buffer);
+    IIC_ReadBytes(DevAddr, MPU6050_RA_XG_OFFS_USRH, 2, buffer);
     return (((int16_t)buffer[0]) << 8) | buffer[1];
 }
 
 int16_t MPU6050_GetYGyroOffset(void)
 {
-    IICReadBytes(DevAddr, MPU6050_RA_YG_OFFS_USRH, 2, buffer);
+    IIC_ReadBytes(DevAddr, MPU6050_RA_YG_OFFS_USRH, 2, buffer);
     return (((int16_t)buffer[0]) << 8) | buffer[1];
 }
 
 int16_t MPU6050_GetZGyroOffset(void)
 {
-    IICReadBytes(DevAddr, MPU6050_RA_ZG_OFFS_USRH, 2, buffer);
+    IIC_ReadBytes(DevAddr, MPU6050_RA_ZG_OFFS_USRH, 2, buffer);
     return (((int16_t)buffer[0]) << 8) | buffer[1];
 }
 
@@ -301,14 +301,14 @@ uint8_t MPU6050_WriteMemoryBlock(const uint8_t *data, uint16_t dataSize, uint8_t
 
         /* Write the chunk of data as specified */
         tprogBuffer = (uint8_t*)data + i;
-        IICWriteBytes(DevAddr, MPU6050_RA_MEM_R_W, chunkSize, tprogBuffer);
+        IIC_WriteBytes(DevAddr, MPU6050_RA_MEM_R_W, chunkSize, tprogBuffer);
 
         /* Verify data if needed */
         if (verify)
         {
             MPU6050_SetMemoryBank(bank, 0, 0);
             MPU6050_SetMemoryStartAddress(address);
-            IICReadBytes(DevAddr, MPU6050_RA_MEM_R_W, chunkSize, verifyBuffer);
+            IIC_ReadBytes(DevAddr, MPU6050_RA_MEM_R_W, chunkSize, verifyBuffer);
 
             for (j = 0; j < chunkSize; j++)
             {
@@ -369,7 +369,7 @@ uint8_t MPU6050_WriteDMPConfigurationSet(const uint8_t *data, uint16_t dataSize,
             if (special == 0x01)
             {
                 /* Enable DMP-related interrupts */
-                IICWriteByte(DevAddr, MPU6050_RA_INT_ENABLE, 0x32);  /* Single operation */
+                IIC_WriteByte(DevAddr, MPU6050_RA_INT_ENABLE, 0x32);  /* Single operation */
                 success = 1;
             }
             else
@@ -407,7 +407,7 @@ uint8_t MPU6050_WriteProgDMPConfigurationSet(const uint8_t *data, uint16_t dataS
  **/
 void MPU6050_SetIntEnabled(uint8_t enabled)
 {
-    IICWriteByte(DevAddr, MPU6050_RA_INT_ENABLE, enabled);
+    IIC_WriteByte(DevAddr, MPU6050_RA_INT_ENABLE, enabled);
 }
 
 /** Set gyroscope sample rate divider.
@@ -417,7 +417,7 @@ void MPU6050_SetIntEnabled(uint8_t enabled)
  */
 void MPU6050_SetRate(uint8_t rate)
 {
-    IICWriteByte(DevAddr, MPU6050_RA_SMPLRT_DIV, rate);
+    IIC_WriteByte(DevAddr, MPU6050_RA_SMPLRT_DIV, rate);
 }
 
 /** Set digital low-pass filter configuration.
@@ -430,7 +430,7 @@ void MPU6050_SetRate(uint8_t rate)
  */
 void MPU6050_SetDLPFMode(uint8_t mode)
 {
-    IICWriteBits(DevAddr, MPU6050_RA_CONFIG, MPU6050_CFG_DLPF_CFG_BIT,
+    IIC_WriteBits(DevAddr, MPU6050_RA_CONFIG, MPU6050_CFG_DLPF_CFG_BIT,
                           MPU6050_CFG_DLPF_CFG_LENGTH, mode);
 }
 
@@ -441,44 +441,44 @@ void MPU6050_SetDLPFMode(uint8_t mode)
  */
 void MPU6050_SetExternalFrameSync(uint8_t sync)
 {
-    IICWriteBits(DevAddr, MPU6050_RA_CONFIG, MPU6050_CFG_EXT_SYNC_SET_BIT,
+    IIC_WriteBits(DevAddr, MPU6050_RA_CONFIG, MPU6050_CFG_EXT_SYNC_SET_BIT,
                           MPU6050_CFG_EXT_SYNC_SET_LENGTH, sync);
 }
 
 void MPU6050_SetDMPConfig1(uint8_t config)
 {
-    IICWriteByte(DevAddr, MPU6050_RA_DMP_CFG_1, config);
+    IIC_WriteByte(DevAddr, MPU6050_RA_DMP_CFG_1, config);
 }
 
 void MPU6050_SetDMPConfig2(uint8_t config)
 {
-    IICWriteByte(DevAddr, MPU6050_RA_DMP_CFG_2, config);
+    IIC_WriteByte(DevAddr, MPU6050_RA_DMP_CFG_2, config);
 }
 
 void MPU6050_SetOTPBankValid(uint8_t enabled)
 {
-    IICWriteBit(DevAddr, MPU6050_RA_XG_OFFS_TC, MPU6050_TC_OTP_BNK_VLD_BIT, enabled);
+    IIC_WriteBit(DevAddr, MPU6050_RA_XG_OFFS_TC, MPU6050_TC_OTP_BNK_VLD_BIT, enabled);
 }
 
 void MPU6050_SetXGyroOffset(int16_t offset)
 {
     buffer[0] = offset >> 8;
     buffer[1] = offset & 0x00ff;
-    IICWriteBytes(DevAddr, MPU6050_RA_XG_OFFS_USRH, 2, buffer);
+    IIC_WriteBytes(DevAddr, MPU6050_RA_XG_OFFS_USRH, 2, buffer);
 }
 
 void MPU6050_SetYGyroOffset(int16_t offset)
 {
     buffer[0] = offset >> 8;
     buffer[1] = offset & 0x00ff;
-    IICWriteBytes(DevAddr, MPU6050_RA_YG_OFFS_USRH, 2, buffer);
+    IIC_WriteBytes(DevAddr, MPU6050_RA_YG_OFFS_USRH, 2, buffer);
 }
 
 void MPU6050_SetZGyroOffset(int16_t offset)
 {
     buffer[0] = offset >> 8;
     buffer[1] = offset & 0x00ff;
-    IICWriteBytes(DevAddr, MPU6050_RA_ZG_OFFS_USRH, 2, buffer);
+    IIC_WriteBytes(DevAddr, MPU6050_RA_ZG_OFFS_USRH, 2, buffer);
 }
 
 /** Reset the FIFO.
@@ -489,7 +489,7 @@ void MPU6050_SetZGyroOffset(int16_t offset)
  */
 void MPU6050_ResetFIFO(void)
 {
-    IICWriteBit(DevAddr, MPU6050_RA_USER_CTRL, MPU6050_USERCTRL_FIFO_RESET_BIT, 1);
+    IIC_WriteBit(DevAddr, MPU6050_RA_USER_CTRL, MPU6050_USERCTRL_FIFO_RESET_BIT, 1);
 }
 
 /** Get current FIFO buffer size.
@@ -501,7 +501,7 @@ void MPU6050_ResetFIFO(void)
  */
 uint16_t MPU6050_GetFIFOCount(void)
 {
-    IICReadBytes(DevAddr, MPU6050_RA_FIFO_COUNTH, 2, buffer);
+    IIC_ReadBytes(DevAddr, MPU6050_RA_FIFO_COUNTH, 2, buffer);
     return (((uint16_t)buffer[0]) << 8) | buffer[1];
 }
 
@@ -512,7 +512,7 @@ uint16_t MPU6050_GetFIFOCount(void)
  */
 void MPU6050_SetMotionDetectionThreshold(uint8_t threshold)
 {
-    IICWriteByte(DevAddr, MPU6050_RA_MOT_THR, threshold);
+    IIC_WriteByte(DevAddr, MPU6050_RA_MOT_THR, threshold);
 }
 
 /** Set zero motion detection event acceleration threshold.
@@ -522,7 +522,7 @@ void MPU6050_SetMotionDetectionThreshold(uint8_t threshold)
  */
 void MPU6050_SetZeroMotionDetectionThreshold(uint8_t threshold)
 {
-    IICWriteByte(DevAddr, MPU6050_RA_ZRMOT_THR, threshold);
+    IIC_WriteByte(DevAddr, MPU6050_RA_ZRMOT_THR, threshold);
 }
 
 /** Set motion detection event duration threshold.
@@ -532,7 +532,7 @@ void MPU6050_SetZeroMotionDetectionThreshold(uint8_t threshold)
  */
 void MPU6050_SetMotionDetectionDuration(uint8_t duration)
 {
-    IICWriteByte(DevAddr, MPU6050_RA_MOT_DUR, duration);
+    IIC_WriteByte(DevAddr, MPU6050_RA_MOT_DUR, duration);
 }
 
 /** Set zero motion detection event duration threshold.
@@ -542,7 +542,7 @@ void MPU6050_SetMotionDetectionDuration(uint8_t duration)
  */
 void MPU6050_SetZeroMotionDetectionDuration(uint8_t duration)
 {
-    IICWriteByte(DevAddr, MPU6050_RA_ZRMOT_DUR, duration);
+    IIC_WriteByte(DevAddr, MPU6050_RA_ZRMOT_DUR, duration);
 }
 
 void MPU6050_ReadMemoryBlock(uint8_t *data, uint16_t dataSize, uint8_t bank, uint8_t address)
@@ -564,7 +564,7 @@ void MPU6050_ReadMemoryBlock(uint8_t *data, uint16_t dataSize, uint8_t bank, uin
         if (chunkSize > 256 - address) chunkSize = 256 - address;
 
         /* Read the chunk of data as specified */
-        IICWriteBytes(DevAddr, MPU6050_RA_MEM_R_W, chunkSize, data + i);
+        IIC_WriteBytes(DevAddr, MPU6050_RA_MEM_R_W, chunkSize, data + i);
 
         /* Increase byte index by [chunkSize] */
         i += chunkSize;
@@ -584,7 +584,7 @@ void MPU6050_ReadMemoryBlock(uint8_t *data, uint16_t dataSize, uint8_t bank, uin
 
 void MPU6050_GetFIFOBytes(uint8_t *data, uint8_t length)
 {
-    IICReadBytes(DevAddr, MPU6050_RA_FIFO_R_W, length, data);
+    IIC_ReadBytes(DevAddr, MPU6050_RA_FIFO_R_W, length, data);
 }
 
 /** Get full set of interrupt status bits.
@@ -601,7 +601,7 @@ uint8_t MPU6050_GetIntStatus(void)
 
 void MPU6050_SetDMPEnabled(uint8_t enabled)
 {
-    IICWriteBit(DevAddr, MPU6050_RA_USER_CTRL, MPU6050_USERCTRL_DMP_EN_BIT, enabled);
+    IIC_WriteBit(DevAddr, MPU6050_RA_USER_CTRL, MPU6050_USERCTRL_DMP_EN_BIT, enabled);
 }
 
 uint8_t MPU6050_GetOTPBankValid(void)
@@ -619,7 +619,7 @@ int8_t MPU6050_GetXGyroOffsetTC(void)
 
 void MPU6050_SetXGyroOffsetTC(int8_t offset)
 {
-    IICWriteBits(DevAddr, MPU6050_RA_XG_OFFS_TC, MPU6050_TC_OFFSET_BIT, MPU6050_TC_OFFSET_LENGTH, offset);
+    IIC_WriteBits(DevAddr, MPU6050_RA_XG_OFFS_TC, MPU6050_TC_OFFSET_BIT, MPU6050_TC_OFFSET_LENGTH, offset);
 }
 
 /* YG_OFFS_TC register */
@@ -632,7 +632,7 @@ int8_t MPU6050_GetYGyroOffsetTC(void)
 
 void MPU6050_SetYGyroOffsetTC(int8_t offset)
 {
-    IICWriteBits(DevAddr, MPU6050_RA_YG_OFFS_TC, MPU6050_TC_OFFSET_BIT, MPU6050_TC_OFFSET_LENGTH, offset);
+    IIC_WriteBits(DevAddr, MPU6050_RA_YG_OFFS_TC, MPU6050_TC_OFFSET_BIT, MPU6050_TC_OFFSET_LENGTH, offset);
 }
 
 /* ZG_OFFS_TC register */
@@ -645,7 +645,7 @@ int8_t MPU6050_GetZGyroOffsetTC(void)
 
 void MPU6050_SetZGyroOffsetTC(int8_t offset)
 {
-    IICWriteBits(DevAddr, MPU6050_RA_ZG_OFFS_TC, MPU6050_TC_OFFSET_BIT, MPU6050_TC_OFFSET_LENGTH, offset);
+    IIC_WriteBits(DevAddr, MPU6050_RA_ZG_OFFS_TC, MPU6050_TC_OFFSET_BIT, MPU6050_TC_OFFSET_LENGTH, offset);
 }
 
 /** Set the I2C address of the specified slave (0-3).
@@ -657,7 +657,7 @@ void MPU6050_SetZGyroOffsetTC(int8_t offset)
 void MPU6050_SetSlaveAddress(uint8_t num, uint8_t address)
 {
     if (num > 3) return;
-    IICWriteByte(DevAddr, MPU6050_RA_I2C_SLV0_ADDR + num * 3, address);
+    IIC_WriteByte(DevAddr, MPU6050_RA_I2C_SLV0_ADDR + num * 3, address);
 }
 
 /** Reset the I2C Master.
@@ -668,7 +668,7 @@ void MPU6050_SetSlaveAddress(uint8_t num, uint8_t address)
  */
 void MPU6050_ResetIICMaster(void)
 {
-    IICWriteBit(DevAddr, MPU6050_RA_USER_CTRL, MPU6050_USERCTRL_I2C_MST_RESET_BIT, 1);
+    IIC_WriteBit(DevAddr, MPU6050_RA_USER_CTRL, MPU6050_USERCTRL_I2C_MST_RESET_BIT, 1);
 }
 
 /** Set FIFO enabled status.
@@ -679,10 +679,10 @@ void MPU6050_ResetIICMaster(void)
  */
 void MPU6050_SetFIFOEnabled(uint8_t enabled)
 {
-    IICWriteBit(DevAddr, MPU6050_RA_USER_CTRL, MPU6050_USERCTRL_FIFO_EN_BIT, enabled);
+    IIC_WriteBit(DevAddr, MPU6050_RA_USER_CTRL, MPU6050_USERCTRL_FIFO_EN_BIT, enabled);
 }
 
 void MPU6050_ResetDMP(void)
 {
-    IICWriteBit(DevAddr, MPU6050_RA_USER_CTRL, MPU6050_USERCTRL_DMP_RESET_BIT, 1);
+    IIC_WriteBit(DevAddr, MPU6050_RA_USER_CTRL, MPU6050_USERCTRL_DMP_RESET_BIT, 1);
 }

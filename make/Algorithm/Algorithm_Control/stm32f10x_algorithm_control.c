@@ -25,6 +25,7 @@ History:
    maksyuki  2017.01.11  modify the module
 *******************************************************************************/
 
+#include "stm32f10x_driver_delay.h"
 #include "stm32f10x_module_rpdata.h"
 #include "stm32f10x_module_battery.h"
 #include "stm32f10x_module_motor.h"

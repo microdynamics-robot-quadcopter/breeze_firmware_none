@@ -32,6 +32,7 @@ History:
    maksyuki  2017.01.11  modify the module
 *******************************************************************************/
 
+#include "stm32f10x_driver_delay.h"
 #include "stm32f10x_module_mpu6050.h"
 #include "stm32f10x_algorithm_imu.h"
 #include "stm32f10x_algorithm_filter.h"
@@ -67,7 +68,7 @@ uint8_t IMU_Calibrate(void)
     uint16_t dt                = 0;
     uint16_t NowTime           = 0;
 
-    NowTime = Delay_GetRuntimeMs();
+    NowTime = (u16)Delay_GetRuntimeMs();
     dt = NowTime - PreTime;
 
     if (!calibrating)

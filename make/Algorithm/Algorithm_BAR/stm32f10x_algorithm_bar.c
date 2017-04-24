@@ -20,6 +20,7 @@ History:
    maksyuki  2017.01.11  modify the module
 *******************************************************************************/
 
+#include "stm32f10x_driver_delay.h" 
 #include "stm32f10x_module_ms5611.h"
 #include "stm32f10x_algorithm_bar.h"
 #include "stm32f10x_algorithm_imu.h"

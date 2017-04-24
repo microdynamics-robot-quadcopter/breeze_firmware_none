@@ -47,7 +47,7 @@ History:
 #define StartConvertPress 0x03
 #define ConvertPressing   0x04
 
-#define BUFFER_SIZE       10
+#define MS5611_BUFFER_SIZE       10
 
 static uint8_t  CurState = StartConvertTemp;
 static uint32_t CurDelay = 0;                   /* Conversion delay time: us */
@@ -84,9 +84,9 @@ uint32_t MS5611_Delay_TimeUs[9] = {
 };
 
 /* Data queue */
-static float TempBuffer[BUFFER_SIZE];
-static float PressBuffer[BUFFER_SIZE];
-static float AltBuffer[BUFFER_SIZE];
+static float TempBuffer[MS5611_BUFFER_SIZE];
+static float PressBuffer[MS5611_BUFFER_SIZE];
+static float AltBuffer[MS5611_BUFFER_SIZE];
 
 /* The pointer of queue */
 static uint8_t temp_ptr  = 0;
@@ -95,23 +95,23 @@ static uint8_t press_ptr = 0;
 void MS5611_TempPush(float val)
 {
     TempBuffer[temp_ptr] = val;
-    temp_ptr = (temp_ptr + 1) % BUFFER_SIZE;
+    temp_ptr = (temp_ptr + 1) % MS5611_BUFFER_SIZE;
 }
 
 void MS5611_PressPush(float val)
 {
     PressBuffer[press_ptr] = val;
-    press_ptr = (press_ptr + 1) % BUFFER_SIZE;
+    press_ptr = (press_ptr + 1) % MS5611_BUFFER_SIZE;
 }
 
 void MS5611_AltPush(float val)
 {
     int16_t i;
-    for (i = 1; i < BUFFER_SIZE; i++)
+    for (i = 1; i < MS5611_BUFFER_SIZE; i++)
     {
         AltBuffer[i-1] = AltBuffer[i];
     }
-    AltBuffer[BUFFER_SIZE-1] = val;
+    AltBuffer[MS5611_BUFFER_SIZE-1] = val;
 }
 
 float MS5611_GetAvg(float *buff, int size)
@@ -267,7 +267,7 @@ void MS5611_GetPressure(void)
     MS5611_Pressure = (((((int64_t)RawPress) * sens) >> 21) - off) / 32768;
 
     MS5611_TempPush(TEMP * 0.01f);
-    MS5611_Temperature = MS5611_GetAvg(TempBuffer, BUFFER_SIZE);  /* 0.01c */
+    MS5611_Temperature = MS5611_GetAvg(TempBuffer, MS5611_BUFFER_SIZE);  /* 0.01c */
     MS5611_Altitude = MS5611_GetAltitude();                       /* m */
 }
 

@@ -276,5 +276,5 @@ u8 IIC_WriteOneByte(u8 byte)
         Delay_TimeUs(1);
     }
 
-    return ;
+    return 1;
 }

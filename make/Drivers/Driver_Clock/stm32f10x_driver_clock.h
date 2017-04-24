@@ -29,7 +29,7 @@ extern s8 system_clock;
 
 extern void Clock_DeInit(void);
 extern void Clock_Init(void);
-static s8   Clock_InitSystemClockHSI(u8 pll_multi);
-static s8   Clock_InitSystemClockHSE(u8 pll_multi);
+extern s8   Clock_InitSystemClockHSI(u8 pll_multi);
+extern s8   Clock_InitSystemClockHSE(u8 pll_multi);
 
 #endif

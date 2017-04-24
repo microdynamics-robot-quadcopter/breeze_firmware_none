@@ -32,8 +32,8 @@ myyerrol    2017.04.14    Format the module
 USART_RingBuffer USART_RingBufferRxStructure;
 USART_RingBuffer USART_RingBufferTxStructure;
 
-u8 ring_buffer_rx[BUFFER_SIZE];
-u8 ring_buffer_tx[BUFFER_SIZE];
+u8 ring_buffer_rx[USART_BUFFER_SIZE];
+u8 ring_buffer_tx[USART_BUFFER_SIZE];
 
 void USART_ClearBuffer(USART_RingBuffer *ring_buffer)
 {
@@ -82,12 +82,12 @@ void USART_InitUSART1(u32 baud_rate)
 
     USART_RingBufferRxStructure.index_rd = 0;
     USART_RingBufferRxStructure.index_wt = 0;
-    USART_RingBufferRxStructure.mask     = BUFFER_SIZE - 1;
+    USART_RingBufferRxStructure.mask     = USART_BUFFER_SIZE - 1;
     USART_RingBufferRxStructure.buffer   = &ring_buffer_rx[0];
 
     USART_RingBufferTxStructure.index_rd = 0;
     USART_RingBufferTxStructure.index_wt = 0;
-    USART_RingBufferTxStructure.mask     = BUFFER_SIZE - 1;
+    USART_RingBufferTxStructure.mask     = USART_BUFFER_SIZE - 1;
     USART_RingBufferTxStructure.buffer   = &ring_buffer_tx[0];
 }
 

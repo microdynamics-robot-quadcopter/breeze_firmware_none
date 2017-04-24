@@ -15,7 +15,7 @@ DIR_DRIVERS += ../Drivers/Driver_IIC/
 DIR_DRIVERS += ../Drivers/Driver_IO/
 DIR_DRIVERS += ../Drivers/Driver_NVIC/
 DIR_DRIVERS += ../Drivers/Driver_SPI/
-DIR_DRIVERS += ../Drivers/Driver_Tim/
+DIR_DRIVERS += ../Drivers/Driver_Timer/
 DIR_DRIVERS += ../Drivers/Driver_USART/
 
 DIR_MODULES += ../Modules/Module_Battery/

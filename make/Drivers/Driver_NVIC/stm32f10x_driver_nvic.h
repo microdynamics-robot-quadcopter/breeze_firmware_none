@@ -13,6 +13,9 @@ Others:      none
 Function List:
              1. void NVIC_InitUSART(void);
              2. void NVIC_InitUSART1(void);
+             3. void NVIC_InitTIM(void);
+             4. void NVIC_InitTIM3(void);
+             5. void NVIC_InitTIM4(void);
 History:
 <author>    <date>        <desc>
 myyerrol    2017.04.14    Modify the module
@@ -25,5 +28,8 @@ myyerrol    2017.04.14    Modify the module
 
 extern void NVIC_InitUSART(void);
 extern void NVIC_InitUSART1(void);
+extern void NVIC_InitTIM(void);
+extern void NVIC_InitTIM3(void);
+extern void NVIC_InitTIM4(void);
 
 #endif

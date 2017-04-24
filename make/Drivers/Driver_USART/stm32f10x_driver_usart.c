@@ -52,6 +52,7 @@ void USART_InitUSART1(u32 baud_rate)
 
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1 | RCC_APB2Periph_GPIOA |
                            RCC_APB2Periph_AFIO, ENABLE);
+
     // USART1_TX: GPIOA.9.
     GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_9;
     GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF_PP;

@@ -8,129 +8,164 @@ Filename:    stm32f10x_module_ms5611.c
 Author:      maksyuki
 Version:     0.1.0.20161231_release
 Create date: 2016.09.01
-Description: implement the ms5611 function
+Description: Implement the MS5611 function
 Others:      none
 Function List:
-             1. void MS5611_Reset(void);
-             2. void MS5611_ReadPROM(void);
-             3. void MS5611_TempPush(float val);
-             4. void MS5611_PressPush(float val);
-             5. void MS5611_AltPush(float val);
-             6. float MS5611_GetAvg(float *buff, int size);
-             7. void MS5611_StartConversion(uint8_t cmd);
-             8. uint32_t MS5611_GetConversion(void);
-             9. void MS5611_GetPressure(void);
-            10. float MS5611_GetAltitude(void);
-            11. void MS5611_GetTemperature(void);
-            12. void MS5611_Init(void);
-            13. void MS5611_Thread(void);
-            14. uint8_t MS5611_WaitBaroInitOffset(void);
+             1.  void  MS5611_AddNewAltitude(float value);
+             2.  void  MS5611_AddNewTemperature(float value);
+             3.  void  MS5611_AddNewPressure(float value);
+             4.  void  MS5611_GetPressure(void);
+             5.  void  MS5611_GetTemperature(void);
+             6.  void  MS5611_Init(void);
+             7.  void  MS5611_ReadPROM(void);
+             8.  void  MS5611_Reset(void);
+             9.  void  MS5611_StartConversion(u8 command);
+             10. void  MS5611_UpdateData(void);
+             11. u8    MS5611_WaitBaroInitOffset(void);
+             12. u32   MS5611_GetConversion(void);
+             13. float MS5611_GetAltitude(void);
+             14. float MS5611_GetAverage(float *buffer, int size);
 History:
-1. <author>    <date>         <desc>
-   maksyuki  2017.01.01  modify the module
+<author>    <date>        <desc>
+maksyuki    2017.01.01    Modify the module
+myyerrol    2017.04.24    Format the module
 *******************************************************************************/
 
-#include "stm32f10x_driver_iic.h"
-#include "stm32f10x_driver_delay.h"
-#include "stm32f10x_module_ms5611.h"
+#include <stdio.h>
+#include <math.h>
 #include "stm32f10x_it.h"
-#include "math.h"
+#include "stm32f10x_driver_delay.h"
+#include "stm32f10x_driver_iic.h"
+#include "stm32f10x_driver_usart.h"
+#include "stm32f10x_module_ms5611.h"
 
-#include "stm32f10x_driver_usart.h" /* debug */
-#include "stdio.h"
+static u8  current_state       = STATE_START_CONVERT_TEMP;
+static u16 calibration_params[MS5611_PROM_REG_COUNT];
+static u32 start_convert_timestamp;
+static u32 conversion_delay_us = 0;
+static s32 temperature_value;
 
-#define MS5611_Press_OSR MS5611_OSR_4096  /* The sampling precision of pressure */
-#define MS5611_Temp_OSR  MS5611_OSR_4096  /* The sampling precision of temperature */
+// Save the altitude of 0m(relative).
+static float altitude_offset = 0;
+// Save the pressure of 0m(relative).
+static float pressure_offset = 0;
+u16    pressure_init_cnt     = 0;
+double pressure_offset_num   = 0;
+bool   pressure_offset_flag  = false;
+bool   altitude_update_flag  = false;
 
-#define StartConvertTemp  0x01
-#define ConvertTemping    0x02
-#define StartConvertPress 0x03
-#define ConvertPressing   0x04
+volatile float ms5611_altitude;
+volatile float ms5611_pressure;
+volatile float ms5611_temperature;
 
-#define MS5611_BUFFER_SIZE       10
-
-static uint8_t  CurState = StartConvertTemp;
-static uint32_t CurDelay = 0;                   /* Conversion delay time: us */
-static uint16_t PROM_C[MS5611_PROM_REG_COUNT];  /* Calibration parameters */
-static uint32_t StartConvertTime;
-static int32_t TempCache;
-
-static float AltOffsetM = 0;
-
-#define PA_OFFSET_INIT_NUM 50
-
-static float AltOffsetPa = 0;  /* Save the pressure of 0m(relative), also the pressure of power on */
-double PaOffsetNum       = 0;
-uint16_t PaInitCnt       = 0;
-uint8_t PaOffsetInited   = 0;
-uint8_t Baro_Alt_Updated = 0;
-
-/* Units (Celsius degrees*100, mbar*100 ) */
-volatile float MS5611_Pressure;
-volatile float MS5611_Altitude;
-volatile float MS5611_Temperature;
-
-/* Delay table: different sampling precision is with different delay time */
-uint32_t MS5611_Delay_TimeUs[9] = {
-    1500,  /* MS5611_OSR_256  0.9ms  0x00 */
-    1500,  /* MS5611_OSR_256  0.9ms       */
-    2000,  /* MS5611_OSR_512  1.2ms  0x02 */
-    2000,  /* MS5611_OSR_512  1.2ms       */
-    3000,  /* MS5611_OSR_1024 2.3ms  0x04 */
-    3000,  /* MS5611_OSR_1024 2.3ms       */
-    5000,  /* MS5611_OSR_2048 4.6ms  0x06 */
-    5000,  /* MS5611_OSR_2048 4.6ms       */
-    11000, /* MS5611_OSR_4096 9.1ms  0x08 */
+// Delay table: different sampling precision is with different delay time.
+u32 delay_us_table[9] = {
+    1500,  // MS5611_OSR_256  0.9ms  0x00
+    1500,  // MS5611_OSR_256  0.9ms
+    2000,  // MS5611_OSR_512  1.2ms  0x02
+    2000,  // MS5611_OSR_512  1.2ms
+    3000,  // MS5611_OSR_1024 2.3ms  0x04
+    3000,  // MS5611_OSR_1024 2.3ms
+    5000,  // MS5611_OSR_2048 4.6ms  0x06
+    5000,  // MS5611_OSR_2048 4.6ms
+    11000, // MS5611_OSR_4096 9.1ms  0x08
 };
 
-/* Data queue */
-static float TempBuffer[MS5611_BUFFER_SIZE];
-static float PressBuffer[MS5611_BUFFER_SIZE];
-static float AltBuffer[MS5611_BUFFER_SIZE];
+// FIFO queue.
+static float temperature_buffer[MS5611_BUFFER_SIZE];
+static float pressure_buffer[MS5611_BUFFER_SIZE];
+static float altitude_buffer[MS5611_BUFFER_SIZE];
 
-/* The pointer of queue */
-static uint8_t temp_ptr  = 0;
-static uint8_t press_ptr = 0;
+static u8 index_temperature = 0;
+static u8 index_pressure    = 0;
 
-void MS5611_TempPush(float val)
+void MS5611_AddNewAltitude(float value)
 {
-    TempBuffer[temp_ptr] = val;
-    temp_ptr = (temp_ptr + 1) % MS5611_BUFFER_SIZE;
-}
+    s16 i;
 
-void MS5611_PressPush(float val)
-{
-    PressBuffer[press_ptr] = val;
-    press_ptr = (press_ptr + 1) % MS5611_BUFFER_SIZE;
-}
-
-void MS5611_AltPush(float val)
-{
-    int16_t i;
     for (i = 1; i < MS5611_BUFFER_SIZE; i++)
     {
-        AltBuffer[i-1] = AltBuffer[i];
+        altitude_buffer[i-1] = altitude_buffer[i];
     }
-    AltBuffer[MS5611_BUFFER_SIZE-1] = val;
+
+    altitude_buffer[MS5611_BUFFER_SIZE - 1] = value;
 }
 
-float MS5611_GetAvg(float *buff, int size)
+void MS5611_AddNewTemperature(float value)
 {
-    float sum = 0.0;
-    int i;
-    for (i = 0; i < size; i++)
-    {
-        sum += buff[i];
-    }
-    return sum / size;
+    temperature_buffer[index_temperature] = value;
+    index_temperature = (index_temperature + 1) % MS5611_BUFFER_SIZE;
 }
 
-/* Read the calibration value of MS561101B */
-/* for correcting temperature and pressure */
+void MS5611_AddNewPressure(float value)
+{
+    pressure_buffer[index_pressure] = value;
+    index_pressure = (index_pressure + 1) % MS5611_BUFFER_SIZE;
+}
+
+// Read the conversion result of barometer and compensate the results.
+void MS5611_GetPressure(void)
+{
+    s32 pressure_raw;
+    s64 actual_offset;
+    s64 actual_sensitivity;
+    s64 actual_temperature;
+    s64 delta;
+    s64 temp;
+    s64 temp_offset;
+    s64 temp_sensitivity;
+    s64 temp_temperature;
+
+    pressure_raw = MS5611_GetConversion();
+    delta        = temperature_value - (((s32)calibration_params[4]) << 8);
+
+    actual_offset      = (((s64)calibration_params[1]) << 16)
+        + ((((s64)calibration_params[3]) * delta) >> 7);
+    actual_sensitivity = (((s64)calibration_params[0]) << 15)
+        + (((s64)(calibration_params[2]) * delta) >> 8);
+    actual_temperature = 2000 + (delta * (s64)calibration_params[5]) / 8388608;
+
+    // Compensate temperature secondly.
+    if (actual_temperature < 2000)
+	{
+        temp               = (actual_temperature - 2000)
+            * (actual_temperature - 2000);
+        temp_offset        = (5 * temp) >> 1;
+        temp_sensitivity   = (5 * temp) >> 2;
+        temp_temperature   = (((s64)delta) * delta) >> 31;
+        actual_temperature = actual_temperature - temp_temperature;
+        actual_offset      = actual_offset - temp_offset;
+        actual_sensitivity = actual_sensitivity - temp_sensitivity;
+    }
+
+    MS5611_AddNewTemperature(actual_temperature * 0.01F);
+
+    ms5611_altitude = MS5611_GetAltitude();
+    ms5611_pressure = (((((s64)pressure_raw) * actual_sensitivity) >> 21)
+        - actual_offset) / 32768;
+    ms5611_temperature = MS5611_GetAverage(temperature_buffer,
+                                           MS5611_BUFFER_SIZE);
+}
+
+void MS5611_GetTemperature(void)
+{
+    temperature_value = MS5611_GetConversion();
+}
+
+void MS5611_Init(void)
+{
+    MS5611_Reset();
+    Delay_TimeMs(100);
+    MS5611_ReadPROM();
+}
+
+// Read the calibration values of MS5611 for correcting temperature and
+// pressure.
 void MS5611_ReadPROM(void)
 {
-    u8 inth, intl;
-    int i;
+    u8 value_h, value_l;
+    u8 i;
+
     for (i = 0; i < MS5611_PROM_REG_COUNT; i++)
     {
         IIC_SendStartSignal();
@@ -141,193 +176,187 @@ void MS5611_ReadPROM(void)
         IIC_SendStopSignal();
         Delay_TimeUs(5);
         IIC_SendStartSignal();
-        IIC_WriteOneByte(MS5611_ADDR + 1);  /* Enter receiving mode */
+        // Enter receiving mode.
+        IIC_WriteOneByte(MS5611_ADDR + 1);
         Delay_TimeUs(1);
         IIC_WaitAckSignal();
-        inth = IIC_ReadOneByte(1);         /* Read the data with ACK */
+        // Read data with ACK.
+        value_h = IIC_ReadOneByte(1);
         Delay_TimeUs(1);
-        intl = IIC_ReadOneByte(0);         /* The last byte is with NACK */
+        // Read date with NACK.
+        value_l = IIC_ReadOneByte(0);
         IIC_SendStopSignal();
-        PROM_C[i] = (((uint16_t)inth << 8) | intl);
+        calibration_params[i] = (((u16)value_h << 8) | value_l);
     }
 }
 
-/* Send reset instruction to MS561101B */
+// Send reset instruction to MS5611.
 void MS5611_Reset(void)
 {
     IIC_SendStartSignal();
-    IIC_WriteOneByte(MS5611_ADDR);   /* Write address */
+    IIC_WriteOneByte(MS5611_ADDR);
     IIC_WaitAckSignal();
     IIC_WriteOneByte(MS5611_RESET);
     IIC_WaitAckSignal();
     IIC_SendStopSignal();
 }
 
-/* Send starting conversion instruction to MS561101B */
-/* cmd: MS5611_D1  conversion pressure
-        MS5611_D2  conversion temperature */
-void MS5611_StartConversion(uint8_t cmd)
+// Send starting conversion instruction to MS5611.
+// Argument command:
+// [MS5611_D1: conversion pressure]
+// [MS5611_D2: conversion temperature]
+void MS5611_StartConversion(u8 command)
 {
     IIC_SendStartSignal();
-    IIC_WriteOneByte(MS5611_ADDR);  /* Write address */
+    IIC_WriteOneByte(MS5611_ADDR);
     IIC_WaitAckSignal();
-    IIC_WriteOneByte(cmd);          /* Write conversion instruction */
+    IIC_WriteOneByte(command);
     IIC_WaitAckSignal();
     IIC_SendStopSignal();
 }
 
-#define CMD_ADC_READ 0x00
-
-/* Read the conversion result of MS561101B */
-uint32_t MS5611_GetConversion(void)
+// DFA for updating pressure and temperature.
+void MS5611_UpdateData(void)
 {
-    uint32_t res = 0;
-    u8 temp[3];
-
-    IIC_SendStartSignal();
-    IIC_WriteOneByte(MS5611_ADDR);      /* Write address */
-    IIC_WaitAckSignal();
-    IIC_WriteOneByte(0);                /* Start reading sequence */
-    IIC_WaitAckSignal();
-    IIC_SendStopSignal();
-
-    IIC_SendStartSignal();
-    IIC_WriteOneByte(MS5611_ADDR + 1);  /* Enter receiving mode */
-    IIC_WaitAckSignal();
-    temp[0] = IIC_ReadOneByte(1);      /* Read data with ACK  bit 23-16 */
-    temp[1] = IIC_ReadOneByte(1);      /* Read data with ACK  bit 8-15 */
-    temp[2] = IIC_ReadOneByte(0);      /* Read data with NACK bit 0-7 */
-    IIC_SendStopSignal();
-    res = (unsigned long)temp[0] * 65536 + (unsigned long)temp[1] * 256 + (unsigned long)temp[2];
-    return res;
-}
-
-void MS5611_Init(void)
-{
-    MS5611_Reset();
-    Delay_TimeMs(100);
-    MS5611_ReadPROM();
-}
-
-void MS5611_GetTemperature(void)
-{
-    TempCache = MS5611_GetConversion();
-}
-
-/* Convert current pressure to height */
-float MS5611_GetAltitude(void)
-{
-    static float Altitude;
-    if (AltOffsetPa == 0)  /* Judge Whether 0m pressure have been initialized or not */
+    switch (current_state)
     {
-        /* Use the average value of number of PA_OFFSET_INIT_NUM calculation as height deviation */
-        if (PaInitCnt > PA_OFFSET_INIT_NUM)
+        case STATE_START_CONVERT_TEMP:
         {
-            AltOffsetPa = PaOffsetNum / PaInitCnt;
-            PaOffsetInited = 1;
+            MS5611_StartConversion(MS5611_D2 + MS5611_OSR_TEMP);
+            conversion_delay_us = delay_us_table[MS5611_OSR_TEMP];
+            start_convert_timestamp = Delay_GetRuntimeUs();
+            current_state = STATE_CONVERTING_TEMP;
+            break;
         }
-        else
+        case STATE_CONVERTING_TEMP:
         {
-            PaOffsetNum += MS5611_Pressure;
-        }
-        PaInitCnt++;
-        Altitude = 0;
-        return Altitude;
-    }
-
-    Altitude = 4433000.0 * (1 - pow((MS5611_Pressure / AltOffsetPa), 0.1903)) * 0.01f;
-    Altitude = Altitude + AltOffsetM ;
-    return Altitude;
-}
-
-/* Read the conversion result of barometer and make compensation correction */
-void MS5611_GetPressure(void)
-{
-    int64_t off, sens;
-    int64_t TEMP, T2, Aux_64, OFF2, SENS2;  /* 64 bits */
-    int32_t RawPress = MS5611_GetConversion();
-    int64_t dT = TempCache - (((int32_t)PROM_C[4]) << 8);
-
-    TEMP = 2000 + (dT * (int64_t)PROM_C[5]) / 8388608;
-    off  = (((int64_t)PROM_C[1]) << 16) + ((((int64_t)PROM_C[3]) * dT) >> 7);
-    sens = (((int64_t)PROM_C[0]) << 15) + (((int64_t)(PROM_C[2]) * dT) >> 8);
-
-    if (TEMP < 2000)  /* Second order temperature compensation */
-	{
-        T2 = (((int64_t)dT) * dT) >> 31;
-        Aux_64 = (TEMP - 2000) * (TEMP - 2000);
-        OFF2   = (5 * Aux_64) >> 1;
-        SENS2  = (5 * Aux_64) >> 2;
-        TEMP   = TEMP - T2;
-        off    = off - OFF2;
-        sens   = sens - SENS2;
-    }
-
-    /* Original method */
-    MS5611_Pressure = (((((int64_t)RawPress) * sens) >> 21) - off) / 32768;
-
-    MS5611_TempPush(TEMP * 0.01f);
-    MS5611_Temperature = MS5611_GetAvg(TempBuffer, MS5611_BUFFER_SIZE);  /* 0.01c */
-    MS5611_Altitude = MS5611_GetAltitude();                       /* m */
-}
-
-/* DFA for updating pressure and temperature */
-void MS5611_Thread(void)
-{
-    switch (CurState)
-    {
-        case StartConvertTemp:
-            MS5611_StartConversion(MS5611_D2 + MS5611_Temp_OSR);
-            CurDelay = MS5611_Delay_TimeUs[MS5611_Temp_OSR];
-            StartConvertTime = Delay_GetRuntimeUs();
-            CurState = ConvertTemping;
-        break;
-
-        case ConvertTemping:
-            if ((Delay_GetRuntimeUs() - StartConvertTime) > CurDelay)
+            if ((Delay_GetRuntimeUs() - start_convert_timestamp)
+                > conversion_delay_us)
             {
                 MS5611_GetTemperature();
-                MS5611_StartConversion(MS5611_D1 + MS5611_Press_OSR);
-                CurDelay = MS5611_Delay_TimeUs[MS5611_Press_OSR];  /* Conversion time */
-                StartConvertTime = Delay_GetRuntimeUs();                   /* Start timing */
-                CurState = ConvertPressing;
+                current_state = STATE_START_CONVERT_PRES;
             }
-        break;
-
-        case ConvertPressing:
-            if ((Delay_GetRuntimeUs() - StartConvertTime) > CurDelay)
+            break;
+        }
+        case STATE_START_CONVERT_PRES:
+        {
+            MS5611_StartConversion(MS5611_D1 + MS5611_OSR_PRES);
+            conversion_delay_us = delay_us_table[MS5611_OSR_PRES];
+            start_convert_timestamp = Delay_GetRuntimeUs();
+            current_state = STATE_CONVERTING_PRES;
+            break;
+        }
+        case STATE_CONVERTING_PRES:
+        {
+            if ((Delay_GetRuntimeUs() - start_convert_timestamp)
+                > conversion_delay_us)
             {
                 MS5611_GetPressure();
-                Baro_Alt_Updated = 0xFF;                              /* The update of height is completed */
-                MS5611_StartConversion(MS5611_D2 + MS5611_Temp_OSR);
-                CurDelay = MS5611_Delay_TimeUs[MS5611_Temp_OSR];          /* Conversion time */
-                StartConvertTime = Delay_GetRuntimeUs();                          /* Start timing */
-                CurState = ConvertTemping;
+                altitude_update_flag = true;
+                current_state = STATE_START_CONVERT_TEMP;
             }
-        break;
-
+            break;
+        }
         default:
-            CurState = ConvertTemping;
-        break;
+        {
+            current_state = STATE_START_CONVERT_TEMP;
+            break;
+        }
     }
 }
 
-uint8_t MS5611_WaitBaroInitOffset(void)
+u8 MS5611_WaitBaroInitOffset(void)
 {
-    uint32_t now = 0;
-    uint32_t starttime = 0;
-    starttime = Delay_GetRuntimeUs();
+    u32 timestamp_now   = 0;
+    u32 timestamp_start = 0;
 
-    while (!PaOffsetInited)
+    timestamp_start = Delay_GetRuntimeUs();
+
+    while (!pressure_offset_flag)
     {
-        // printf("This is PaOffsetInited: %d", PaOffsetInited);  /*debug*/
-        // printf("  This is now: %d", now);
-        MS5611_Thread();
-        now = Delay_GetRuntimeUs();
-        if ((now - starttime) / 1000 >= PA_OFFSET_INIT_NUM * 50)  /*超时*/
+        MS5611_UpdateData();
+        timestamp_now = Delay_GetRuntimeUs();
+        // Timeout.
+        if ((timestamp_now - timestamp_start) / 1000
+            >= PRES_OFFSET_INIT_NUM * 50)
         {
             return 0;
         }
     }
+
     return 1;
+}
+
+// Read the converted result of MS5611.
+u32 MS5611_GetConversion(void)
+{
+    u8  temp[3];
+    u32 result = 0;
+
+    IIC_SendStartSignal();
+    IIC_WriteOneByte(MS5611_ADDR);
+    IIC_WaitAckSignal();
+    IIC_WriteOneByte(0);
+    IIC_WaitAckSignal();
+    IIC_SendStopSignal();
+
+    IIC_SendStartSignal();
+    // Enter receiving mode.
+    IIC_WriteOneByte(MS5611_ADDR + 1);
+    IIC_WaitAckSignal();
+    // Read data with ACK  bit 23-16.
+    temp[0] = IIC_ReadOneByte(1);
+    // Read data with ACK  bit 8-15.
+    temp[1] = IIC_ReadOneByte(1);
+    // Read data with NACK bit 0-7.
+    temp[2] = IIC_ReadOneByte(0);
+    IIC_SendStopSignal();
+    result = (u32)temp[0] * 65536 + (u32)temp[1] * 256 + (u32)temp[2];
+
+    return result;
+}
+
+// Convert current pressure to height.
+float MS5611_GetAltitude(void)
+{
+    float temp;
+    float altitude;
+
+    // Judge whether 0m pressure have been initialized or not.
+    if (pressure_offset == 0)
+    {
+        // Use the average value of number of PRES_OFFSET_INIT_NUM calculation
+        // as height deviation.
+        if (pressure_init_cnt > PRES_OFFSET_INIT_NUM)
+        {
+            pressure_offset = pressure_offset_num / pressure_init_cnt;
+            pressure_offset_flag = true;
+        }
+        else
+        {
+            pressure_offset_num += ms5611_pressure;
+        }
+        pressure_init_cnt++;
+        altitude = 0;
+        return altitude;
+    }
+
+    temp     = 1 - pow((ms5611_pressure / pressure_offset), 0.1903);
+    altitude = 4433000.0 * temp * 0.01F;
+    altitude = altitude + altitude_offset ;
+
+    return altitude;
+}
+
+float MS5611_GetAverage(float *buffer, u8 size)
+{
+    u8 i;
+    float sum = 0.0;
+
+    for (i = 0; i < size; i++)
+    {
+        sum += buffer[i];
+    }
+
+    return sum / size;
 }

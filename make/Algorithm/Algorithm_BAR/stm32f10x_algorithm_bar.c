@@ -20,7 +20,7 @@ History:
    maksyuki  2017.01.11  modify the module
 *******************************************************************************/
 
-#include "stm32f10x_driver_delay.h" 
+#include "stm32f10x_driver_delay.h"
 #include "stm32f10x_module_ms5611.h"
 #include "stm32f10x_algorithm_bar.h"
 #include "stm32f10x_algorithm_imu.h"
@@ -85,7 +85,7 @@ void AltitudeCombineThread(void)
     dt = (PreTime > 0) ? ((NowTime - PreTime) / 1000000.0f) : 0;
     PreTime = NowTime;
 
-    if (!PaOffsetInited)   /* Wait baro to init its offset */
+    if (!pressure_offset_flag)   /* Wait baro to init its offset */
     {
         return;
     }
@@ -95,10 +95,10 @@ void AltitudeCombineThread(void)
         return;
     }
 
-    if (Baro_Alt_Updated)  /* Store err when sensor update */
+    if (altitude_update_flag)  /* Store err when sensor update */
     {
-        corr_bar = 0 - MS5611_Altitude - z_est[0];  /* MS5611_Altitude baro alt, is postive above offset level. not in NED. z_est is in NED frame. */
-        Baro_Alt_Updated = 0;
+        corr_bar = 0 - ms5611_altitude - z_est[0];  /* MS5611_Altitude baro alt, is postive above offset level. not in NED. z_est is in NED frame. */
+        altitude_update_flag = 0;
     }
 
     if (accUpdated)

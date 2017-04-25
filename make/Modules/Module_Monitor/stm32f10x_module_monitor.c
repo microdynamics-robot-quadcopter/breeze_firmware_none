@@ -323,8 +323,8 @@ void DebugUploadHandle(void)
     up.pitch.val = imu.pitch * 100;
     up.yaw.val   = imu.yaw   * 100;
     up.alti.val  = nav.z     * 100;  /* Combined */
-    up.temp.val  = MS5611_Temperature * 100;
-    up.pres.val  = MS5611_Pressure;
+    up.temp.val  = ms5611_temperature * 100;
+    up.pres.val  = ms5611_pressure;
     up.speed.val = nav.vz * 100;
 
 #ifdef CONV_ENDIAN
@@ -402,8 +402,8 @@ static void DebubUploadHandle3(void)
     up2.data[3]  = 0;//((short)(MS5611_VerticalSpeed*1000))&0xff;
     up2.data[4]  = ((short)(-NRF_Data.pitch * 100))>>8;          /* Acc speed */
     up2.data[5]  = ((short)(-NRF_Data.pitch * 100))&0xff;        /* Pitch */
-    up2.data[6]  = ((short)(MS5611_Altitude * 1000))>>8;
-    up2.data[7]  = ((short)(MS5611_Altitude * 1000))&0xff;
+    up2.data[6]  = ((short)(ms5611_altitude * 1000))>>8;
+    up2.data[7]  = ((short)(ms5611_altitude * 1000))&0xff;
     up2.data[8]  = ((short)(imu.accg[2] * 1000))>>8;             /* Accz */
     up2.data[9]  = ((short)(imu.accg[2] * 1000))&0xff;
     up2.data[10] = 0;                                            /* Inte alt of accz */

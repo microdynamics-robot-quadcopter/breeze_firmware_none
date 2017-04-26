@@ -13,8 +13,8 @@ Others:      none
 Function List:
              1. void Clock_DeInit(void);
              1. void Clock_Init(void);
-             2. void Clock_InitSystemClockHSI(u8 pll_multi);
-             3. void Clock_InitSystemClockHSE(u8 pll_multi);
+             2. s8   Clock_InitSystemClockHSI(u8 pll_multi);
+             3. s8   Clock_InitSystemClockHSE(u8 pll_multi);
 History:
 <author>    <date>        <desc>
 myyerrol    2017.04.13    Modify the module
@@ -25,7 +25,7 @@ myyerrol    2017.04.13    Modify the module
 
 #include "stm32f10x.h"
 
-extern s8 system_clock;
+extern s8 clock_system;
 
 extern void Clock_DeInit(void);
 extern void Clock_Init(void);

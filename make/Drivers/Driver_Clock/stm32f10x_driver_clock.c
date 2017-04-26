@@ -13,8 +13,8 @@ Others:      none
 Function List:
              1. void Clock_DeInit(void);
              1. void Clock_Init(void);
-             2. void Clock_InitSystemClockHSI(u8 pll_multi);
-             3. void Clock_InitSystemClockHSE(u8 pll_multi);
+             2. s8   Clock_InitSystemClockHSI(u8 pll_multi);
+             3. s8   Clock_InitSystemClockHSE(u8 pll_multi);
 History:
 <author>    <date>        <desc>
 myyerrol    2017.04.13    Modify the module
@@ -23,7 +23,7 @@ myyerrol    2017.04.13    Modify the module
 #include "stm32f10x_rcc.h"
 #include "stm32f10x_driver_clock.h"
 
-s8 system_clock;
+s8 clock_system;
 
 // Reset all registers. Can not reset all the peripheral, otherwise the serial
 // port doesn't work.
@@ -64,10 +64,10 @@ void Clock_Init(void)
 s8 Clock_InitSystemClockHSI(u8 pll_multi)
 {
     // Enable internal high-speed clock.
-    RCC->CR |= 1 << 0;
+    RCC->CR   |= 1 << 0;
     // Close internal high-speed clock.
-    RCC->CR |= 0 << 16;
-    RCC->CR |= 1 << 18;
+    RCC->CR   |= 0 << 16;
+    RCC->CR   |= 1 << 18;
     // Wait for the internal clock to be ready.
     while (!((RCC->CR) & (1 << 1)));
     // PLL multiplier coefficient.
@@ -77,13 +77,14 @@ s8 Clock_InitSystemClockHSI(u8 pll_multi)
     // Enable PLL.
     RCC->CR   |= 1 << 24;
     // Wait for PLL stability.
-    while(!((RCC->CR) & (1 << 25)));
+    while (!((RCC->CR) & (1 << 25)));
     // System clock source configuration, PLL output as system clock.
     RCC->CFGR |= 2 << 0;
 
     // Return the system clock, unit is MHz.
-    system_clock = 4 * pll_multi;
-    return system_clock;
+    clock_system = 4 * pll_multi;
+
+    return clock_system;
 }
 
 // Use the external HSE clock 8M as the PLL input.
@@ -95,33 +96,34 @@ s8 Clock_InitSystemClockHSE(u8 pll_multi)
     // Reset and configure vector table.
     Clock_DeInit();
     // Enable external high-speed clock HSEON.
-    RCC->CR |= 1 << 16;
+    RCC->CR    |= 1 << 16;
     // Wait the external clock is prepared.
-    while(!(RCC->CR  >> 17));
+    while (!(RCC->CR  >> 17));
     // APB1=DIV2; APB2=DIV1; AHB=DIV1;
-    RCC->CFGR = 0X00000400;
+    RCC->CFGR   = 0X00000400;
     // Offset two units.
-    pll_multi -= 2;
+    pll_multi  -= 2;
     // Set PLL 2~16.
-    RCC->CFGR |= pll_multi << 18;
+    RCC->CFGR  |= pll_multi << 18;
     // PLLSRC ON.
-    RCC->CFGR |= 1 << 16;
+    RCC->CFGR  |= 1 << 16;
     // FLASH 2 delay period.
-    FLASH->ACR|= 0x32;
+    FLASH->ACR |= 0x32;
     // PLLON.
-    RCC->CR   |= 0x01000000;
+    RCC->CR    |= 0x01000000;
     // Wait PLL is locked.
-    while(!(RCC->CR >> 25));
+    while (!(RCC->CR >> 25));
     // PLL is as system clock.
-    RCC->CFGR |= 0x00000002;
+    RCC->CFGR  |= 0x00000002;
 
     // Wait the configuration is completed which PLL is as system clock.
-    while(temp != 0x02)
+    while (temp != 0x02)
     {
-        temp = RCC->CFGR >> 2;
+        temp  = RCC->CFGR >> 2;
         temp &= 0x03;
     }
 
-    system_clock = (pll_multi + 2) * 8;
-    return system_clock;
+    clock_system = (pll_multi + 2) * 8;
+
+    return clock_system;
 }

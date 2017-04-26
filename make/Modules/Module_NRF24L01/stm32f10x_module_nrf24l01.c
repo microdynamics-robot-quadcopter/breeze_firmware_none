@@ -8,242 +8,289 @@ Filename:    stm32f10x_module_nrf24l01.c
 Author:      maksyuki
 Version:     0.1.0.20161231_release
 Create date: 2016.08.14
-Description: implement the nrf24l01 function
+Description: Implement the NRF24L01 function
 Others:      none
 Function List:
-             1. void NRF24L01_Init(void);
-             2. void SetRX_Mode(void);
-             3. void SetTX_Mode(void);
-             4. void NRF_TxPacket(uint8_t *tx_buf, uint8_t len);
-             5. uint8_t NRF_RxPacket(uint8_t *rx_buf, uint8_t len);
-             6. u8 NRF24L01_RxPacket(u8 *rxbuf);
-             7. uint8_t NRF_Write_Reg(uint8_t reg, uint8_t value);
-             8. uint8_t NRF_Write_Buf(uint8_t reg, uint8_t *pBuf, uint8_t len);
-             9. uint8_t NRF_Read_Reg(uint8_t reg);
-            10. uint8_t NRF_Read_Buf(uint8_t reg, uint8_t *pBuf, uint8_t len);
-            11. void NRF_Irq(void);
-            12. u8 NRF24L01_Check(void);
-            13. void NRF_Matching(void);
+             1.  void NRF24L01_Init(void);
+             2.  void NRF24L01_IRQHandler(void);
+             3.  void NRF24L01_MatchDevice(void);
+             4.  void NRF24L01_SetRxMode(void);
+             5.  void NRF24L01_SetTxMode(void);
+             6.  void NRF24L01_WritePacket(u8 *buffer, u8 length);
+             7.  u8   NRF24L01_CheckConnection(void);
+             8.  u8   NRF24L01_ReadBuffer(u8 reg, u8 *buffer, u8 length);
+             9.  u8   NRF24L01_ReadRegister(u8 reg);
+             10. u8   NRF24L01_ReadPacket(u8 *buffer);
+             11. u8   NRF24L01_WriteBuffer(u8 reg, u8 *buffer, u8 length);
+             12. u8   NRF24L01_WriteRegister(u8 reg, u8 byte);
 History:
-1. <author>    <date>         <desc>
-   maksyuki  2017.01.10  modify the module
+<author>    <date>        <desc>
+maksyuki    2017.01.10    Modify the module
+myyerrol    2017.04.25    Format the module
 *******************************************************************************/
 
-#include "stm32f10x_driver_spi.h"
+#include <stdio.h>
+#include "stm32f10x_it.h"
 #include "stm32f10x_driver_delay.h"
 #include "stm32f10x_driver_eeprom.h"
+#include "stm32f10x_driver_spi.h"
 #include "stm32f10x_module_led.h"
-#include "stm32f10x_module_rpdata.h"
 #include "stm32f10x_module_nrf24l01.h"
-#include "stm32f10x_it.h"
-#include "stdio.h"
+#include "stm32f10x_module_rpdata.h"
 
-uint8_t NRF24L01_RXDATA[RX_PLOAD_WIDTH];  /* The received data of NRF24l01 */
-uint8_t NRF24L01_TXDATA[RX_PLOAD_WIDTH];  /* The data need to be transmit of NRF24l01 */
+u8 nrf24l01_rx_data[NRF24L01_WIDTH_PAYLOAD_RX];
+u8 nrf24l01_tx_data[NRF24L01_WIDTH_PAYLOAD_TX];
 
-/* Modify this address of receiving and transmitting, can support many equipments using in same region */
-u8 RX_ADDRESS[RX_ADR_WIDTH] = {0x34, 0xc3, 0x10, 0x10, 0x00};   /* Receiving address */
+// NRF24L01 can support many quadcopters using in same region by modifying the
+// address.
+u8 nrf24l01_rx_address[NRF24L01_WIDTH_ADDR_RX] =
+{
+    0X34,
+    0Xc3,
+    0X10,
+    0X10,
+    0X00
+};
+
+bool nrf24l01_matched_flag = false;
 
 void NRF24L01_Init(void)
 {
     SPI_InitSPI();
 
-    /* Check if NRF24L01 is in the SPI bus */
-    NRF24L01_Check();
+    // Check if NRF24L01 is in the SPI bus.
+    NRF24L01_CheckConnection();
 
-    /* Set the NRF RX address, priority to the latest address in eeprom */
-    NRF_Matching();
+    // Set the NRF24L01 RX address, priority to the latest address in eeprom.
+    NRF24L01_MatchDevice();
 }
 
-void SetRX_Mode(void)
+void NRF24L01_IRQHandler(void)
 {
-    SPI_CE_L();
-    NRF_Write_Reg(FLUSH_RX, 0xff);                                                   /* Clear TX FIFO register */
-    NRF_Write_Buf(NRF_WRITE_REG + RX_ADDR_P0, (uint8_t*) RX_ADDRESS, RX_ADR_WIDTH);  /* Write RX node address */
-    NRF_Write_Reg(NRF_WRITE_REG + EN_AA, 0x01);                                      /* Enable the automatic response of channel 0 */
-    NRF_Write_Reg(NRF_WRITE_REG + EN_RXADDR, 0x01);                                  /* Enable the receiving address of channel 0 */
-    NRF_Write_Reg(NRF_WRITE_REG + RF_CH, 40);                                        /* Set the communication frequency of RF */
-    NRF_Write_Reg(NRF_WRITE_REG + RX_PW_P0, RX_PLOAD_WIDTH);                         /* Select the valid data width of channel 0 */
-    NRF_Write_Reg(NRF_WRITE_REG + RF_SETUP, 0x0f);                                   /* Set parameters of TX: 0db, 2Mbps, enable low noise gain */
-    NRF_Write_Reg(NRF_WRITE_REG + CONFIG, 0x0f);                                     /* Set parameters: PWR_UP, EN_CRC, 16BIT_CRC, receive mode */
-    SPI_CE_H();
-    // printf("NRF24L01 Set to Receiving Mode,RX_ADDR 0x%x...\r\n",RX_ADDRESS[4]);
-}
+    u8 status = NRF24L01_ReadRegister(NRF24L01_REG_RD +
+                                      NRF24L01_ADDR_REG_STATUS);
 
-void NRF_TxPacket(uint8_t *tx_buf, uint8_t len)
-{
-    SPI_CE_L();                               /* StandBy I mode */
-    NRF_Write_Buf(WR_TX_PLOAD, tx_buf, len);  /* Load data */
-    SPI_CE_H();                               /* Set high CE, enable data transmitting */
-}
-
-uint8_t NRF_Write_Reg(uint8_t reg, uint8_t val)
-{
-    uint8_t status;
-    SPI_CSN_L();
-    status = SPI_ReadAndWrite(reg);
-    SPI_ReadAndWrite(val);            /* Write data */
-    SPI_CSN_H();            /* Disable this component */
-    return status;
-}
-
-uint8_t NRF_Read_Reg(uint8_t reg)
-{
-    uint8_t reg_val;
-    SPI_CSN_L();
-    SPI_ReadAndWrite(reg);
-    reg_val = SPI_ReadAndWrite(0);    /* Read data */
-    SPI_CSN_H();
-    return reg_val;
-}
-
-uint8_t NRF_Read_Buf(uint8_t reg, uint8_t *pBuf, uint8_t len)
-{
-    uint8_t i;
-    uint8_t status;
-    SPI_CSN_L();              /* Enable this component */
-    status = SPI_ReadAndWrite(reg);     /* Write register address */
-
-    for (i = 0; i < len; i++)
+    // Receive the flag of polling.
+    if (status & (1 << NRF24L01_IT_RX_DR))
     {
-        pBuf[i] = SPI_ReadAndWrite(0);  /* Read data */
-    }
-
-    SPI_CSN_H();              /* Disable this component */
-    return status;
-}
-
-uint8_t NRF_Write_Buf(uint8_t reg, uint8_t *pBuf, uint8_t len)
-{
-    uint8_t i;
-    uint8_t status;
-    SPI_CSN_L();           /* Enable this component */
-    status = SPI_ReadAndWrite(reg);  /* Write register address */
-
-    for (i = 0; i < len; i++)
-    {
-        SPI_ReadAndWrite(pBuf[i]);   /* Write data */
-    }
-
-    SPI_CSN_H();           /* Disable this component */
-    return status;
-}
-
-/* Query interrupt */
-void NRF_Irq(void)
-{
-    uint8_t status = NRF_Read_Reg(NRF_READ_REG + NRFRegSTATUS);
-    if (status & (1 << RX_DR))                                       /* Receive the flag of polling */
-    {
-        NRF_Read_Buf(RD_RX_PLOAD, NRF24L01_RXDATA, RX_PLOAD_WIDTH);  /* Read receive payload from RX_FIFO buffer */
-        ReceiveDataFromNRF();                                        /* Can be modified */
-        NRF_Write_Reg(0x27, status);                                 /* Clear the interrupt flag of nrf */
+        // Read receive payload from buffer.
+        NRF24L01_ReadBuffer(NRF24L01_PAYLOAD_RD, nrf24l01_rx_data,
+                            NRF24L01_WIDTH_PAYLOAD_RX);
+        ReceiveDataFromNRF();
+        // Clear the flag of interrupt.
+        NRF24L01_WriteRegister(0X27, status);
         status = 0;
     }
 }
 
-/* Receive data */
-u8 NRF24L01_RxPacket(u8 *rxbuf)
+void NRF24L01_MatchDevice(void)
 {
-    u8 status;
-
-    //SPI2_SetSpeed(SPI_SPEED_4);                          /* The speed of spi is 9Mhz(maximum is 10Mhz) */
-    status = NRF_Read_Reg(NRFRegSTATUS);                   /* Read the value of status register */
-    NRF_Write_Reg(NRF_WRITE_REG + NRFRegSTATUS, status);   /* Clear the interrupt flag of TX_DS or MAX_RT */
-
-    if (status & RX_OK)                                    /* Have received data */
-    {
-        NRF_Read_Buf(RD_RX_PLOAD, rxbuf, RX_PLOAD_WIDTH);  /* Read data */
-        NRF_Write_Reg(FLUSH_RX, 0xff);                     /* Clear RX FIFO register */
-        return 0;
-    }
-    return 1;                                              /* Never receive any data */
-}
-
-/* Determine whether the SPI interface access to the NRF chip is available */
-u8 NRF24L01_Check(void)
-{
-    u8 i;
-    u8 buf1[5] = {0xC2, 0xC2, 0xC2, 0xC2, 0xC2};
-    u8 buf2[5];
-
-    NRF_Write_Buf(NRF_WRITE_REG + TX_ADDR, buf1, 5);       /* Write 5 bytes address */
-    NRF_Read_Buf(TX_ADDR, buf2, 5);                        /* Read address that have been written */
-
-    /* Compare */
-    for (i = 0; i < 5; i++)
-    {
-        if (buf2[i] != 0xC2)
-        {
-            break;
-        }
-    }
-
-    if (i == 5)
-    {
-        // printf("NRF24L01 found...\r\n"); return 1;
-    }         /* MCU connects to NRF successfully */
-    else
-    {
-        // printf("NRF24L01 check failed...\r\n"); return 0;
-    }
-        /* MCU connects to NRF unsuccessfully */
-}
-
-static uint8_t sta;
-extern void SaveParamsToEEPROM(void);
-u8 NRFMatched = 0;
-
-void NRF_Matching(void)
-{
-    static uint32_t nTs, nT;
-    static uint32_t writeOvertime = 2 * 1000000;  /* Unit: us */
+    u8  status;
+    u32 start_timestamp;
+    u32 period;
+    // Unit: us.
+    u32 overtime = 2 * 1000000;
 
     LED_A_ON;
     LED_B_ON;
     LED_C_ON;
     LED_D_ON;
-    nTs = Delay_GetRuntimeUs();
+
+    start_timestamp = Delay_GetRuntimeUs();
 
     do
     {
-        NRFMatched = 0;
-        nT = Delay_GetRuntimeUs() - nTs;
-
-        if (nT >= writeOvertime)
+        nrf24l01_matched_flag = false;
+        period = Delay_GetRuntimeUs() - start_timestamp;
+        if (period >= overtime)
         {
-            RX_ADDRESS[4] = EEPROM_TableStructure.nrf_addr[4];
-            break;    /* Exit when time out, and do not change original address */
+            // Exit when time out, and do not change original address.
+            nrf24l01_rx_address[4] = EEPROM_TableStructure.nrf_addr[4];
+            break;
         }
-
-        SetRX_Mode(); /* Reset RX mode write RX panel address */
-        Delay_TimeMs(4);  /* Delay is needed after reset NRF */
-        sta = NRF_Read_Reg(NRF_READ_REG + NRFRegSTATUS);
-
-        if ((sta & 0x0E) == 0x00)
+        // Reset RX mode.
+        NRF24L01_SetRxMode();
+        // Delay is needed after reset NRF24L01.
+        Delay_TimeMs(4);
+        status = NRF24L01_ReadRegister(NRF24L01_REG_RD +
+                                       NRF24L01_ADDR_REG_STATUS);
+        if ((status & 0X0E) == 0X00)
         {
-            NRFMatched = 1;
+            nrf24l01_matched_flag = true;
         }
         else
         {
-            RX_ADDRESS[4]++;   /* Search the next RX_ADDRESS */
-            if (RX_ADDRESS[4] == 0xFF)
+            // Search the next address.
+            nrf24l01_rx_address[4]++;
+            if (nrf24l01_rx_address[4] == 0XFF)
             {
-                RX_ADDRESS[4] = 0x00;
+                nrf24l01_rx_address[4] = 0X00;
             }
         }
     }
-    while ((sta & 0x0E) == 0x0E);
+    while ((status & 0X0E) == 0X0E);
 
-    SetRX_Mode();              /* Reset RX mode */
+    // Reset RX mode.
+    NRF24L01_SetRxMode();
 
-    if ((NRFMatched == 1) && (RX_ADDRESS[4] != EEPROM_TableStructure.nrf_addr[4]))
+    if ((nrf24l01_matched_flag == true) &&
+        (nrf24l01_rx_address[4] != EEPROM_TableStructure.nrf_addr[4]))
     {
-        SaveParamsToEEPROM();  /* Write eeprom when current addr != original addr */
+        EEPROM_SaveParamsToEEPROM();
     }
 
     LED_A_OFF;
     LED_B_OFF;
-    LED_C_OFF;                  /* Matching end */
+    LED_C_OFF;
     LED_D_OFF;
+}
+
+void NRF24L01_SetRxMode(void)
+{
+    SPI_CE_L();
+    // Clear RX FIFO register.
+    NRF24L01_WriteRegister(NRF24L01_FLUSH_RX, 0XFF);
+    // Write RX node address.
+    NRF24L01_WriteBuffer(NRF24L01_REG_WR + NRF24L01_ADDR_RX_P0,
+                        (u8 *)nrf24l01_rx_address, NRF24L01_WIDTH_ADDR_RX);
+    // Enable the automatic ack of channel 0.
+    NRF24L01_WriteRegister(NRF24L01_REG_WR + NRF24L01_ADDR_EN_AA, 0X01);
+    // Enable the receiving address of channel 0.
+    NRF24L01_WriteRegister(NRF24L01_REG_WR + NRF24L01_ADDR_EN_CH, 0X01);
+    // Set the communication frequency of RF.
+    NRF24L01_WriteRegister(NRF24L01_REG_WR + NRF24L01_ADDR_RF_CH, 40);
+    // Select the valid data width of channel 0.
+    NRF24L01_WriteRegister(NRF24L01_REG_WR + NRF24L01_ADDR_RX_PW_P0,
+                           NRF24L01_WIDTH_PAYLOAD_RX);
+    // Set parameters of TX: 0db, 2Mbps, enable low noise gain.
+    NRF24L01_WriteRegister(NRF24L01_REG_WR + NRF24L01_ADDR_RF_SETUP, 0X0F);
+    // Set parameters: PWR_UP, EN_CRC, 16BIT_CRC, receive mode.
+    NRF24L01_WriteRegister(NRF24L01_REG_WR + NRF24L01_ADDR_CONFIG, 0X0F);
+    SPI_CE_H();
+}
+
+void NRF24L01_SetTxMode(void)
+{
+}
+
+void NRF24L01_WritePacket(u8 *buffer, u8 length)
+{
+    // Set low CE, enter StandBy I mode.
+    SPI_CE_L();
+    NRF24L01_WriteBuffer(NRF24L01_PAYLOAD_WR, buffer, length);
+    // Set high CE, enable data transmitting.
+    SPI_CE_H();
+}
+
+// Judge whether the SPI interface access to the NRF24L01 chip is available.
+u8 NRF24L01_CheckConnection(void)
+{
+    u8 i;
+    u8 buffer1[5] = {0XC2, 0XC2, 0XC2, 0XC2, 0XC2};
+    u8 buffer2[5];
+
+    NRF24L01_WriteBuffer(NRF24L01_REG_WR + NRF24L01_ADDR_TX, buffer1, 5);
+    NRF24L01_ReadBuffer(NRF24L01_ADDR_TX, buffer2, 5);
+
+    for (i = 0; i < 5; i++)
+    {
+        if (buffer2[i] != 0XC2)
+        {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
+u8 NRF24L01_ReadBuffer(u8 reg, u8 *buffer, u8 length)
+{
+    u8 i;
+    u8 status;
+
+    // Enable the component.
+    SPI_CSN_L();
+    // Write register address.
+    status = SPI_ReadAndWrite(reg);
+
+    for (i = 0; i < length; i++)
+    {
+         // Read data.
+        buffer[i] = SPI_ReadAndWrite(0);
+    }
+
+    // Disable the component.
+    SPI_CSN_H();
+
+    return status;
+}
+
+u8 NRF24L01_ReadRegister(u8 reg)
+{
+    u8 byte;
+
+    SPI_CSN_L();
+    SPI_ReadAndWrite(reg);
+    // Read data.
+    byte = SPI_ReadAndWrite(0);
+    SPI_CSN_H();
+
+    return byte;
+}
+
+u8 NRF24L01_ReadPacket(u8 *buffer)
+{
+    u8 status;
+
+    // Read the value of status register.
+    status = NRF24L01_ReadRegister(NRF24L01_ADDR_REG_STATUS);
+    // Clear the flag of interrupt.
+    NRF24L01_WriteRegister(NRF24L01_REG_WR + NRF24L01_ADDR_REG_STATUS, status);
+
+    if (status & NRF24L01_IT_OK_RX)
+    {
+        // Read data.
+        NRF24L01_ReadBuffer(NRF24L01_PAYLOAD_RD, buffer,
+                            NRF24L01_WIDTH_PAYLOAD_RX);
+        //  Clear RX FIFO register.
+        NRF24L01_WriteRegister(NRF24L01_FLUSH_RX, 0XFF);
+        return 1;
+    }
+
+    return 0;
+}
+
+u8 NRF24L01_WriteBuffer(u8 reg, u8 *buffer, u8 length)
+{
+    u8 i;
+    u8 status;
+
+    // Enable the component.
+    SPI_CSN_L();
+    // Write register address.
+    status = SPI_ReadAndWrite(reg);
+
+    for (i = 0; i < length; i++)
+    {
+        // Write data.
+        SPI_ReadAndWrite(buffer[i]);
+    }
+
+    // Disable the component.
+    SPI_CSN_H();
+
+    return status;
+}
+
+u8 NRF24L01_WriteRegister(u8 reg, u8 byte)
+{
+    u8 status;
+
+    SPI_CSN_L();
+    status = SPI_ReadAndWrite(reg);
+    // Write data.
+    SPI_ReadAndWrite(byte);
+    SPI_CSN_H();
+
+    return status;
 }

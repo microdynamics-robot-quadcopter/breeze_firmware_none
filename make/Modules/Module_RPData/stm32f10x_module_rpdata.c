@@ -37,15 +37,15 @@ uint16_t rcData[4]  = {1500, 1500, 1500, 1500};
 
 void ReceiveDataFromNRF(void)
 {
-    if ((NRF24L01_RXDATA[0] == '$') && (NRF24L01_RXDATA[1] == 'M') && (NRF24L01_RXDATA[2] == '<'))
+    if ((nrf24l01_rx_data[0] == '$') && (nrf24l01_rx_data[1] == 'M') && (nrf24l01_rx_data[2] == '<'))
     {
-        switch (NRF24L01_RXDATA[4])
+        switch (nrf24l01_rx_data[4])
         {
             case MSP_SET_4CON:
-                rcData[THROTTLE] = NRF24L01_RXDATA[5]  + (NRF24L01_RXDATA[6]  << 8);
-                rcData[YAW]      = NRF24L01_RXDATA[7]  + (NRF24L01_RXDATA[8]  << 8);
-                rcData[PITCH]    = NRF24L01_RXDATA[9]  + (NRF24L01_RXDATA[10] << 8);
-                rcData[ROLL]     = NRF24L01_RXDATA[11] + (NRF24L01_RXDATA[12] << 8);
+                rcData[THROTTLE] = nrf24l01_rx_data[5]  + (nrf24l01_rx_data[6]  << 8);
+                rcData[YAW]      = nrf24l01_rx_data[7]  + (nrf24l01_rx_data[8]  << 8);
+                rcData[PITCH]    = nrf24l01_rx_data[9]  + (nrf24l01_rx_data[10] << 8);
+                rcData[ROLL]     = nrf24l01_rx_data[11] + (nrf24l01_rx_data[12] << 8);
             break;
 
             case MSP_ARM_IT:

@@ -149,10 +149,10 @@ void EEPROM_TransParamsToTable(void)
     for (i = 0; i < 5; i++)
     {
         ((float *)(&EEPROM_TableStructure.nrf_addr))[i] =
-            ((u8 *)(&RX_ADDRESS))[i];
+            ((u8 *)(&nrf24l01_rx_address))[i];
     }
 
-    EEPROM_TableStructure.nrf_match_flag = NRFMatched;
+    EEPROM_TableStructure.nrf_matched_flag = nrf24l01_matched_flag;
 }
 
 void EEPROM_TransTableToParams(void)
@@ -186,11 +186,11 @@ void EEPROM_TransTableToParams(void)
 
     for (i = 0; i < 5; i++)
     {
-        ((u8 *)(&RX_ADDRESS))[i] =
+        ((u8 *)(&nrf24l01_rx_address))[i] =
             ((float *)(&EEPROM_TableStructure.nrf_addr))[i];
     }
 
-    NRFMatched = EEPROM_TableStructure.nrf_match_flag;
+    nrf24l01_matched_flag = EEPROM_TableStructure.nrf_matched_flag;
 }
 
 void EEPROM_WriteTableToEEPROM(void)

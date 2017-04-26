@@ -29,6 +29,7 @@ myyerrol    2017.04.22    Format the module
 #ifndef __STM32F10X_DRIVER_EEPROM_H__
 #define __STM32F10X_DRIVER_EEPROM_H__
 
+#include <stdbool.h>
 #include "stm32f10x.h"
 
 #define EEPROM_DEFAULT_VERSION 1
@@ -37,7 +38,6 @@ myyerrol    2017.04.22    Format the module
 typedef struct
 {
     float nrf_addr[5];
-    float nrf_match_flag;
     float offset_acc[3];
     float offset_gyr[3];
     float offset_mag[3];
@@ -50,6 +50,7 @@ typedef struct
     float pid_yaw[3];
     float pid_yaw_rate[3];
     float version;
+    bool  nrf_matched_flag;
 } EEPROM_Table;
 
 extern EEPROM_Table EEPROM_TableStructure;;

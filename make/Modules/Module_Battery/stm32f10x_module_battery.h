@@ -16,8 +16,7 @@ Function List:
              3. u16  Battery_GetADC(u8 ch);
              4. u16  Battery_GetADCAverage(u8 ch, u8 times);
              5. s32  Battery_GetAD(void);
-             6. s32  Battery_GetTemp(void);
-
+             6. s32  Battery_GetTemperature(void);
 History:
 <author>    <date>        <desc>
 maksyuki    2016.12.30    Modify the module
@@ -61,6 +60,6 @@ extern void Battery_Init(void);
 extern u16  Battery_GetADC(u8 ch);
 extern u16  Battery_GetADCAverage(u8 ch, u8 times);
 extern s32  Battery_GetAD(void);
-extern s32  Battery_GetTemp(void);
+extern s32  Battery_GetTemperature(void);
 
 #endif

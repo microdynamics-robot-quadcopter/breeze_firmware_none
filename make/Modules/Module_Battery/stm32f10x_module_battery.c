@@ -16,7 +16,7 @@ Function List:
              3. u16  Battery_GetADC(u8 ch);
              4. u16  Battery_GetADCAverage(u8 ch, u8 times);
              5. s32  Battery_GetAD(void);
-             6. s32  Battery_GetTemp(void);
+             6. s32  Battery_GetTemperature(void);
 History:
 <author>    <date>        <desc>
 maksyuki    2016.12.30    Modify the module
@@ -27,7 +27,7 @@ myyerrol    2017.04.11    Format the module
 #include "stm32f10x_module_rpdata.h"
 #include "stm32f10x_algorithm_control.h"
 
-extern uint8_t FLY_ENABLE;
+extern u8 FLY_ENABLE;
 
 Battery_Information Battery_InformationStructure;
 
@@ -37,14 +37,14 @@ void Battery_Check(void)
     Battery_InformationStructure.voltage_ad = Battery_GetAD();
     // Calculate the real voltage of battery.
     Battery_InformationStructure.voltage_calculate =
-        Battery_InformationStructure.voltage_factor
-     * (Battery_InformationStructure.voltage_ad / 4096.0)
-     *  Battery_InformationStructure.voltage_ad_ref;
+        Battery_InformationStructure.voltage_factor *
+       (Battery_InformationStructure.voltage_ad / 4096.0) *
+        Battery_InformationStructure.voltage_ad_ref;
 
     if (FLY_ENABLE)
     {
-        if (Battery_InformationStructure.voltage_calculate
-        <= (BATTERY_VOLTAGE_OVERDIS + 0.03))
+        if (Battery_InformationStructure.voltage_calculate <=
+           (BATTERY_VOLTAGE_OVERDIS + 0.03))
         {
             Battery_InformationStructure.flag_alarm = true;
         }
@@ -53,8 +53,8 @@ void Battery_Check(void)
             Battery_InformationStructure.flag_alarm = false;
         }
 
-        if (Battery_InformationStructure.voltage_calculate
-        <=  BATTERY_VOLTAGE_OVERDIS)
+        if (Battery_InformationStructure.voltage_calculate <=
+            BATTERY_VOLTAGE_OVERDIS)
         {
             Battery_InformationStructure.over_discharge_cnt++;
             if (Battery_InformationStructure.over_discharge_cnt > 8)
@@ -73,10 +73,10 @@ void Battery_Check(void)
     }
     else
     {
-        if ((Battery_InformationStructure.voltage_calculate
-        < BATTERY_VOLTAGE_ALARM)
-        && (Battery_InformationStructure.voltage_calculate
-        > BATTERY_VOLTAGE_CHARGE))
+        if ((Battery_InformationStructure.voltage_calculate <
+            BATTERY_VOLTAGE_ALARM) &&
+            (Battery_InformationStructure.voltage_calculate >
+            BATTERY_VOLTAGE_CHARGE))
         {
             Battery_InformationStructure.flag_alarm = true;
         }
@@ -86,7 +86,8 @@ void Battery_Check(void)
         }
     }
 
-    if (Battery_InformationStructure.voltage_calculate < BATTERY_VOLTAGE_CHARGE)
+    if (Battery_InformationStructure.voltage_calculate <
+        BATTERY_VOLTAGE_CHARGE)
     {
         Battery_InformationStructure.flag_charge = true;
     }
@@ -196,11 +197,9 @@ void Battery_Init(void)
     Battery_InformationStructure.voltage_ad_in      = 1.98;
     Battery_InformationStructure.voltage_ad_ref     = 3.26;
     Battery_InformationStructure.voltage_factor     =
-        Battery_InformationStructure.voltage_measure
-      / Battery_InformationStructure.voltage_ad_in;
+        Battery_InformationStructure.voltage_measure /
+        Battery_InformationStructure.voltage_ad_in;
     Battery_InformationStructure.over_discharge_cnt = 0;
-
-    // printf("Init the module of battery successfully!\r\n");
 }
 
 u16 Battery_GetADC(u8 ch)
@@ -242,7 +241,7 @@ s32 Battery_GetAD(void)
     return Battery_GetADCAverage(8, 5);
 }
 
-s32 Battery_GetTemp(void)
+s32 Battery_GetTemperature(void)
 {
     u8 i;
     u16 temp = 0;
@@ -260,5 +259,5 @@ s32 Battery_GetTemp(void)
     temperature  = (1.43 - temperature) / 0.0043 + 25;
     temperature *= 10;
 
-    return (int)temperature;
+    return (s32)temperature;
 }

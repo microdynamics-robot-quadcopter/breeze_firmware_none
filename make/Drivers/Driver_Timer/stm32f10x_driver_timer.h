@@ -24,16 +24,16 @@ myyerrol    2017.04.24    Format the module
 #include "stm32f10x.h"
 
 // The interrupt variables of timer for main control.
-extern vu16 loop_cnt_10hz;
-extern vu16 loop_cnt_20hz;
-extern vu16 loop_cnt_50hz;
-extern vu16 loop_cnt_100hz;
+extern vu16 timer_loop_cnt_10hz;
+extern vu16 timer_loop_cnt_20hz;
+extern vu16 timer_loop_cnt_50hz;
+extern vu16 timer_loop_cnt_100hz;
 
 // The interrupt flags of timer for main control.
-extern bool loop_flag_10hz;
-extern bool loop_flag_20hz;
-extern bool loop_flag_50hz;
-extern bool loop_flag_100hz;
+extern bool timer_loop_flag_10hz;
+extern bool timer_loop_flag_20hz;
+extern bool timer_loop_flag_50hz;
+extern bool timer_loop_flag_100hz;
 
 extern void Timer_InitTIM3(u16 arr, u16 psc);
 extern void Timer_InitTIM4(u16 arr, u16 psc);

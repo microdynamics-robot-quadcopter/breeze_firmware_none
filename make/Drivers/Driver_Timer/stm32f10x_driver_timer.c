@@ -20,15 +20,15 @@ History:
 #include "stm32f10x_driver_nvic.h"
 #include "stm32f10x_driver_timer.h"
 
-vu16 loop_cnt_10hz  = 0;
-vu16 loop_cnt_20hz  = 0;
-vu16 loop_cnt_50hz  = 0;
-vu16 loop_cnt_100hz = 0;
+vu16 timer_loop_cnt_10hz  = 0;
+vu16 timer_loop_cnt_20hz  = 0;
+vu16 timer_loop_cnt_50hz  = 0;
+vu16 timer_loop_cnt_100hz = 0;
 
-bool loop_flag_10hz  = false;
-bool loop_flag_20hz  = false;
-bool loop_flag_50hz  = false;
-bool loop_flag_100hz = false;
+bool timer_loop_flag_10hz  = false;
+bool timer_loop_flag_20hz  = false;
+bool timer_loop_flag_50hz  = false;
+bool timer_loop_flag_100hz = false;
 
 void Timer_InitTIM3(u16 arr, u16 psc)
 {

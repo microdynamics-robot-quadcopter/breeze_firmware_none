@@ -41,20 +41,20 @@ void TIM4_IRQHandler(void)
     if (TIM_GetITStatus(TIM4, TIM_IT_Update) == SET)
     {
         TIM_ClearITPendingBit(TIM4, TIM_IT_Update);
-        if (++loop_cnt_100hz * 100 >= 1000)
+        if (++timer_loop_cnt_100hz * 100 >= 1000)
         {
-            loop_cnt_100hz  = 0;
-            loop_flag_100hz = true;
+            timer_loop_cnt_100hz  = 0;
+            timer_loop_flag_100hz = true;
         }
-        if (++loop_cnt_50hz * 50 >= 1000)
+        if (++timer_loop_cnt_50hz * 50 >= 1000)
         {
-            loop_cnt_50hz  = 0;
-            loop_flag_50hz = true;
+            timer_loop_cnt_50hz  = 0;
+            timer_loop_flag_50hz = true;
         }
-        if (++loop_cnt_10hz * 10 >= 1000)
+        if (++timer_loop_cnt_10hz * 10 >= 1000)
         {
-            loop_cnt_100hz  = 0;
-            loop_flag_100hz = true;
+            timer_loop_cnt_100hz  = 0;
+            timer_loop_flag_100hz = true;
         }
     }
 }

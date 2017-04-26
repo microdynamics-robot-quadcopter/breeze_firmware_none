@@ -32,8 +32,8 @@ myyerrol    2017.04.14    Format the module
 
 #define USART_BUFFER_SIZE 128
 
-extern u8 ring_buffer_rx[USART_BUFFER_SIZE];
-extern u8 ring_buffer_tx[USART_BUFFER_SIZE];
+extern u8 usart_ring_buffer_rx[USART_BUFFER_SIZE];
+extern u8 usart_ring_buffer_tx[USART_BUFFER_SIZE];
 
 typedef struct
 {

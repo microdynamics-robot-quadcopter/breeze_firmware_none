@@ -21,6 +21,9 @@ myyerrol    2017.04.24    Modify the module
 
 #include "stm32f10x.h"
 
+// Current uptime for 1KHz systick timer.
+extern vu32 it_systick_uptime;
+
 extern void HardFault_Handler(void);
 extern void SysTick_Handler(void);
 extern void TIM3_IRQHandler(void);

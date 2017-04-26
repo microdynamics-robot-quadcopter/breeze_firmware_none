@@ -21,7 +21,7 @@ myyerrol    2017.04.24    Modify the module
 #include "stm32f10x_driver_usart.h"
 #include "stm32f10x_module_led.h"
 
-vu32 systick_uptime = 0;
+vu32 it_systick_uptime = 0;
 
 void HardFault_Handler(void)
 {
@@ -29,7 +29,7 @@ void HardFault_Handler(void)
 
 void SysTick_Handler(void)
 {
-    systick_uptime++;
+    it_systick_uptime++;
 }
 
 void TIM3_IRQHandler(void)

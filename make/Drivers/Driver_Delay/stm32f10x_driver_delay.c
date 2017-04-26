@@ -23,11 +23,10 @@ myyerrol    2017.04.13    Format the module
 *******************************************************************************/
 
 #include "stm32f10x_driver_delay.h"
+#include "stm32f10x_it.h"
 
 // Cycles per millisecond.
 static vu32 tick_us = 0;
-// Current uptime for 1KHz systick timer.
-extern vu32 systick_uptime;
 
 void Delay_Init(void)
 {
@@ -39,13 +38,13 @@ void Delay_Init(void)
 void Delay_TimeUs(u32 n_us)
 {
     u32 t = Delay_GetRuntimeUs();
-    while(Delay_GetRuntimeUs() - t < n_us);
+    while (Delay_GetRuntimeUs() - t < n_us);
 }
 
 void Delay_TimeMs(u16 n_ms)
 {
     u32 t = Delay_GetRuntimeUs();
-    while(Delay_GetRuntimeUs() - t < n_ms * 1000);
+    while (Delay_GetRuntimeUs() - t < n_ms * 1000);
 }
 
 u32 Delay_GetRuntimeUs(void)
@@ -55,15 +54,15 @@ u32 Delay_GetRuntimeUs(void)
 
     do
     {
-        milliseconds = systick_uptime;
+        milliseconds = it_systick_uptime;
         cycle_count  = SysTick->VAL;
     }
-    while (milliseconds != systick_uptime);
+    while (milliseconds != it_systick_uptime);
 
     return (milliseconds * 1000) + (tick_us * 1000 - cycle_count) / tick_us;
 }
 
 u32 Delay_GetRuntimeMs(void)
 {
-    return systick_uptime;
+    return it_systick_uptime;
 }

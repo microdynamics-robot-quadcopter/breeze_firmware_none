@@ -28,8 +28,8 @@ myyerrol    2017.04.22    Format the module
 #include "stm32f10x_driver_eeprom.h"
 #include "stm32f10x_driver_flash.h"
 #include "stm32f10x_module_nrf24l01.h"
-#include "stm32f10x_algorithm_imu.h"
 #include "stm32f10x_algorithm_control.h"
+#include "stm32f10x_algorithm_imu.h"
 
 // Request to save the parameters to the EEPROM.
 u8 eeprom_params_request = 0;

@@ -185,11 +185,11 @@ void Flash_WriteNoCheck(u32 write_addr, u16 *buffer, u16 half_word_nums)
 
 u8 Flash_ErasePage(u32 page_addr)
 {
-    u8 state = 0;
+    u8 status = 0;
     // Wait for the end of last operation(>20ms).
-    state = Flash_WaitDone(0X5FFF);
+    status = Flash_WaitDone(0X5FFF);
 
-    if (state == FLASH_STATE_OK)
+    if (status == FLASH_STATE_OK)
     {
         // Erase page.
         FLASH->CR |= 1 << 1;
@@ -198,33 +198,32 @@ u8 Flash_ErasePage(u32 page_addr)
         // Start to erase page.
         FLASH->CR |= 1 << 6;
         // Wait for the end of last operation(>20ms).
-        state = Flash_WaitDone(0X5FFF);
-        if (state != FLASH_STATE_BUSY)
+        status = Flash_WaitDone(0X5FFF);
+        if (status != FLASH_STATE_BUSY)
         {
             // Clear the flag of erasing page.
             FLASH->CR &= ~(1 << 1);
         }
     }
 
-    return state;
+    return status;
 }
 
 u8 Flash_GetStatus(void)
 {
-    u32 state;
-    state = FLASH->SR;
+    u32 status = FLASH->SR;
 
-    if (state & (1 << 0))
+    if (status & (1 << 0))
     {
         // Busy.
         return FLASH_STATE_BUSY;
     }
-    else if (state & (1 << 2))
+    else if (status & (1 << 2))
     {
         // Programming error.
         return FLASH_STATE_ERROR_PRO;
     }
-    else if (state & (1 << 4))
+    else if (status & (1 << 4))
     {
         // Write-protect error.
         return FLASH_STATE_ERROR_WP;
@@ -235,12 +234,12 @@ u8 Flash_GetStatus(void)
 
 u8 Flash_WaitDone(u16 time)
 {
-    u8 state;
+    u8 status;
 
     do
     {
-        state = Flash_GetStatus();
-        if (state != FLASH_STATE_BUSY)
+        status = Flash_GetStatus();
+        if (status != FLASH_STATE_BUSY)
         {
             break;
         }
@@ -251,34 +250,33 @@ u8 Flash_WaitDone(u16 time)
 
     if (time == 0)
     {
-        state = FLASH_STATE_TIMEOUT;
+        status = FLASH_STATE_TIMEOUT;
     }
 
-    return state;
+    return status;
 }
 
 // Write half word in specified address of flash.
 u8 Flash_WriteHalfWord(u32 flash_addr, u16 half_word)
 {
-    u8 state;
-    state = Flash_WaitDone(0XFF);
+    u8 status = Flash_WaitDone(0XFF);
 
-    if (state == FLASH_STATE_OK)
+    if (status == FLASH_STATE_OK)
     {
         // Enable programming.
         FLASH->CR |= 1 << 0;
         // Write half word.
         *(vu16 *)flash_addr = half_word;
         // Wait for the end of operation.
-        state = Flash_WaitDone(0XFF);
-        if (state != FLASH_STATE_BUSY)
+        status = Flash_WaitDone(0XFF);
+        if (status != FLASH_STATE_BUSY)
         {
             // Clear PG bit.
             FLASH->CR &= ~(1 << 0);
         }
     }
 
-    return state;
+    return status;
 }
 
 u16 Flash_ReadHalfWord(u32 flash_addr)

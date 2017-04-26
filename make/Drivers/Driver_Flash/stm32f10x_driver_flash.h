@@ -35,7 +35,6 @@ myyerrol    2017.04.23    Format the module
 
 #include "stm32f10x.h"
 
-// Custom the settings.
 // The capacity of flash(unit:k).
 #define FLASH_SIZE            64
 // Enable flash writing(0:disable).
@@ -58,7 +57,8 @@ extern void Flash_Lock(void);
 extern void Flash_Read(u32 read_addr, u16 *buffer, u16 half_word_nums);
 extern void Flash_Unlock(void);
 extern void Flash_Write(u32 write_addr, u16 *buffer, u16 half_word_nums);
-extern void Flash_WriteNoCheck(u32 write_addr, u16 *buffer, u16 half_word_nums);
+extern void Flash_WriteNoCheck(u32 write_addr, u16 *buffer,
+                               u16 half_word_nums);
 extern u8   Flash_ErasePage(u32 page_addr);
 extern u8   Flash_GetStatus(void);
 extern u8   Flash_WaitDone(u16 time);

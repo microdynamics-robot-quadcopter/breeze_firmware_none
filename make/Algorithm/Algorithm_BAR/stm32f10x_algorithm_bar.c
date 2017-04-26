@@ -85,7 +85,7 @@ void AltitudeCombineThread(void)
     dt = (PreTime > 0) ? ((NowTime - PreTime) / 1000000.0f) : 0;
     PreTime = NowTime;
 
-    if (!pressure_offset_flag)   /* Wait baro to init its offset */
+    if (!ms5611_pressure_offset_flag)   /* Wait baro to init its offset */
     {
         return;
     }
@@ -95,10 +95,10 @@ void AltitudeCombineThread(void)
         return;
     }
 
-    if (altitude_update_flag)  /* Store err when sensor update */
+    if (ms5611_altitude_update_flag)  /* Store err when sensor update */
     {
         corr_bar = 0 - ms5611_altitude - z_est[0];  /* MS5611_Altitude baro alt, is postive above offset level. not in NED. z_est is in NED frame. */
-        altitude_update_flag = 0;
+        ms5611_altitude_update_flag = 0;
     }
 
     if (accUpdated)

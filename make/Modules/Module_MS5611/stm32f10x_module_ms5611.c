@@ -8,7 +8,7 @@ Filename:    stm32f10x_module_ms5611.c
 Author:      maksyuki
 Version:     0.1.0.20161231_release
 Create date: 2016.09.01
-Description: Implement the MS5611 function
+Description: Implement the ms5611 function
 Others:      none
 Function List:
              1.  void  MS5611_AddNewAltitude(float value);
@@ -31,32 +31,31 @@ maksyuki    2017.01.01    Modify the module
 myyerrol    2017.04.24    Format the module
 *******************************************************************************/
 
-#include <stdio.h>
-#include <math.h>
-#include "stm32f10x_it.h"
 #include "stm32f10x_driver_delay.h"
 #include "stm32f10x_driver_iic.h"
 #include "stm32f10x_driver_usart.h"
 #include "stm32f10x_module_ms5611.h"
+#include "stm32f10x_it.h"
 
-static u8  current_state       = STATE_START_CONVERT_TEMP;
+static u8  current_state       = MS5611_STATE_START_CONVERT_TEMP;
 static u16 calibration_params[MS5611_PROM_REG_COUNT];
 static u32 start_convert_timestamp;
 static u32 conversion_delay_us = 0;
 static s32 temperature_value;
 
+static u16    pressure_init_cnt   = 0;
 // Save the altitude of 0m(relative).
-static float altitude_offset = 0;
+static float  altitude_offset     = 0;
 // Save the pressure of 0m(relative).
-static float pressure_offset = 0;
-u16    pressure_init_cnt     = 0;
-double pressure_offset_num   = 0;
-bool   pressure_offset_flag  = false;
-bool   altitude_update_flag  = false;
+static float  pressure_offset     = 0;
+static double pressure_offset_num = 0;
 
-volatile float ms5611_altitude;
-volatile float ms5611_pressure;
-volatile float ms5611_temperature;
+bool ms5611_pressure_offset_flag  = false;
+bool ms5611_altitude_update_flag  = false;
+
+volatile float ms5611_altitude    = 0;
+volatile float ms5611_pressure    = 0;
+volatile float ms5611_temperature = 0;
 
 // Delay table: different sampling precision is with different delay time.
 u32 delay_us_table[9] = {
@@ -220,46 +219,46 @@ void MS5611_UpdateData(void)
 {
     switch (current_state)
     {
-        case STATE_START_CONVERT_TEMP:
+        case MS5611_STATE_START_CONVERT_TEMP:
         {
             MS5611_StartConversion(MS5611_D2 + MS5611_OSR_TEMP);
             conversion_delay_us = delay_us_table[MS5611_OSR_TEMP];
             start_convert_timestamp = Delay_GetRuntimeUs();
-            current_state = STATE_CONVERTING_TEMP;
+            current_state = MS5611_STATE_CONVERTING_TEMP;
             break;
         }
-        case STATE_CONVERTING_TEMP:
+        case MS5611_STATE_CONVERTING_TEMP:
         {
-            if ((Delay_GetRuntimeUs() - start_convert_timestamp)
-                > conversion_delay_us)
+            if ((Delay_GetRuntimeUs() - start_convert_timestamp) >
+                conversion_delay_us)
             {
                 MS5611_GetTemperature();
-                current_state = STATE_START_CONVERT_PRES;
+                current_state = MS5611_STATE_START_CONVERT_PRES;
             }
             break;
         }
-        case STATE_START_CONVERT_PRES:
+        case MS5611_STATE_START_CONVERT_PRES:
         {
             MS5611_StartConversion(MS5611_D1 + MS5611_OSR_PRES);
             conversion_delay_us = delay_us_table[MS5611_OSR_PRES];
             start_convert_timestamp = Delay_GetRuntimeUs();
-            current_state = STATE_CONVERTING_PRES;
+            current_state = MS5611_STATE_CONVERTING_PRES;
             break;
         }
-        case STATE_CONVERTING_PRES:
+        case MS5611_STATE_CONVERTING_PRES:
         {
-            if ((Delay_GetRuntimeUs() - start_convert_timestamp)
-                > conversion_delay_us)
+            if ((Delay_GetRuntimeUs() - start_convert_timestamp) >
+                conversion_delay_us)
             {
                 MS5611_GetPressure();
-                altitude_update_flag = true;
-                current_state = STATE_START_CONVERT_TEMP;
+                ms5611_altitude_update_flag = true;
+                current_state = MS5611_STATE_START_CONVERT_TEMP;
             }
             break;
         }
         default:
         {
-            current_state = STATE_START_CONVERT_TEMP;
+            current_state = MS5611_STATE_START_CONVERT_TEMP;
             break;
         }
     }
@@ -272,13 +271,13 @@ u8 MS5611_WaitBaroInitOffset(void)
 
     timestamp_start = Delay_GetRuntimeUs();
 
-    while (!pressure_offset_flag)
+    while (!ms5611_pressure_offset_flag)
     {
         MS5611_UpdateData();
         timestamp_now = Delay_GetRuntimeUs();
         // Timeout.
-        if ((timestamp_now - timestamp_start) / 1000
-            >= PRES_OFFSET_INIT_NUM * 50)
+        if ((timestamp_now - timestamp_start) / 1000 >=
+            MS5611_PRES_OFFSET_INIT_NUM * 50)
         {
             return 0;
         }
@@ -325,12 +324,12 @@ float MS5611_GetAltitude(void)
     // Judge whether 0m pressure have been initialized or not.
     if (pressure_offset == 0)
     {
-        // Use the average value of number of PRES_OFFSET_INIT_NUM calculation
-        // as height deviation.
-        if (pressure_init_cnt > PRES_OFFSET_INIT_NUM)
+        // Use the average value of number of MS5611_PRES_OFFSET_INIT_NUM
+        // calculation as height deviation.
+        if (pressure_init_cnt > MS5611_PRES_OFFSET_INIT_NUM)
         {
             pressure_offset = pressure_offset_num / pressure_init_cnt;
-            pressure_offset_flag = true;
+            ms5611_pressure_offset_flag = true;
         }
         else
         {

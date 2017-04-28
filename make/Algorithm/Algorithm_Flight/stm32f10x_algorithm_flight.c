@@ -17,7 +17,7 @@ History:
    maksyuki  2017.01.11  modify the module
 *******************************************************************************/
 
-#include "stm32f10x_module_rpdata.h"
+#include "stm32f10x_module_comm_link.h"
 #include "stm32f10x_algorithm_bar.h"
 #include "stm32f10x_algorithm_flight.h"
 #include "stm32f10x_algorithm_control.h"
@@ -26,9 +26,9 @@ History:
 /* TOBE IMPROVED */
 void FlightStateSet(void)
 {
-    if (FLY_ENABLE)
+    if (comm_link_fly_enable_flag)
     {
-        if (NRF_Data.throttle >= 600)
+        if (CommLink_DataStructure.throttle >= 600)
         {
             if (altCtrlMode != CLIMB_RATE)
             {
@@ -44,7 +44,7 @@ void FlightStateSet(void)
         {
             if (altCtrlMode == MANUAL)
             {
-                NRF_Data.throttle = 200; /* Idling 200 */
+                CommLink_DataStructure.throttle = 200; /* Idling 200 */
             }
         }
     }

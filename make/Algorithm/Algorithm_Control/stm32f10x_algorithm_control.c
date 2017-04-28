@@ -26,8 +26,8 @@ History:
 *******************************************************************************/
 
 #include "stm32f10x_driver_delay.h"
-#include "stm32f10x_module_rpdata.h"
 #include "stm32f10x_module_battery.h"
+#include "stm32f10x_module_comm_link.h"
 #include "stm32f10x_module_motor.h"
 #include "stm32f10x_algorithm_imu.h"
 #include "stm32f10x_algorithm_bar.h"
@@ -81,7 +81,7 @@ static void PID_PostionCal(PID_Typedef * PID, float target, float measure, int32
     PID->PreError = PID->Error;
 
     /* Only use in angle and angular rate */
-    if (FLY_ENABLE && offLandFlag)
+    if (comm_link_fly_enable_flag && offLandFlag)
     {
         if (fabs(PID->Output) < Thro)  /* Don't integrate when output is larger than thro */
         {
@@ -126,8 +126,8 @@ void ControlAttiAng(void)
 
     if (altCtrlMode == MANUAL)
     {
-        angTarget[ROLL]  = (float)NRF_Data.roll;
-        angTarget[PITCH] = (float)NRF_Data.pitch;
+        angTarget[ROLL]  = (float)CommLink_DataStructure.roll;
+        angTarget[PITCH] = (float)CommLink_DataStructure.pitch;
     }
     else
     {
@@ -164,7 +164,7 @@ void ControlAttiRate(void)
     NowTime = Delay_GetRuntimeUs();
     dt = (PreTime > 0) ? (NowTime - PreTime) : 0;
     PreTime = NowTime;
-    yawRateTarget = -(float)NRF_Data.yaw;
+    yawRateTarget = -(float)CommLink_DataStructure.yaw;
 
     /* Note: original PID parameters are in AD value, need to convert */
     PID_PostionCal(&pitch_rate_PID, pitch_angle_PID.Output, imu.gyro[PITCH] * 180.0f / M_PI_F, dt);
@@ -301,7 +301,7 @@ void ControlAlti(void)
     }
 
     /* Only in climb rate mode and landind mode, now we don't work on manual mode */
-    if (MANUAL == altCtrlMode || !FLY_ENABLE)
+    if (MANUAL == altCtrlMode || !comm_link_fly_enable_flag)
     {
         return;
     }
@@ -310,7 +310,7 @@ void ControlAlti(void)
     alt = -nav.z;
 
     /* Get desired move rate from stick */
-    manThr      = NRF_Data.throttle / 1000.0f;
+    manThr      = CommLink_DataStructure.throttle / 1000.0f;
     spZMoveRate = -CutDBScaleToLinear(manThr - 0.5f, 0.5f, ALT_CTRL_Z_DB);  /* Scale to -1~1 . NED frame */
     spZMoveRate = spZMoveRate * ALT_VEL_MAX;                                /* Scale to vel min max */
 
@@ -377,8 +377,8 @@ void ControlAlti(void)
     /* Relate to Power distribution, testing */
     satXY = 0;
     satZ  = 0;
-    thrustXYSp[0] = sinf(NRF_Data.roll * M_PI_F /180.0f);   /* Angle convert to acceleration(target) */
-    thrustXYSp[1] = sinf(NRF_Data.pitch * M_PI_F /180.0f);  /* Normalize  */
+    thrustXYSp[0] = sinf(CommLink_DataStructure.roll * M_PI_F /180.0f);   /* Angle convert to acceleration(target) */
+    thrustXYSp[1] = sinf(CommLink_DataStructure.pitch * M_PI_F /180.0f);  /* Normalize  */
     thrustXYSpLen = sqrtf(thrustXYSp[0] * thrustXYSp[0] + thrustXYSp[1] * thrustXYSp[1]);
 
     /* Limit tilt max */
@@ -454,7 +454,7 @@ void ControlMotor(void)
     if (altCtrlMode == MANUAL)
     {
         DIF_ACC.Z = imu.accb[2] - CONSTANTS_ONE_G;
-        Thro      = NRF_Data.throttle;
+        Thro      = CommLink_DataStructure.throttle;
         cosTilt   = imu.DCMgb[2][2];
         Thro      = Thro / cosTilt;
     }
@@ -473,7 +473,7 @@ void ControlMotor(void)
     Motor[3] = (int16_t)(Thro - Pitch + Roll + Yaw );  /* M4 */
     Motor[1] = (int16_t)(Thro + Pitch - Roll + Yaw );  /* M2 */
 
-    if (FLY_ENABLE)
+    if (comm_link_fly_enable_flag)
     {
         Motor_SetPWM(Motor[0], Motor[1], Motor[2], Motor[3]);
     }

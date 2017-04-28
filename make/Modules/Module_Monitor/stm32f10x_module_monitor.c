@@ -31,8 +31,8 @@ History:
 *******************************************************************************/
 
 #include "stm32f10x_driver_usart.h"
+#include "stm32f10x_module_comm_link.h"
 #include "stm32f10x_module_ms5611.h"
-#include "stm32f10x_module_rpdata.h"
 #include "stm32f10x_module_monitor.h"
 #include "stm32f10x_algorithm_imu.h"
 #include "stm32f10x_algorithm_bar.h"
@@ -400,8 +400,8 @@ static void DebubUploadHandle3(void)
     up2.data[1]  = 0;
     up2.data[2]  = 0;//((short)(MS5611_VerticalSpeed*1000))>>8;  /* Baro_speed */
     up2.data[3]  = 0;//((short)(MS5611_VerticalSpeed*1000))&0xff;
-    up2.data[4]  = ((short)(-NRF_Data.pitch * 100))>>8;          /* Acc speed */
-    up2.data[5]  = ((short)(-NRF_Data.pitch * 100))&0xff;        /* Pitch */
+    up2.data[4]  = ((short)(-CommLink_DataStructure.pitch * 100))>>8;          /* Acc speed */
+    up2.data[5]  = ((short)(-CommLink_DataStructure.pitch * 100))&0xff;        /* Pitch */
     up2.data[6]  = ((short)(ms5611_altitude * 1000))>>8;
     up2.data[7]  = ((short)(ms5611_altitude * 1000))&0xff;
     up2.data[8]  = ((short)(imu.accg[2] * 1000))>>8;             /* Accz */

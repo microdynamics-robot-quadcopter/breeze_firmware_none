@@ -34,9 +34,9 @@ myyerrol    2017.04.25    Format the module
 #include "stm32f10x_driver_delay.h"
 #include "stm32f10x_driver_eeprom.h"
 #include "stm32f10x_driver_spi.h"
+#include "stm32f10x_module_comm_link.h"
 #include "stm32f10x_module_led.h"
 #include "stm32f10x_module_nrf24l01.h"
-#include "stm32f10x_module_rpdata.h"
 
 u8 nrf24l01_rx_data[NRF24L01_WIDTH_PAYLOAD_RX];
 u8 nrf24l01_tx_data[NRF24L01_WIDTH_PAYLOAD_TX];

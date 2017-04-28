@@ -24,10 +24,8 @@ myyerrol    2017.04.11    Format the module
 *******************************************************************************/
 
 #include "stm32f10x_module_battery.h"
-#include "stm32f10x_module_rpdata.h"
+#include "stm32f10x_module_comm_link.h"
 #include "stm32f10x_algorithm_control.h"
-
-extern u8 FLY_ENABLE;
 
 Battery_Information Battery_InformationStructure;
 
@@ -41,7 +39,7 @@ void Battery_Check(void)
        (Battery_InformationStructure.voltage_ad / 4096.0) *
         Battery_InformationStructure.voltage_ad_ref;
 
-    if (FLY_ENABLE)
+    if (comm_link_fly_enable_flag)
     {
         if (Battery_InformationStructure.voltage_calculate <=
            (BATTERY_VOLTAGE_OVERDIS + 0.03))
@@ -59,11 +57,11 @@ void Battery_Check(void)
             Battery_InformationStructure.over_discharge_cnt++;
             if (Battery_InformationStructure.over_discharge_cnt > 8)
             {
-                altCtrlMode = LANDING;
-                rcData[0]   = 1500;
-                rcData[1]   = 1500;
-                rcData[2]   = 1500;
-                rcData[3]   = 1500;
+                altCtrlMode          = LANDING;
+                comm_link_rc_data[0] = 1500;
+                comm_link_rc_data[1] = 1500;
+                comm_link_rc_data[2] = 1500;
+                comm_link_rc_data[3] = 1500;
             }
         }
         else

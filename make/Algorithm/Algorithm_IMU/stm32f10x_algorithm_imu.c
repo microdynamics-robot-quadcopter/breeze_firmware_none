@@ -120,7 +120,7 @@ void IMU_ReadSensorHandle(void)
 {
     uint8_t i;
     MPU6050_ReadAcc(imu.accADC);    /* Read raw value */
-    MPU6050_ReadGyro(imu.gyroADC);
+    MPU6050_ReadGyr(imu.gyroADC);
 
     for (i = 0; i < 3; i++)
     {

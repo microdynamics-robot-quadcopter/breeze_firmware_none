@@ -25,31 +25,47 @@ myyerrol    2017.04.28    Modify the module
 #include "stm32f10x_algorithm_control.h"
 
 // Multiwii Serial Protocol(MSP).
-#define COMM_LINK_MSP_SET_THRO       1
-#define COMM_LINK_MSP_SET_YAW        2
-#define COMM_LINK_MSP_SET_PITCH      3
-#define COMM_LINK_MSP_SET_ROLL       4
-#define COMM_LINK_MSP_ARM_IT         5
-#define COMM_LINK_MSP_DISARM_IT      6
-#define COMM_LINK_MSP_SET_4CON       7
-#define COMM_LINK_MSP_SETOFF         8
-#define COMM_LINK_MSP_LAND_DOWN      9
-#define COMM_LINK_MSP_HOLD_ALT       10
-#define COMM_LINK_MSP_STOP_HOLD_ALT  11
-#define COMM_LINK_MSP_HEAD_FREE      12
-#define COMM_LINK_MSP_STOP_HEAD_FREE 13
-#define COMM_LINK_MSP_POS_HOLD       14
-#define COMM_LINK_MSP_STOP_POS_HOLD  15
-#define COMM_LINK_MSP_FLY_STATE      16
-#define COMM_LINK_MSP_ACC_CALI       205
+#define COMM_LINK_MSP_SET_THRO        1
+#define COMM_LINK_MSP_SET_YAW         2
+#define COMM_LINK_MSP_SET_PITCH       3
+#define COMM_LINK_MSP_SET_ROLL        4
+#define COMM_LINK_MSP_ARM_IT          5
+#define COMM_LINK_MSP_DISARM_IT       6
+#define COMM_LINK_MSP_SET_4CON        7
+#define COMM_LINK_MSP_SETOFF          8
+#define COMM_LINK_MSP_LAND_DOWN       9
+#define COMM_LINK_MSP_HOLD_ALT        10
+#define COMM_LINK_MSP_STOP_HOLD_ALT   11
+#define COMM_LINK_MSP_HEAD_FREE       12
+#define COMM_LINK_MSP_STOP_HEAD_FREE  13
+#define COMM_LINK_MSP_POS_HOLD        14
+#define COMM_LINK_MSP_STOP_POS_HOLD   15
+#define COMM_LINK_MSP_FLY_STATE       16
+#define COMM_LINK_MSP_ACC_CALI        205
 
-#define COMM_LINK_APP_DB_YAW         70
-#define COMM_LINK_APP_DB_PR          50
+#define COMM_LINK_APP_DB_YAW          70
+#define COMM_LINK_APP_DB_PR           50
 
 #define COMM_LINK_STATE_EN_MCU        0
 #define COMM_LINK_STATE_DISEN_MCU     1
 #define COMM_LINK_STATE_REQ_EN_MCU    2
 #define COMM_LINK_STATE_REQ_DISEN_MCU 3
+
+#define COMM_LINK_CONVERT_ENDIAN      1
+
+#define COMM_LINK_STATE_PC_REQ_PID    0X02
+#define COMM_LINK_STATE_PC_PID_PITCH  0X10
+#define COMM_LINK_STATE_PC_PID_ROLL   0X11
+#define COMM_LINK_STATE_PC_PID_YAW    0X12
+#define COMM_LINK_STATE_PC_PID_ALT    0X14
+
+#define COMM_LINK_STATE_IDLE          1
+#define COMM_LINK_STATE_HEADER1       2
+#define COMM_LINK_STATE_HEADER2       3
+#define COMM_LINK_STATE_COMMAND       4
+#define COMM_LINK_STATE_LENGTH        5
+#define COMM_LINK_STATE_DATA          6
+#define COMM_LINK_STATE_CHECKSUM      7
 
 #define COMM_LINK_CONSTRAIN(x, min, max) \
 {                                        \
@@ -63,22 +79,76 @@ myyerrol    2017.04.28    Modify the module
     }                                    \
 }
 
+typedef union
+{
+    u8  bytes[2];
+    s16 value;
+} CommLink_TypeInt16;
+
+typedef union
+{
+    u8  bytes[4];
+    s32 value;
+} CommLink_TypeInt32;
+
+typedef struct
+{
+    u8                 header[2];
+    u8                 cmd;
+    u8                 len;
+    CommLink_TypeInt16 roll;
+    CommLink_TypeInt16 pitch;
+    CommLink_TypeInt16 yaw;
+    CommLink_TypeInt16 temp;
+    CommLink_TypeInt16 speed;
+    CommLink_TypeInt32 alt;
+    CommLink_TypeInt32 pres;
+    u8                 sum;
+} CommLink_DataPacketA;
+
+typedef struct
+{
+    u8 header[2];
+    u8 cmd;
+    u8 len;
+    u8 data[30];
+    u8 sum;
+} CommLink_DataPacketB;
+
 typedef struct
 {
     float roll;
     float pitch;
     float yaw;
-    float throttle;
+    float thr;
 } CommLink_Data;
 
 extern u8   comm_link_mcu_state;
 extern u16  comm_link_rc_data[4];
 extern bool comm_link_fly_enable_flag;
-extern CommLink_Data CommLink_DataStructure;
+extern bool comm_link_pc_cmd_flag;
 
-extern float CommLink_CutDBScaleToLinear(float x_start, float x_end,
-                                         float deadband);
+extern CommLink_Data        CommLink_DataStructure;
+extern CommLink_DataPacketA CommLink_DataPacketAStructure;
+extern CommLink_DataPacketB CommLink_DataPacketBStructure;
+
+extern void  CommLink_AddBits8ToBuffer(u8 byte);
+extern void  CommLink_AddBits16ToBuffer(s16 bytes);
+extern void  CommLink_AddDataToBuffer(u8 *data, u8 length);
+extern void  CommLink_ConvertEndian(u8 *data, u8 length);
+extern void  CommLink_HandleCommand(void);
+extern void  CommLink_HandleDebugDataA(void);
+extern void  CommLink_HandleDebugDataB(void);
+extern void  CommLink_HandleDebugDataC(void);
 extern void  CommLink_ProcessDataFromNRF(void);
 extern void  CommLink_ReceiveDataFromNRF(void);
+extern void  CommLink_ReadPacket(u8 byte);
+extern void  CommLink_Test(void);
+extern void  CommLink_WriteBuffer(void);
+extern void  CommLink_WriteDebugData(void);
+extern void  CommLink_WritePacket(u8 command);
+extern void  CommLink_WritePID(u8 pid_type);
+extern float CommLink_CutDBScaleToLinear(float x_start, float x_end,
+                                         float deadband);
 
 #endif

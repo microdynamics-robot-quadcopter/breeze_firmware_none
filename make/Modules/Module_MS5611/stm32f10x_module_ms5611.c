@@ -31,6 +31,7 @@ maksyuki    2017.01.01    Modify the module
 myyerrol    2017.04.24    Format the module
 *******************************************************************************/
 
+#include <math.h>
 #include "stm32f10x_driver_delay.h"
 #include "stm32f10x_driver_iic.h"
 #include "stm32f10x_driver_usart.h"

@@ -76,7 +76,7 @@ void NRF24L01_IRQHandler(void)
         // Read receive payload from buffer.
         NRF24L01_ReadBuffer(NRF24L01_PAYLOAD_RD, nrf24l01_rx_data,
                             NRF24L01_WIDTH_PAYLOAD_RX);
-        ReceiveDataFromNRF();
+        CommLink_ReceiveDataFromNRF();
         // Clear the flag of interrupt.
         NRF24L01_WriteRegister(0X27, status);
         status = 0;

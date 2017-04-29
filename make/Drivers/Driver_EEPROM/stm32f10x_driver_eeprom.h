@@ -53,7 +53,7 @@ typedef struct
     bool  nrf_matched_flag;
 } EEPROM_Table;
 
-extern u8 eeprom_params_request;
+extern bool eeprom_params_request_flag;
 extern EEPROM_Table EEPROM_TableStructure;;
 
 extern void EEPROM_LoadParamsFromEEPROM(void);

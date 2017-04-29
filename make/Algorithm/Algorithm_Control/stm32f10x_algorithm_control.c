@@ -310,7 +310,7 @@ void ControlAlti(void)
     alt = -nav.z;
 
     /* Get desired move rate from stick */
-    manThr      = CommLink_DataStructure.throttle / 1000.0f;
+    manThr      = CommLink_DataStructure.thr / 1000.0f;
     spZMoveRate = -CutDBScaleToLinear(manThr - 0.5f, 0.5f, ALT_CTRL_Z_DB);  /* Scale to -1~1 . NED frame */
     spZMoveRate = spZMoveRate * ALT_VEL_MAX;                                /* Scale to vel min max */
 
@@ -454,7 +454,7 @@ void ControlMotor(void)
     if (altCtrlMode == MANUAL)
     {
         DIF_ACC.Z = imu.accb[2] - CONSTANTS_ONE_G;
-        Thro      = CommLink_DataStructure.throttle;
+        Thro      = CommLink_DataStructure.thr;
         cosTilt   = imu.DCMgb[2][2];
         Thro      = Thro / cosTilt;
     }

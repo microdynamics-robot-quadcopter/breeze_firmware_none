@@ -28,7 +28,7 @@ void FlightStateSet(void)
 {
     if (comm_link_fly_enable_flag)
     {
-        if (CommLink_DataStructure.throttle >= 600)
+        if (CommLink_DataStructure.thr >= 600)
         {
             if (altCtrlMode != CLIMB_RATE)
             {
@@ -44,7 +44,7 @@ void FlightStateSet(void)
         {
             if (altCtrlMode == MANUAL)
             {
-                CommLink_DataStructure.throttle = 200; /* Idling 200 */
+                CommLink_DataStructure.thr = 200; /* Idling 200 */
             }
         }
     }

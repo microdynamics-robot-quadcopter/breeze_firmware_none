@@ -21,7 +21,6 @@ DIR_DRIVERS += ../Drivers/Driver_USART/
 DIR_MODULES += ../Modules/Module_Battery/
 DIR_MODULES += ../Modules/Module_CommLink/
 DIR_MODULES += ../Modules/Module_LED/
-DIR_MODULES += ../Modules/Module_Monitor/
 DIR_MODULES += ../Modules/Module_Motor/
 DIR_MODULES += ../Modules/Module_MPU6050/
 DIR_MODULES += ../Modules/Module_MS5611/

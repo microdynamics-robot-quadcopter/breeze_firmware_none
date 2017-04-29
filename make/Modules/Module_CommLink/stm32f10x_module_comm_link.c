@@ -594,7 +594,7 @@ void CommLink_WritePID(u8 pid_type)
     CommLink_AddDataToBuffer(recv_buffer, 12);
 
     CommLink_AddBits8ToBuffer(send_checksum);
-    CommLinK_WriteBuffer();
+    CommLink_WriteBuffer();
 }
 
 // Cut deadband scale to move linear.

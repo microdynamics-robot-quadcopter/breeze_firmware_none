@@ -11,6 +11,24 @@ Create date: 2017.04.28
 Description: Declare the communication operation function
 Others:      none
 Function List:
+             1.  void  CommLink_AddBits8ToBuffer(u8 byte);
+             2.  void  CommLink_AddBits16ToBuffer(s16 bytes);
+             3.  void  CommLink_AddDataToBuffer(u8 *data, u8 length);
+             4.  void  CommLink_ConvertEndian(u8 *data, u8 length);
+             5.  void  CommLink_HandleCommand(void);
+             6.  void  CommLink_HandleDebugDataA(void);
+             7.  void  CommLink_HandleDebugDataB(void);
+             8.  void  CommLink_HandleDebugDataC(void);
+             9.  void  CommLink_ProcessDataFromNRF(void);
+             10. void  CommLink_ReceiveDataFromNRF(void);
+             11. void  CommLink_ReadPacket(u8 byte);
+             12. void  CommLink_Test(void);
+             13. void  CommLink_WriteBuffer(void);
+             14. void  CommLink_WriteDebugData(void);
+             15. void  CommLink_WritePacket(u8 command);
+             16. void  CommLink_WritePID(u8 pid_type);
+             17. float CommLink_CutDBScaleToLinear(float x_start, float x_end,
+                                                   float deadband);
 History:
 <author>    <date>        <desc>
 myyerrol    2017.04.28    Modify the module

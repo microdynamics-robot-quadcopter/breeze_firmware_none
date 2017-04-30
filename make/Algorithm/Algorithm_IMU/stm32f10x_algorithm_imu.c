@@ -46,12 +46,12 @@ void IMU_Init(void)
 {
     imu.ready    = 0;  /* Need to calibrate gyro */
     imu.caliPass = 1;
-    LPF2pSetCutOffFreq_1(IMU_SAMPLE_RATE, IMU_FILTER_CUTOFF_FREQ);
-    LPF2pSetCutOffFreq_2(IMU_SAMPLE_RATE, IMU_FILTER_CUTOFF_FREQ);
-    LPF2pSetCutOffFreq_3(IMU_SAMPLE_RATE, IMU_FILTER_CUTOFF_FREQ);
-    LPF2pSetCutOffFreq_4(IMU_SAMPLE_RATE, IMU_FILTER_CUTOFF_FREQ);
-    LPF2pSetCutOffFreq_5(IMU_SAMPLE_RATE, IMU_FILTER_CUTOFF_FREQ);
-    LPF2pSetCutOffFreq_6(IMU_SAMPLE_RATE, IMU_FILTER_CUTOFF_FREQ);
+    Filter_SetLPF2pCutoffFreq_1(IMU_SAMPLE_RATE, IMU_FILTER_CUTOFF_FREQ);
+    Filter_SetLPF2pCutoffFreq_2(IMU_SAMPLE_RATE, IMU_FILTER_CUTOFF_FREQ);
+    Filter_SetLPF2pCutoffFreq_3(IMU_SAMPLE_RATE, IMU_FILTER_CUTOFF_FREQ);
+    Filter_SetLPF2pCutoffFreq_4(IMU_SAMPLE_RATE, IMU_FILTER_CUTOFF_FREQ);
+    Filter_SetLPF2pCutoffFreq_5(IMU_SAMPLE_RATE, IMU_FILTER_CUTOFF_FREQ);
+    Filter_SetLPF2pCutoffFreq_6(IMU_SAMPLE_RATE, IMU_FILTER_CUTOFF_FREQ);
 }
 
 /* Should place to a level surface and keep it stop for 1~2 second */
@@ -128,12 +128,12 @@ void IMU_ReadSensorHandle(void)
         imu.gyroRaw[i] = (float) imu.gyroADC[i] * GYRO_SCALE * M_PI_F / 180.0f;
     }
 
-    imu.accb[0] = LPF2pApply_1(imu.accRaw[0] - imu.accOffset[0]);
-    imu.accb[1] = LPF2pApply_2(imu.accRaw[1] - imu.accOffset[1]);
-    imu.accb[2] = LPF2pApply_3(imu.accRaw[2] - imu.accOffset[2]);
-    imu.gyro[0] = LPF2pApply_4(imu.gyroRaw[0]);
-    imu.gyro[1] = LPF2pApply_5(imu.gyroRaw[1]);
-    imu.gyro[2] = LPF2pApply_6(imu.gyroRaw[2]);
+    imu.accb[0] = Filter_ApplyLPF2p_1(imu.accRaw[0] - imu.accOffset[0]);
+    imu.accb[1] = Filter_ApplyLPF2p_2(imu.accRaw[1] - imu.accOffset[1]);
+    imu.accb[2] = Filter_ApplyLPF2p_3(imu.accRaw[2] - imu.accOffset[2]);
+    imu.gyro[0] = Filter_ApplyLPF2p_4(imu.gyroRaw[0]);
+    imu.gyro[1] = Filter_ApplyLPF2p_5(imu.gyroRaw[1]);
+    imu.gyro[2] = Filter_ApplyLPF2p_6(imu.gyroRaw[2]);
 }
 
 #define ACCZ_ERR_MAX 0.05 /* m/s^2 */

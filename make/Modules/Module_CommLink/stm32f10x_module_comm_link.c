@@ -34,6 +34,7 @@ History:
 myyerrol    2017.04.28    Modify the module
 *******************************************************************************/
 
+#include "stm32f10x_driver_delay.h"
 #include "stm32f10x_driver_eeprom.h"
 #include "stm32f10x_driver_usart.h"
 #include "stm32f10x_module_battery.h"
@@ -46,6 +47,7 @@ myyerrol    2017.04.28    Modify the module
 
 u8   comm_link_mcu_state   = COMM_LINK_STATE_DISEN_MCU;
 u16  comm_link_rc_data[4]  = {1500, 1500, 1500, 1500};
+u32  comm_link_last_rc_timestamp;
 bool comm_link_fly_enable_flag = false;
 bool comm_link_pc_cmd_flag     = false;
 
@@ -412,6 +414,8 @@ void CommLink_ReceiveDataFromNRF(void)
             }
         }
     }
+
+    comm_link_last_rc_timestamp = Delay_GetRuntimeMs();
 }
 
 void CommLink_ReadPacket(u8 byte)

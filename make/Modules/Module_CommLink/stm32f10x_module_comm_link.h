@@ -143,6 +143,7 @@ typedef struct
 
 extern u8   comm_link_mcu_state;
 extern u16  comm_link_rc_data[4];
+extern u32  comm_link_last_rc_timestamp;
 extern bool comm_link_fly_enable_flag;
 extern bool comm_link_pc_cmd_flag;
 

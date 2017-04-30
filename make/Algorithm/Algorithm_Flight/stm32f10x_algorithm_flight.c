@@ -11,6 +11,9 @@ Create date: 2016.10.20
 Description: Implement the flight function
 Others:      none
 Function List:
+             1. void Flight_SetMode(void);
+             2. void Flight_StartAutoland(void);
+             3. void Flight_HandleFailures(void);
 History:
 <author>    <date>        <desc>
 maksyuki    2017.01.11    Modify the module

@@ -26,7 +26,7 @@ DIR_MODULES += ../Modules/Module_MPU6050/
 DIR_MODULES += ../Modules/Module_MS5611/
 DIR_MODULES += ../Modules/Module_NRF24L01/
 
-DIR_ALGORITHM += ../Algorithm/Algorithm_BAR/
+DIR_ALGORITHM += ../Algorithm/Algorithm_Altitude/
 DIR_ALGORITHM += ../Algorithm/Algorithm_Control/
 DIR_ALGORITHM += ../Algorithm/Algorithm_Filter/
 DIR_ALGORITHM += ../Algorithm/Algorithm_Flight/

@@ -25,15 +25,15 @@ History:
    maksyuki  2017.01.11  modify the module
 *******************************************************************************/
 
+#include <math.h>
+#include "stm32f10x_it.h"
 #include "stm32f10x_driver_delay.h"
 #include "stm32f10x_module_battery.h"
 #include "stm32f10x_module_comm_link.h"
 #include "stm32f10x_module_motor.h"
-#include "stm32f10x_algorithm_imu.h"
-#include "stm32f10x_algorithm_bar.h"
+#include "stm32f10x_algorithm_altitude.h"
 #include "stm32f10x_algorithm_control.h"
-#include "stm32f10x_it.h"
-#include "math.h"
+#include "stm32f10x_algorithm_imu.h"
 
 uint8_t offLandFlag              = 0;
 volatile unsigned char motorLock = 1;
@@ -307,7 +307,7 @@ void ControlAlti(void)
     }
 
     /* Pos z ctrol, get current alt */
-    alt = -nav.z;
+    alt = -Altitude_NEDFrameStructure.pos_z;
 
     /* Get desired move rate from stick */
     manThr      = CommLink_DataStructure.thr / 1000.0f;
@@ -315,7 +315,7 @@ void ControlAlti(void)
     spZMoveRate = spZMoveRate * ALT_VEL_MAX;                                /* Scale to vel min max */
 
     /* Get alt setpoint in CLIMB rate mode */
-    altSp   = -nav.z;                                                       /* Only alt is not in ned frame. */
+    altSp   = -Altitude_NEDFrameStructure.pos_z;                                                       /* Only alt is not in ned frame. */
     altSp  -= spZMoveRate * dt;
 
     /* Limit alt setpoint */
@@ -358,7 +358,7 @@ void ControlAlti(void)
         zIntReset  = 0;
     }
 
-    velZ      = nav.vz;
+    velZ      = Altitude_NEDFrameStructure.vel_z;
     velZErr   = posZVelSp - velZ;
     valZErrD  = (spZMoveRate - velZ) * alt_PID.P - (velZ - velZPrev) / dt;        /* spZMoveRate is from manual stick vel control */
     velZPrev  = velZ;

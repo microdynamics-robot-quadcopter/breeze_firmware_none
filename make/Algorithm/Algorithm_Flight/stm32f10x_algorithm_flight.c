@@ -24,7 +24,7 @@ myyerrol    2017.04.29    Format the module
 #include "stm32f10x_driver_delay.h"
 #include "stm32f10x_module_comm_link.h"
 #include "stm32f10x_module_motor.h"
-#include "stm32f10x_algorithm_bar.h"
+#include "stm32f10x_algorithm_altitude.h"
 #include "stm32f10x_algorithm_control.h"
 #include "stm32f10x_algorithm_flight.h"
 #include "stm32f10x_algorithm_imu.h"
@@ -43,7 +43,7 @@ void Flight_SetMode(void)
                 thrustZSp   = 0;
                 altCtrlMode = CLIMB_RATE;
                 offLandFlag = 1;
-                altLand     = -nav.z;
+                altLand     = -Altitude_NEDFrameStructure.pos_z;
                 SetHeadFree(1);
             }
         }

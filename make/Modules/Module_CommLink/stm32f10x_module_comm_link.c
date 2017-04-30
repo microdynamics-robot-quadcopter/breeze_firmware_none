@@ -42,8 +42,8 @@ myyerrol    2017.04.28    Modify the module
 #include "stm32f10x_module_led.h"
 #include "stm32f10x_module_ms5611.h"
 #include "stm32f10x_module_nrf24l01.h"
+#include "stm32f10x_algorithm_altitude.h"
 #include "stm32f10x_algorithm_imu.h"
-#include "stm32f10x_algorithm_bar.h"
 
 u8   comm_link_mcu_state   = COMM_LINK_STATE_DISEN_MCU;
 u16  comm_link_rc_data[4]  = {1500, 1500, 1500, 1500};
@@ -204,8 +204,10 @@ void CommLink_HandleDebugDataA(void)
     CommLink_DataPacketAStructure.pitch.value = imu.pitch * 100;
     CommLink_DataPacketAStructure.yaw.value   = imu.yaw   * 100;
     CommLink_DataPacketAStructure.temp.value  = ms5611_temperature * 100;
-    CommLink_DataPacketAStructure.speed.value = nav.vz * 100;
-    CommLink_DataPacketAStructure.alt.value   = nav.z  * 100;
+    CommLink_DataPacketAStructure.speed.value =
+        Altitude_NEDFrameStructure.vel_z * 100;
+    CommLink_DataPacketAStructure.alt.value   =
+        Altitude_NEDFrameStructure.pos_z * 100;
     CommLink_DataPacketAStructure.pres.value  = ms5611_pressure;
 
 #if COMM_LINK_CONVERT_ENDIAN

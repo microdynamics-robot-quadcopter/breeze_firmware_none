@@ -37,19 +37,20 @@ void Flight_SetMode(void)
     {
         if (CommLink_DataStructure.thr >= 600)
         {
-            if (altCtrlMode != CLIMB_RATE)
+            if (control_alt_control_mode != CONTROL_STATE_CLIMB_RATE)
             {
-                zIntReset   = 1;
-                thrustZSp   = 0;
-                altCtrlMode = CLIMB_RATE;
-                offLandFlag = 1;
-                altLand     = -Altitude_NEDFrameStructure.pos_z;
-                SetHeadFree(1);
+                control_integral_reset_flag  = true;
+                control_thrust_z_split_power = 0;
+                control_alt_control_mode     = CONTROL_STATE_CLIMB_RATE;
+                control_offland_flag         = true;
+                control_alt_land             =
+                    -Altitude_NEDFrameStructure.pos_z;
+                Control_SetHeadFreeMode(true);
             }
         }
         else
         {
-            if (altCtrlMode == MANUAL)
+            if (control_alt_control_mode == MANUAL)
             {
                 CommLink_DataStructure.thr = 200;
             }
@@ -62,7 +63,7 @@ void Flight_StartAutoland(void)
     static u32 land_start_timestamp = 0;
     u32 land_time = 0;
 
-    if (offLandFlag)
+    if (control_offland_flag)
     {
         if (land_start_timestamp == 0)
         {
@@ -71,15 +72,15 @@ void Flight_StartAutoland(void)
         land_time = Delay_GetRuntimeMs() - land_start_timestamp;
         if (land_time > FLIGHT_AUTOLAND_TIME_MAX)
         {
-            altCtrlMode               = MANUAL;
+            control_alt_control_mode  = CONTROL_STATE_MANUAL;
             comm_link_fly_enable_flag = false;
-            offLandFlag               = 0;
+            control_offland_flag      = false;
             land_start_timestamp      = 0;
         }
     }
     else
     {
-        altCtrlMode               = MANUAL;
+        control_alt_control_mode  = CONTROL_STATE_MANUAL;
         comm_link_fly_enable_flag = false;
     }
 }
@@ -110,9 +111,9 @@ void Flight_HandleFailures(void)
     }
     if (lost_rc_time > FLIGHT_LOST_RC_TIME_MAX)
     {
-        if (offLandFlag || comm_link_fly_enable_flag)
+        if (control_offland_flag || comm_link_fly_enable_flag)
         {
-            altCtrlMode = LANDING;
+            control_alt_control_mode = CONTROL_STATE_LANDING;
         }
         flight_lost_rc_flag = true;
     }

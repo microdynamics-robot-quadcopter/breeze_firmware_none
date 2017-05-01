@@ -321,7 +321,7 @@ void CommLink_HandleDebubDataC(void)
 
 void CommLink_ProcessDataFromNRF(void)
 {
-    if (altCtrlMode == LANDING)
+    if (control_alt_control_mode == CONTROL_STATE_LANDING)
     {
         comm_link_rc_data[ROLL]     = 1500;
         comm_link_rc_data[PITCH]    = 1500;
@@ -364,13 +364,13 @@ void CommLink_ProcessDataFromNRF(void)
         }
         case COMM_LINK_STATE_REQ_DISEN_MCU:
         {
-            comm_link_mcu_state        = COMM_LINK_STATE_DISEN_MCU;
-            comm_link_fly_enable_flag  = false;
-            altCtrlMode                = MANUAL;
-            zIntReset                  = 1;
-            thrustZSp                  = 0;
-            thrustZInt                 = EstimateHoverThru();
-            offLandFlag                = 0;
+            comm_link_mcu_state          = COMM_LINK_STATE_DISEN_MCU;
+            comm_link_fly_enable_flag    = false;
+            control_alt_control_mode     = CONTROL_STATE_MANUAL;
+            control_integral_reset_flag  = true;
+            control_thrust_z_split_power = 0;
+            control_thrust_z_integral    = Control_EstimateThrustRefHover();
+            control_offland_flag         = false;
             break;
         }
         default:

@@ -57,11 +57,11 @@ void Battery_Check(void)
             Battery_InformationStructure.over_discharge_cnt++;
             if (Battery_InformationStructure.over_discharge_cnt > 8)
             {
-                altCtrlMode          = LANDING;
-                comm_link_rc_data[0] = 1500;
-                comm_link_rc_data[1] = 1500;
-                comm_link_rc_data[2] = 1500;
-                comm_link_rc_data[3] = 1500;
+                control_alt_control_mode = CONTROL_STATE_LANDING;
+                comm_link_rc_data[0]     = 1500;
+                comm_link_rc_data[1]     = 1500;
+                comm_link_rc_data[2]     = 1500;
+                comm_link_rc_data[3]     = 1500;
             }
         }
         else

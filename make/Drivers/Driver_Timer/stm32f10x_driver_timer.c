@@ -11,7 +11,8 @@ Create date: 2016.08.17
 Description: implement the timer set operation
 Others:      none
 Function List:
-             1. void TIM4_Init(u16 arr, u16 psc);
+             1. void Timer_InitTIM3(u16 arr, u16 psc)
+             2. void Timer_InitTIM4(u16 arr, u16 psc);
 History:
 1. <author>    <date>         <desc>
    maksyuki  2016.12.03  modify the module

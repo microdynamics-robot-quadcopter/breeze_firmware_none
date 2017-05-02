@@ -11,6 +11,8 @@ Create date: 2016.08.17
 Description: Declare the timer set operation
 Others:      none
 Function List:
+             1. void Timer_InitTIM3(u16 arr, u16 psc)
+             2. void Timer_InitTIM4(u16 arr, u16 psc);
 History:
 <author>    <date>        <desc>
 maksyuki    2016.12.03    Modify the module

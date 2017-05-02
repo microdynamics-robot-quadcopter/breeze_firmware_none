@@ -11,6 +11,15 @@ Create date: 2016.09.14
 Description: Implement the control function
 Others:      none
 Function List:
+             1. void  Control_CallPIDAngle(void);
+             2. void  Control_CallPIDAngleRate(void);
+             3. void  Control_CallPIDPosition(Control_PID *pid, float target,
+                                              float measure, s32 delta_time);
+             4. void  Control_SetAltitude(void);
+             5. void  Control_SetHeadFreeMode(bool flag);
+             6. void  Control_SetMotorPWM(void);
+             7. float Control_EstimateThrustRefMin(void);
+             8. float Control_EstimateThrustRefHover(void);
 History:
 <author>    <date>        <desc>
 maksyuki    2017.01.11    Modify the module
@@ -40,6 +49,7 @@ Control_PID Control_PIDRollAngleRate;
 Control_PID Control_PIDYawAngle;
 Control_PID Control_PIDYawAngleRate;
 Control_PID Control_PIDAlt;
+Control_PID Control_PIDAltVel;
 
 static s16 output_motor[4] = {0};
 // According to split power, calculate the expected roll and pitch.
@@ -96,10 +106,10 @@ void Control_CallPIDAngle(void)
             target_angle[ROLL]  * diff_sin;
     }
 
-    Control_CalPIDPosition(&Control_PIDPitchAngle, target_angle[PITCH],
-                           imu.pitch, delta_time);
-    Control_CalPIDPosition(&Control_PIDRollAngle, target_angle[ROLL],
-                           imu.roll, delta_time);
+    Control_CallPIDPosition(&Control_PIDPitchAngle, target_angle[PITCH],
+                            imu.pitch, delta_time);
+    Control_CallPIDPosition(&Control_PIDRollAngle, target_angle[ROLL],
+                            imu.roll, delta_time);
 }
 
 // Control quadcopter's attitude. Angle rate control in cascade pid.
@@ -117,15 +127,15 @@ void Control_CallPIDAngleRate(void)
     yaw_angle_rate = -(float)CommLink_DataStructure.yaw;
 
     // Note: original pid parameters are in AD value, need to convert.
-    Control_CalPIDPosition(&Control_PIDPitchAngleRate,
+    Control_CallPIDPosition(&Control_PIDPitchAngleRate,
                             Control_PIDPitchAngle.output,
                             imu.gyro[PITCH] * 180.0f / M_PI,
                             delta_time);
-    Control_CalPIDPosition(&Control_PIDRollAngleRate,
+    Control_CallPIDPosition(&Control_PIDRollAngleRate,
                             Control_PIDRollAngle.output,
                             imu.gyro[ROLL] * 180.0f / M_PI,
                             delta_time);
-    Control_CalPIDPosition(&Control_PIDYawAngleRate,
+    Control_CallPIDPosition(&Control_PIDYawAngleRate,
                             yaw_angle_rate,
                             imu.gyro[YAW] * 180.0f / M_PI,
                             delta_time);
@@ -261,7 +271,7 @@ void Control_SetAltitude(void)
     // Set pid and feedforward control in NED frame.
     pos_z_error           = -(alt_split_power - alt);
     pos_z_vel_split_power = pos_z_error * Control_PIDAlt.kp +
-        split_power_z_move_rate * ALT_FEED_FORWARD;
+        split_power_z_move_rate * CONTROL_ALT_FEED_FORWARD;
 
     // Consider landing mode.
     if (control_alt_control_mode == CONTROL_STATE_LANDING)
@@ -282,8 +292,8 @@ void Control_SetAltitude(void)
         (vel_z - vel_z_pre) / delta_time;
     vel_z_pre       = vel_z;
     // In NED frame, control_thrust_z_integral contains hover thrust.
-    control_thrust_z_split_power = vel_z_error * alt_vel_PID.kp +
-        val_z_error_der * alt_vel_PID.kd + control_thrust_z_integral;
+    control_thrust_z_split_power = vel_z_error * Control_PIDAltVel.kp +
+        val_z_error_der * Control_PIDAltVel.kd + control_thrust_z_integral;
 
     // Limit thrust's min.
     thrust_min = Control_EstimateThrustRefMin();
@@ -376,7 +386,7 @@ void Control_SetAltitude(void)
     // If appear saturation, don't integrate.
     if (!saturation_z_flag)
     {
-        control_thrust_z_integral += vel_z_error * alt_vel_PID.ki * delta_time;
+        control_thrust_z_integral += vel_z_error * Control_PIDAltVel.ki * delta_time;
         if (control_thrust_z_integral > 0.0f)
         {
             control_thrust_z_integral = 0.0f;

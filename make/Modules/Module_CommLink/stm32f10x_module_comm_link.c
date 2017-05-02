@@ -125,72 +125,72 @@ void CommLink_HandleCommand(void)
         }
         case COMM_LINK_STATE_PC_PID_PITCH:
         {
-            pitch_rate_PID.P  = (s16)(recv_buffer[0]  << 8 | recv_buffer[1])  *
-                0.01F;
-            pitch_rate_PID.I  = (s16)(recv_buffer[2]  << 8 | recv_buffer[3])  *
-                0.01F;
-            pitch_rate_PID.D  = (s16)(recv_buffer[4]  << 8 | recv_buffer[5])  *
-                0.01F;
-            pitch_angle_PID.P = (s16)(recv_buffer[6]  << 8 | recv_buffer[7])  *
-                0.01F;
-            pitch_angle_PID.I = (s16)(recv_buffer[8]  << 8 | recv_buffer[9])  *
-                0.01F;
-            pitch_angle_PID.D = (s16)(recv_buffer[10] << 8 | recv_buffer[11]) *
-                0.01F;
+            Control_PIDPitchAngleRate.kp = (s16)(recv_buffer[0] << 8 |
+                recv_buffer[1])  * 0.01f;
+            Control_PIDPitchAngleRate.ki = (s16)(recv_buffer[2] << 8 |
+                recv_buffer[3])  * 0.01f;
+            Control_PIDPitchAngleRate.kd = (s16)(recv_buffer[4] << 8 |
+                recv_buffer[5])  * 0.01f;
+            Control_PIDPitchAngle.kp = (s16)(recv_buffer[6]  << 8 |
+                recv_buffer[7])  * 0.01f;
+            Control_PIDPitchAngle.ki = (s16)(recv_buffer[8]  << 8 |
+                recv_buffer[9])  * 0.01f;
+            Control_PIDPitchAngle.kd = (s16)(recv_buffer[10] << 8 |
+                recv_buffer[11]) * 0.01f;
             CommLink_WritePID(COMM_LINK_STATE_PC_PID_PITCH);
             eeprom_params_request_flag = true;
             break;
         }
         case COMM_LINK_STATE_PC_PID_ROLL:
         {
-            roll_rate_PID.P  = (s16)(recv_buffer[0]  << 8 | recv_buffer[1])  *
-                0.01F;
-            roll_rate_PID.I  = (s16)(recv_buffer[2]  << 8 | recv_buffer[3])  *
-                0.01F;
-            roll_rate_PID.D  = (s16)(recv_buffer[4]  << 8 | recv_buffer[5])  *
-                0.01F;
-            roll_angle_PID.P = (s16)(recv_buffer[6]  << 8 | recv_buffer[7])  *
-                0.01F;
-            roll_angle_PID.I = (s16)(recv_buffer[8]  << 8 | recv_buffer[9])  *
-                0.01F;
-            roll_angle_PID.D = (s16)(recv_buffer[10] << 8 | recv_buffer[11]) *
-                0.01F;
+            Control_PIDRollAngleRate.kp = (s16)(recv_buffer[0] << 8 |
+                recv_buffer[1])  * 0.01f;
+            Control_PIDRollAngleRate.ki = (s16)(recv_buffer[2] << 8 |
+                recv_buffer[3])  * 0.01f;
+            Control_PIDRollAngleRate.kd = (s16)(recv_buffer[4] << 8 |
+                recv_buffer[5])  * 0.01f;
+            Control_PIDRollAngle.kp = (s16)(recv_buffer[6]  << 8 |
+                recv_buffer[7])  * 0.01f;
+            Control_PIDRollAngle.ki = (s16)(recv_buffer[8]  << 8 |
+                recv_buffer[9])  * 0.01f;
+            Control_PIDRollAngle.kd = (s16)(recv_buffer[10] << 8 |
+                recv_buffer[11]) * 0.01f;
             CommLink_WritePID(COMM_LINK_STATE_PC_PID_ROLL);
             eeprom_params_request_flag = true;
             break;
         }
         case COMM_LINK_STATE_PC_PID_YAW:
         {
-            yaw_rate_PID.P  = (s16)(recv_buffer[0]  << 8 | recv_buffer[1])  *
-                0.01F;
-            yaw_rate_PID.I  = (s16)(recv_buffer[2]  << 8 | recv_buffer[3])  *
-                0.01F;
-            yaw_rate_PID.D  = (s16)(recv_buffer[4]  << 8 | recv_buffer[5])  *
-                0.01F;
-            yaw_angle_PID.P = (s16)(recv_buffer[6]  << 8 | recv_buffer[7])  *
-                0.01F;
-            yaw_angle_PID.I = (s16)(recv_buffer[8]  << 8 | recv_buffer[9])  *
-                0.01F;
-            yaw_angle_PID.D = (s16)(recv_buffer[10] << 8 | recv_buffer[11]) *
-                0.01F;
+            Control_PIDYawAngleRate.kp = (s16)(recv_buffer[0] << 8 |
+                recv_buffer[1])  * 0.01f;
+            Control_PIDYawAngleRate.ki = (s16)(recv_buffer[2] << 8 |
+                recv_buffer[3])  * 0.01f;
+            Control_PIDYawAngleRate.kd = (s16)(recv_buffer[4] << 8 |
+                recv_buffer[5])  * 0.01f;
+            Control_PIDYawAngle.kp = (s16)(recv_buffer[6]  << 8 |
+                recv_buffer[7])  * 0.01f;
+            Control_PIDYawAngle.ki = (s16)(recv_buffer[8]  << 8 |
+                recv_buffer[9])  * 0.01f;
+            Control_PIDYawAngle.kd = (s16)(recv_buffer[10] << 8 |
+                recv_buffer[11]) * 0.01f;
             CommLink_WritePID(COMM_LINK_STATE_PC_PID_YAW);
             eeprom_params_request_flag = true;
             break;
         }
         case COMM_LINK_STATE_PC_PID_ALT:
         {
-            alt_vel_PID.P = (s16)(recv_buffer[0]  << 8 | recv_buffer[1])  *
-                0.01F;
-            alt_vel_PID.I = (s16)(recv_buffer[2]  << 8 | recv_buffer[3])  *
-                0.01F;
-            alt_vel_PID.D = (s16)(recv_buffer[4]  << 8 | recv_buffer[5])  *
-                0.01F;
-            alt_PID.P     = (s16)(recv_buffer[6]  << 8 | recv_buffer[7])  *
-                0.01F;
-            alt_PID.I     = (s16)(recv_buffer[8]  << 8 | recv_buffer[9])  *
-                0.01F;
-            alt_PID.D     = (s16)(recv_buffer[10] << 8 | recv_buffer[11]) *
-                0.01F;
+            Control_PIDAltVel.kp = (s16)(recv_buffer[0]  << 8 | recv_buffer[1])
+                * 0.01f;
+            Control_PIDAltVel.ki = (s16)(recv_buffer[2]  << 8 | recv_buffer[3])
+                * 0.01f;
+            Control_PIDAltVel.kd = (s16)(recv_buffer[4]  << 8 | recv_buffer[5])
+                * 0.01f;
+            Control_PIDAlt.kp    = (s16)(recv_buffer[6]  << 8 | recv_buffer[7])
+                * 0.01f;
+            Control_PIDAlt.ki    = (s16)(recv_buffer[8]  << 8 | recv_buffer[9])
+                * 0.01f;
+            Control_PIDAlt.kd    = (s16)(recv_buffer[10] << 8 | recv_buffer[11])
+                * 0.01f;
             CommLink_WritePID(COMM_LINK_STATE_PC_PID_ALT);
             eeprom_params_request_flag = true;
             break;
@@ -336,13 +336,13 @@ void CommLink_ProcessDataFromNRF(void)
 
     CommLink_DataStructure.roll  = CommLink_CutDBScaleToLinear(
         (comm_link_rc_data[ROLL] - 1500), 500, COMM_LINK_APP_DB_PR) *
-        ANGLE_MAX;
+        CONTROL_ANGLE_MAX;
     CommLink_DataStructure.pitch = CommLink_CutDBScaleToLinear(
         (comm_link_rc_data[PITCH] - 1500), 500, COMM_LINK_APP_DB_PR) *
-        ANGLE_MAX;
+        CONTROL_ANGLE_MAX;
     CommLink_DataStructure.yaw   = CommLink_CutDBScaleToLinear(
         (comm_link_rc_data[YAW] - 1500), 500, COMM_LINK_APP_DB_YAW) *
-        YAW_RATE_MAX;
+        CONTROL_YAW_RATE_MAX;
     CommLink_DataStructure.thr = comm_link_rc_data[THROTTLE] - 1000;
 
     switch (comm_link_mcu_state)
@@ -540,45 +540,63 @@ void CommLink_WritePacket(u8 command)
         case COMM_LINK_STATE_PC_PID_PITCH:
         {
             CommLink_AddBits8ToBuffer(0X0C);
-            CommLink_AddBits16ToBuffer((s16)((pitch_rate_PID.P  * 100)));
-            CommLink_AddBits16ToBuffer((s16)((pitch_rate_PID.I  * 100)));
-            CommLink_AddBits16ToBuffer((s16)((pitch_rate_PID.D  * 100)));
-            CommLink_AddBits16ToBuffer((s16)((pitch_angle_PID.P * 100)));
-            CommLink_AddBits16ToBuffer((s16)((pitch_angle_PID.I * 100)));
-            CommLink_AddBits16ToBuffer((s16)((pitch_angle_PID.D * 100)));
+            CommLink_AddBits16ToBuffer(
+                (s16)((Control_PIDPitchAngleRate.kp * 100)));
+            CommLink_AddBits16ToBuffer(
+                (s16)((Control_PIDPitchAngleRate.ki * 100)));
+            CommLink_AddBits16ToBuffer(
+                (s16)((Control_PIDPitchAngleRate.kd * 100)));
+            CommLink_AddBits16ToBuffer(
+                (s16)((Control_PIDPitchAngle.kp * 100)));
+            CommLink_AddBits16ToBuffer(
+                (s16)((Control_PIDPitchAngle.ki * 100)));
+            CommLink_AddBits16ToBuffer(
+                (s16)((Control_PIDPitchAngle.kd * 100)));
             break;
         }
         case COMM_LINK_STATE_PC_PID_ROLL:
         {
             CommLink_AddBits8ToBuffer(0X0C);
-            CommLink_AddBits16ToBuffer((s16)((roll_rate_PID.P  * 100)));
-            CommLink_AddBits16ToBuffer((s16)((roll_rate_PID.I  * 100)));
-            CommLink_AddBits16ToBuffer((s16)((roll_rate_PID.D  * 100)));
-            CommLink_AddBits16ToBuffer((s16)((roll_angle_PID.P * 100)));
-            CommLink_AddBits16ToBuffer((s16)((roll_angle_PID.I * 100)));
-            CommLink_AddBits16ToBuffer((s16)((roll_angle_PID.D * 100)));
+            CommLink_AddBits16ToBuffer(
+                (s16)((Control_PIDRollAngleRate.kp * 100)));
+            CommLink_AddBits16ToBuffer(
+                (s16)((Control_PIDRollAngleRate.ki * 100)));
+            CommLink_AddBits16ToBuffer(
+                (s16)((Control_PIDRollAngleRate.kd * 100)));
+            CommLink_AddBits16ToBuffer(
+                (s16)((Control_PIDRollAngle.kp * 100)));
+            CommLink_AddBits16ToBuffer(
+                (s16)((Control_PIDRollAngle.ki * 100)));
+            CommLink_AddBits16ToBuffer(
+                (s16)((Control_PIDRollAngle.kd * 100)));
             break;
         }
         case COMM_LINK_STATE_PC_PID_YAW:
         {
             CommLink_AddBits8ToBuffer(0X0C);
-            CommLink_AddBits16ToBuffer((s16)((yaw_rate_PID.P  * 100)));
-            CommLink_AddBits16ToBuffer((s16)((yaw_rate_PID.I  * 100)));
-            CommLink_AddBits16ToBuffer((s16)((yaw_rate_PID.D  * 100)));
-            CommLink_AddBits16ToBuffer((s16)((yaw_angle_PID.P * 100)));
-            CommLink_AddBits16ToBuffer((s16)((yaw_angle_PID.I * 100)));
-            CommLink_AddBits16ToBuffer((s16)((yaw_angle_PID.D * 100)));
+            CommLink_AddBits16ToBuffer(
+                (s16)((Control_PIDYawAngleRate.kp * 100)));
+            CommLink_AddBits16ToBuffer(
+                (s16)((Control_PIDYawAngleRate.ki * 100)));
+            CommLink_AddBits16ToBuffer(
+                (s16)((Control_PIDYawAngleRate.kd * 100)));
+            CommLink_AddBits16ToBuffer(
+                (s16)((Control_PIDYawAngle.kp * 100)));
+            CommLink_AddBits16ToBuffer(
+                (s16)((Control_PIDYawAngle.ki * 100)));
+            CommLink_AddBits16ToBuffer(
+                (s16)((Control_PIDYawAngle.kd * 100)));
             break;
         }
         case COMM_LINK_STATE_PC_PID_ALT:
         {
             CommLink_AddBits8ToBuffer(0X0C);
-            CommLink_AddBits16ToBuffer((s16)((alt_vel_PID.P * 100)));
-            CommLink_AddBits16ToBuffer((s16)((alt_vel_PID.I * 100)));
-            CommLink_AddBits16ToBuffer((s16)((alt_vel_PID.D * 100)));
-            CommLink_AddBits16ToBuffer((s16)((alt_PID.P     * 100)));
-            CommLink_AddBits16ToBuffer((s16)((alt_PID.I     * 100)));
-            CommLink_AddBits16ToBuffer((s16)((alt_PID.D     * 100)));
+            CommLink_AddBits16ToBuffer((s16)((Control_PIDAltVel.kp * 100)));
+            CommLink_AddBits16ToBuffer((s16)((Control_PIDAltVel.ki * 100)));
+            CommLink_AddBits16ToBuffer((s16)((Control_PIDAltVel.kd * 100)));
+            CommLink_AddBits16ToBuffer((s16)((Control_PIDAlt.kp    * 100)));
+            CommLink_AddBits16ToBuffer((s16)((Control_PIDAlt.ki    * 100)));
+            CommLink_AddBits16ToBuffer((s16)((Control_PIDAlt.kd    * 100)));
             break;
         }
     }
@@ -616,6 +634,6 @@ float CommLink_CutDBScaleToLinear(float x_start, float x_end, float deadband)
     }
     else
     {
-        return 0.0F;
+        return 0.0f;
     }
 }

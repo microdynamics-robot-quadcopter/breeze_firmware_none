@@ -11,6 +11,15 @@ Create date: 2016.09.14
 Description: Declare the control function
 Others:      none
 Function List:
+             1. void  Control_CallPIDAngle(void);
+             2. void  Control_CallPIDAngleRate(void);
+             3. void  Control_CallPIDPosition(Control_PID *pid, float target,
+                                              float measure, s32 delta_time);
+             4. void  Control_SetAltitude(void);
+             5. void  Control_SetHeadFreeMode(bool flag);
+             6. void  Control_SetMotorPWM(void);
+             7. float Control_EstimateThrustRefMin(void);
+             8. float Control_EstimateThrustRefHover(void);
 History:
 <author>    <date>        <desc>
 maksyuki    2017.01.11    Modify the module
@@ -118,8 +127,8 @@ extern Control_PID Control_PIDAltVel;
 
 extern void  Control_CallPIDAngle(void);
 extern void  Control_CallPIDAngleRate(void);
-extern void  Control_CallPIDPostion(Control_PID *pid, float target,
-                                    float measure, s32 delta_time);
+extern void  Control_CallPIDPosition(Control_PID *pid, float target,
+                                     float measure, s32 delta_time);
 extern void  Control_SetAltitude(void);
 extern void  Control_SetHeadFreeMode(bool flag);
 extern void  Control_SetMotorPWM(void);

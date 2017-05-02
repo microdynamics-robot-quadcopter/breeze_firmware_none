@@ -72,41 +72,41 @@ void EEPROM_SaveParamsToEEPROM(void)
 
 void EEPROM_SetDefaultParams(void)
 {
-    pitch_angle_PID.P      = 3.5;
-    pitch_angle_PID.I      = 0;
-    pitch_angle_PID.D      = 0;
-    pitch_angle_PID.iLimit = 300;
+    Control_PIDPitchAngle.kp        = 3.5;
+    Control_PIDPitchAngle.ki        = 0;
+    Control_PIDPitchAngle.kd        = 0;
+    Control_PIDPitchAngle.limit_int = 300;
 
-    pitch_rate_PID.P      = 0.7;
-    pitch_rate_PID.I      = 0.5;
-    pitch_rate_PID.D      = 0.03;
-    pitch_rate_PID.iLimit = 300;
+    Control_PIDPitchAngleRate.kp        = 0.7;
+    Control_PIDPitchAngleRate.ki        = 0.5;
+    Control_PIDPitchAngleRate.kd        = 0.03;
+    Control_PIDPitchAngleRate.limit_int = 300;
 
-    roll_angle_PID.P      = 3.5;
-    roll_angle_PID.I      = 0;
-    roll_angle_PID.D      = 0;
-    roll_angle_PID.iLimit = 300;
+    Control_PIDRollAngle.kp        = 3.5;
+    Control_PIDRollAngle.ki        = 0;
+    Control_PIDRollAngle.kd        = 0;
+    Control_PIDRollAngle.limit_int = 300;
 
-    roll_rate_PID.P      = 0.7;
-    roll_rate_PID.I      = 0.5;
-    roll_rate_PID.D      = 0.03;
-    roll_rate_PID.iLimit = 300;
+    Control_PIDRollAngleRate.kp        = 0.7;
+    Control_PIDRollAngleRate.ki        = 0.5;
+    Control_PIDRollAngleRate.kd        = 0.03;
+    Control_PIDRollAngleRate.limit_int = 300;
 
-    yaw_angle_PID.P = 1;
-    yaw_angle_PID.I = 0.2;
-    yaw_angle_PID.D = 0;
+    Control_PIDYawAngle.kp = 1;
+    Control_PIDYawAngle.ki = 0.2;
+    Control_PIDYawAngle.kd = 0;
 
-    yaw_rate_PID.P  = 20;
-    yaw_rate_PID.I  = 0;
-    yaw_rate_PID.D  = 0;
+    Control_PIDYawAngleRate.kp = 20;
+    Control_PIDYawAngleRate.ki = 0;
+    Control_PIDYawAngleRate.kd = 0;
 
-    alt_PID.P = 1.0;
-    alt_PID.I = 0;
-    alt_PID.D = 0;
+    Control_PIDAlt.kp = 1.0;
+    Control_PIDAlt.ki = 0;
+    Control_PIDAlt.kd = 0;
 
-    alt_vel_PID.P = 0.1f;
-    alt_vel_PID.I = 0.02f;
-    alt_vel_PID.D = 0;
+    Control_PIDAltVel.kp = 0.1f;
+    Control_PIDAltVel.ki = 0.02f;
+    Control_PIDAltVel.kd = 0;
 
     imu.accOffset[0] = -0.1620515;
     imu.accOffset[1] = 0.07422026;
@@ -124,23 +124,23 @@ void EEPROM_TransParamsToTable(void)
     for (i = 0; i < 3; i++)
     {
         ((float *)(&EEPROM_TableStructure.pid_roll))[i]       =
-            ((float *)(&roll_angle_PID))[i];
+            ((float *)(&Control_PIDRollAngle))[i];
         ((float *)(&EEPROM_TableStructure.pid_pitch))[i]      =
-            ((float *)(&pitch_angle_PID))[i];
+            ((float *)(&Control_PIDPitchAngle))[i];
         ((float *)(&EEPROM_TableStructure.pid_yaw))[i]        =
-            ((float *)(&yaw_angle_PID))[i];
+            ((float *)(&Control_PIDYawAngle))[i];
 
         ((float *)(&EEPROM_TableStructure.pid_roll_rate))[i]  =
-            ((float *)(&roll_rate_PID))[i];
+            ((float *)(&Control_PIDRollAngleRate))[i];
         ((float *)(&EEPROM_TableStructure.pid_pitch_rate))[i] =
-            ((float *)(&pitch_rate_PID))[i];
+            ((float *)(&Control_PIDPitchAngleRate))[i];
         ((float *)(&EEPROM_TableStructure.pid_yaw_rate))[i]   =
-            ((float *)(&yaw_rate_PID))[i];
+            ((float *)(&Control_PIDYawAngleRate))[i];
 
         ((float *)(&EEPROM_TableStructure.pid_alt))[i]        =
-            ((float *)(&alt_PID))[i];
+            ((float *)(&Control_PIDAlt))[i];
         ((float *)(&EEPROM_TableStructure.pid_alt_vel))[i]    =
-            ((float *)(&alt_vel_PID))[i];
+            ((float *)(&Control_PIDAltVel))[i];
 
         EEPROM_TableStructure.offset_acc[i] = imu.accOffset[i];
         EEPROM_TableStructure.offset_gyr[i] = imu.gyroOffset[i];
@@ -161,23 +161,23 @@ void EEPROM_TransTableToParams(void)
 
     for (i = 0; i < 3; i++)
     {
-        ((float *)(&roll_angle_PID))[i]  =
+        ((float *)(&Control_PIDRollAngle))[i]  =
             ((float *)(&EEPROM_TableStructure.pid_roll))[i];
-        ((float *)(&pitch_angle_PID))[i] =
+        ((float *)(&Control_PIDPitchAngle))[i] =
             ((float *)(&EEPROM_TableStructure.pid_pitch))[i];
-        ((float *)(&yaw_angle_PID))[i]   =
+        ((float *)(&Control_PIDYawAngle))[i]   =
             ((float *)(&EEPROM_TableStructure.pid_yaw))[i];
 
-        ((float *)(&roll_rate_PID))[i]   =
+        ((float *)(&Control_PIDRollAngleRate))[i]   =
             ((float *)(&EEPROM_TableStructure.pid_roll_rate))[i];
-        ((float *)(&pitch_rate_PID))[i]  =
+        ((float *)(&Control_PIDPitchAngleRate))[i]  =
             ((float *)(&EEPROM_TableStructure.pid_pitch_rate))[i];
-        ((float *)(&yaw_rate_PID))[i]    =
+        ((float *)(&Control_PIDYawAngleRate))[i]    =
             ((float *)(&EEPROM_TableStructure.pid_yaw_rate))[i];
 
-        ((float *)(&alt_PID))[i]         =
+        ((float *)(&Control_PIDAlt))[i]         =
             ((float *)(&EEPROM_TableStructure.pid_alt))[i];
-        ((float *)(&alt_vel_PID))[i]     =
+        ((float *)(&Control_PIDAltVel))[i]     =
             ((float *)(&EEPROM_TableStructure.pid_alt_vel))[i];
 
         imu.accOffset[i]  = EEPROM_TableStructure.offset_acc[i];

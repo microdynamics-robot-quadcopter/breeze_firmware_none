@@ -50,7 +50,7 @@ void Flight_SetMode(void)
         }
         else
         {
-            if (control_alt_control_mode == MANUAL)
+            if (control_alt_control_mode == CONTROL_STATE_MANUAL)
             {
                 CommLink_DataStructure.thr = 200;
             }

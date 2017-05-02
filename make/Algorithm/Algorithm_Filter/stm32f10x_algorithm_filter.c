@@ -71,7 +71,7 @@ void Filter_SetLPF2pCutoffFreq_1(float sample_freq, float cutoff_freq)
     }
 }
 
-float Filger_ApplyLPF2p_1(float sample)
+float Filter_ApplyLPF2p_1(float sample)
 {
     float delay_element_0 = 0;
     float output = 0;
@@ -189,7 +189,7 @@ void Filter_SetLPF2pCutoffFreq_3(float sample_freq, float cutoff_freq)
     }
 }
 
-float Filger_ApplyLPF2p_3(float sample)
+float Filter_ApplyLPF2p_3(float sample)
 {
     float delay_element_0 = 0;
     float output = 0;
@@ -366,7 +366,7 @@ void Filter_SetLPF2pCutoffFreq_6(float sample_freq, float cutoff_freq)
     }
 }
 
-float LPF2pApply_6(float sample)
+float Filter_ApplyLPF2p_6(float sample)
 {
     float delay_element_0 = 0;
     float output = 0;

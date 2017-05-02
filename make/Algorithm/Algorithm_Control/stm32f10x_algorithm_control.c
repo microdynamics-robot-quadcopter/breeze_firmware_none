@@ -147,8 +147,8 @@ void Control_CallPIDAngleRate(void)
     output_yaw   = Control_PIDYawAngleRate.output;
 }
 
-void Control_CallPIDPostion(Control_PID *pid, float target, float measure,
-                            s32 delta_time)
+void Control_CallPIDPosition(Control_PID *pid, float target, float measure,
+                             s32 delta_time)
 {
     float temp_integral   = 0;
     float temp_delta_time = delta_time / 1000000.0;

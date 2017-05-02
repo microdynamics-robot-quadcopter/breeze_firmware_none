@@ -286,7 +286,7 @@ void CommLink_HandleDebugDataB(void)
     CommLink_WriteBuffer();
 }
 
-void CommLink_HandleDebubDataC(void)
+void CommLink_HandleDebugDataC(void)
 {
     u8 i;
     CommLink_DataPacketBStructure.cmd      = 0X08;

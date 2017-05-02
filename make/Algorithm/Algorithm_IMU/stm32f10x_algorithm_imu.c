@@ -8,44 +8,126 @@ Filename:    stm32f10x_algorithm_imu.c
 Author:      maksyuki
 Version:     0.1.0.20161231_release
 Create date: 2016.08.21
-Description: implement the imu function
+Description: Implement the IMU_TableStructure function
 Others:      none
 Function List:
-             1. void IMU_Init(void);
-             2. void IMU_Process(void);
-             3. uint8_t IMU_Check(void);
-             4. uint8_t IMU_Calibrate(void);
-             5. void IMU_ReadSensorHandle(void);
-             6. static void EularToDCM(float DCM[3][3], float pitch,
-                                       float yaw, float roll);
-             7. static float InvSqrt(float num);
-             8. static void NonLinearSO3AHRSInit(float ax, float ay, float az,
-                                                 float mx, float my, float mz);
-             9. static void NonLinearSO3AHRSUpdate(float gx, float gy, float gz,
-                                                   float ax, float ay, float az,
-                                                   float mx, float my, float mz,
-                                                   float twoKp, float twoKi,
-                                                   float dt);
-            10. void IMU_SO3Thread(void);
+             1. void  IMU_ConvertEularToDCM(float dcm[3][3], float roll,
+                                            float pitch, float yaw);
+             2. void  IMU_GetSensorData(void);
+             3. void  IMU_Init(void);
+             4. void  IMU_InitNonLinearSO3AHRS(float acc_x, float acc_y,
+                                               float acc_z, float mag_x,
+                                               float mag_y, float mag_z);
+             5. void  IMU_StartSO3Thread(void);
+             6. void  IMU_UpdateNonLinearSO3AHRS(float gyr_x,  float gyr_y,
+                                                 float gyr_z,  float acc_x,
+                                                 float acc_y,  float acc_z,
+                                                 float mag_x,  float mag_y,
+                                                 float mag_z,  float two_kp,
+                                                 float two_ki,
+                                                 float delta_time);
+             7. bool  IMU_Calibrate(void);
+             8. bool  IMU_Check(void);
+             9. float IMU_CalculateInverseSqrt(float number);
 History:
-1. <author>    <date>         <desc>
-   maksyuki  2017.01.11  modify the module
+<author>    <date>        <desc>
+maksyuki    2017.01.11    Modify the module
+myyerrol    2017.05.02    Format the module
 *******************************************************************************/
 
+#include <math.h>
 #include "stm32f10x_driver_delay.h"
 #include "stm32f10x_module_mpu6050.h"
-#include "stm32f10x_algorithm_imu.h"
 #include "stm32f10x_algorithm_filter.h"
-#include "stm32f10x_it.h"
-#include "math.h"
+#include "stm32f10x_algorithm_imu.h"
 
-imu_t imu = {0};
-uint8_t imuCaliFlag = 0;
+bool imu_cali_flag = false;
+IMU_Table IMU_TableStructure;
+
+// Auxiliary variables to reduce number of repeated operations.
+// Quaternion of sensor frame relative to auxiliary frame.
+static float q0  = 1.0f;
+static float q1  = 0.0f;
+static float q2  = 0.0f;
+static float q3  = 0.0f;
+// Quaternion of sensor frame relative to auxiliary frame.
+static float dq0 = 0.0f;
+static float dq1 = 0.0f;
+static float dq2 = 0.0f;
+static float dq3 = 0.0f;
+
+static float q0_q0, q0_q1, q0_q2, q0_q3;
+static float q1_q1, q1_q2, q1_q3;
+static float q2_q2, q2_q3;
+static float q3_q3;
+// Bias estimation.
+static float gyr_bias[3] = {0.0f, 0.0f, 0.0f};
+static bool  filter_init_flag = false;
+
+// Convert DCM from Ground frame to Body frame.
+void IMU_ConvertEularToDCM(float dcm[3][3], float roll, float pitch, float yaw)
+{
+    float sinx, siny, sinz, cosx, cosy, cosz;
+    float cosz_cosx, cosz_cosy, sinz_cosx, cosz_sinx, sinz_sinx;
+
+    sinx = sinf(roll *  M_PI / 180.0f);
+    cosx = cosf(roll *  M_PI / 180.0f);
+    siny = sinf(pitch * M_PI / 180.0f);
+    cosy = cosf(pitch * M_PI / 180.0f);
+    sinz = sinf(yaw *   M_PI / 180.0f);
+    cosz = cosf(yaw *   M_PI / 180.0f);
+
+    cosz_cosx = cosz * cosx;
+    cosz_cosy = cosz * cosy;
+    sinz_cosx = sinz * cosx;
+    cosz_sinx = cosz * sinx;
+    sinz_sinx = sinz * sinx;
+
+    dcm[0][0] = cosz_cosy;
+    dcm[0][1] = cosy * sinz;
+    dcm[0][2] = -siny;
+    dcm[1][0] = -sinz_cosx + (cosz_sinx * siny);
+    dcm[1][1] = cosz_cosx + (sinz_sinx * siny);
+    dcm[1][2] = sinx * cosy;
+    dcm[2][0] = (sinz_sinx) + (cosz_cosx * siny);
+    dcm[2][1] = -(cosz_sinx) + (sinz_cosx * siny);
+    dcm[2][2] = cosy * cosx;
+}
+
+void IMU_GetSensorData(void)
+{
+    u8 i;
+
+    MPU6050_ReadAcc(IMU_TableStructure.acc_adc);
+    MPU6050_ReadGyr(IMU_TableStructure.gyr_adc);
+
+    for (i = 0; i < 3; i++)
+    {
+        IMU_TableStructure.acc_raw[i] = (float) IMU_TableStructure.acc_adc[i] *
+            IMU_ACC_SCALE * IMU_CONSTANTS_ONE_G;
+        IMU_TableStructure.gyr_raw[i] = (float) IMU_TableStructure.gyr_adc[i] *
+            IMU_GYR_SCALE * M_PI / 180.0f;
+    }
+
+    IMU_TableStructure.acc_b[0] = Filter_ApplyLPF2p_1(
+        IMU_TableStructure.acc_raw[0] - IMU_TableStructure.acc_off[0]);
+    IMU_TableStructure.acc_b[1] = Filter_ApplyLPF2p_2(
+        IMU_TableStructure.acc_raw[1] - IMU_TableStructure.acc_off[1]);
+    IMU_TableStructure.acc_b[2] = Filter_ApplyLPF2p_3(
+        IMU_TableStructure.acc_raw[2] - IMU_TableStructure.acc_off[2]);
+    IMU_TableStructure.gyr[0]   = Filter_ApplyLPF2p_4(
+        IMU_TableStructure.gyr_raw[0]);
+    IMU_TableStructure.gyr[1]   = Filter_ApplyLPF2p_5(
+        IMU_TableStructure.gyr_raw[1]);
+    IMU_TableStructure.gyr[2]   = Filter_ApplyLPF2p_6(
+        IMU_TableStructure.gyr_raw[2]);
+}
 
 void IMU_Init(void)
 {
-    imu.ready    = 0;  /* Need to calibrate gyro */
-    imu.caliPass = 1;
+    IMU_TableStructure.flag_ready = false;
+    IMU_TableStructure.flag_cali  = true;
+
     Filter_SetLPF2pCutoffFreq_1(IMU_SAMPLE_RATE, IMU_FILTER_CUTOFF_FREQ);
     Filter_SetLPF2pCutoffFreq_2(IMU_SAMPLE_RATE, IMU_FILTER_CUTOFF_FREQ);
     Filter_SetLPF2pCutoffFreq_3(IMU_SAMPLE_RATE, IMU_FILTER_CUTOFF_FREQ);
@@ -54,473 +136,401 @@ void IMU_Init(void)
     Filter_SetLPF2pCutoffFreq_6(IMU_SAMPLE_RATE, IMU_FILTER_CUTOFF_FREQ);
 }
 
-/* Should place to a level surface and keep it stop for 1~2 second */
-/* Return 1 when finish, calibration time is 3s */
-uint8_t IMU_Calibrate(void)
+// Using accelerometer and magnetometer to sense the gravity vector and yaw.
+void  IMU_InitNonLinearSO3AHRS(float acc_x, float acc_y, float acc_z,
+                               float mag_x, float mag_y, float mag_z)
 {
-    static float AccSum[3]     = {0, 0, 0};
-    static float GyroSum[3]    = {0, 0, 0};
-    static uint16_t cnt        = 0;
-    static uint16_t PreTime    = 0;
-    static uint8_t calibrating = 0;
-    uint8_t ret                = 0;
-    uint8_t i                  = 0;
-    uint16_t dt                = 0;
-    uint16_t NowTime           = 0;
+    float init_roll, init_pitch;
+    float cos_roll, sin_roll, cos_pitch, sin_pitch;
+    float mag_x_temp, mag_y_temp;
+    float init_hdg, cos_heading, sin_heading;
 
-    NowTime = (u16)Delay_GetRuntimeMs();
-    dt = NowTime - PreTime;
+    init_roll  = atan2(-acc_y, -acc_z);
+    init_pitch = atan2(acc_x, -acc_z);
 
-    if (!calibrating)
+    sin_roll  = sinf(init_roll);
+    cos_roll  = cosf(init_roll);
+    sin_pitch = sinf(init_pitch);
+    cos_pitch = cosf(init_pitch);
+
+    mag_x_temp = mag_x * cos_pitch + mag_y * sin_roll * sin_pitch + mag_z *
+        cos_roll * sin_pitch;
+    mag_y_temp = mag_y * cos_roll - mag_z * sin_roll;
+
+    init_hdg = atan2f(-mag_y_temp, mag_x_temp);
+
+    cos_roll    = cosf(init_roll * 0.5f);
+    sin_roll    = sinf(init_roll * 0.5f);
+
+    cos_pitch   = cosf(init_pitch * 0.5f);
+    sin_pitch   = sinf(init_pitch * 0.5f);
+
+    cos_heading = cosf(init_hdg * 0.5f);
+    sin_heading = sinf(init_hdg * 0.5f);
+
+    q0 = cos_roll * cos_pitch * cos_heading + sin_roll * sin_pitch *
+        sin_heading;
+    q1 = sin_roll * cos_pitch * cos_heading - cos_roll * sin_pitch *
+        sin_heading;
+    q2 = cos_roll * sin_pitch * cos_heading + sin_roll * cos_pitch *
+        sin_heading;
+    q3 = cos_roll * cos_pitch * sin_heading - sin_roll * sin_pitch *
+        cos_heading;
+
+    q0_q0 = q0 * q0;
+    q0_q1 = q0 * q1;
+    q0_q2 = q0 * q2;
+    q0_q3 = q0 * q3;
+    q1_q1 = q1 * q1;
+    q1_q2 = q1 * q2;
+    q1_q3 = q1 * q3;
+    q2_q2 = q2 * q2;
+    q2_q3 = q2 * q3;
+    q3_q3 = q3 * q3;
+}
+
+// Using software for attitude's calculation.
+void IMU_StartSO3Thread(void)
+{
+    u8    i;
+    u32   timestamp_now;
+    // Unit: s.
+    float delta_time    = 0.01f;
+    // Output euler angles.
+    // Unit: rad/s
+    float euler[3]      = {0.0f, 0.0f, 0.0f};
+    // Rotation matrix.
+    float rot_matrix[9] = {1.f,  0.0f,  0.0f, 0.0f,  1.f,  0.0f, 0.0f,  0.0f,
+                           1.f};
+    // Unit: m/s^2.
+    float acc[3]        = {0.0f, 0.0f, 0.0f};
+    float mag[3]        = {0.0f, 0.0f, 0.0f};
+    // Unit: rad/s.
+    float gyr[3]        = {0.0f, 0.0f, 0.0f};
+    static u16 offset_count        = 0;
+    // Unit: us.
+    static u32 timestamp_pre       = 0;
+    // Unit: us.
+    static u32 timestamp_start     = 0;
+    /* Need to calc gyr offset before IMU_TableStructure start working */
+    static float gyr_offset_sum[3] = {0.0f, 0.0f, 0.0f};
+
+    timestamp_now = Delay_GetRuntimeUs();
+    delta_time    = (timestamp_pre > 0) ? (timestamp_now - timestamp_pre) /
+        1000000.0f : 0;
+    timestamp_pre = timestamp_now;
+
+    IMU_GetSensorData();
+
+    if (!IMU_TableStructure.flag_ready)
     {
-        calibrating = 1;
-        for (i = 0; i < 3; i++)
+        if (timestamp_start == 0)
         {
-            cnt        = 0;
-            imu.ready  = 0;
-            AccSum[i]  = 0;
-            GyroSum[i] = 0;
+            timestamp_start = timestamp_now;
         }
-    }
-
-    /* 10ms */
-    if (dt >= 10)
-    {
-        if (cnt < 300)
+        gyr_offset_sum[0] += IMU_TableStructure.gyr_raw[0];
+        gyr_offset_sum[1] += IMU_TableStructure.gyr_raw[1];
+        gyr_offset_sum[2] += IMU_TableStructure.gyr_raw[2];
+        offset_count++;
+        if (timestamp_now > timestamp_start + IMU_CALI_TIME_GYR)
         {
-            for (i = 0; i < 3; i++)
-            {
-                AccSum[i]  += imu.accRaw[i];
-                GyroSum[i] += imu.gyroRaw[i];
-            }
-            cnt++;
-            PreTime = NowTime;
+            IMU_TableStructure.gyr_off[0] = gyr_offset_sum[0] / offset_count;
+            IMU_TableStructure.gyr_off[1] = gyr_offset_sum[1] / offset_count;
+            IMU_TableStructure.gyr_off[2] = gyr_offset_sum[2] / offset_count;
+            IMU_TableStructure.flag_ready = true;
+            gyr_offset_sum[0] = 0;
+            gyr_offset_sum[1] = 0;
+            gyr_offset_sum[2] = 0;
+            timestamp_start   = 0;
+            offset_count      = 0;
         }
-        else
-        {
-            for (i = 0; i < 3; i++)
-            {
-                imu.accOffset[i]  = AccSum[i] / (float) cnt;
-                imu.gyroOffset[i] = GyroSum[i] / (float) cnt;
-            }
-            imu.accOffset[2] -= CONSTANTS_ONE_G;
-            calibrating = 0;
-            ret = 1;
-        }
+        return ;
     }
-    return ret;
-}
 
-#define SENSOR_MAX_G 8.0f     /* Max constant g */
-#define SENSOR_MAX_W 2000.0f  /* Max deg/s */
-#define ACC_SCALE (SENSOR_MAX_G / 32768.0f)
-#define GYRO_SCALE (SENSOR_MAX_W / 32768.0f)
+    gyr[0] = IMU_TableStructure.gyr[0] - IMU_TableStructure.gyr_off[0];
+    gyr[1] = IMU_TableStructure.gyr[1] - IMU_TableStructure.gyr_off[1];
+    gyr[2] = IMU_TableStructure.gyr[2] - IMU_TableStructure.gyr_off[2];
 
-void IMU_ReadSensorHandle(void)
-{
-    uint8_t i;
-    MPU6050_ReadAcc(imu.accADC);    /* Read raw value */
-    MPU6050_ReadGyr(imu.gyroADC);
+    acc[0] = -IMU_TableStructure.acc_b[0];
+    acc[1] = -IMU_TableStructure.acc_b[1];
+    acc[2] = -IMU_TableStructure.acc_b[2];
 
-    for (i = 0; i < 3; i++)
+    IMU_UpdateNonLinearSO3AHRS(gyr[0],  gyr[1],  gyr[2],
+                              -acc[0], -acc[1], -acc[2],
+                               mag[0],  mag[1],  mag[2],
+                               IMU_SO3_COMP_PARAMS_KP,
+                               IMU_SO3_COMP_PARAMS_KI,
+                               delta_time);
+
+    // Convert q->R, This R converts Inertial frame to Body frame.
+    rot_matrix[0] = q0_q0 + q1_q1 - q2_q2 - q3_q3;
+    rot_matrix[1] = 2.f * (q1 * q2 + q0 * q3);
+    rot_matrix[2] = 2.f * (q1 * q3 - q0 * q2);
+    rot_matrix[3] = 2.f * (q1 * q2 - q0 * q3);
+    rot_matrix[4] = q0_q0 - q1_q1 + q2_q2 - q3_q3;
+    rot_matrix[5] = 2.f * (q2 * q3 + q0 * q1);
+    rot_matrix[6] = 2.f * (q1 * q3 + q0 * q2);
+    rot_matrix[7] = 2.f * (q2 * q3 - q0 * q1);
+    rot_matrix[8] = q0_q0 - q1_q1 - q2_q2 + q3_q3;
+
+    // Convert from Rotation matrix to Euler angles.
+    // Roll.
+    euler[0] =  atan2f(rot_matrix[5], rot_matrix[8]);
+    // Pitch.
+    euler[1] = -asinf(rot_matrix[2]);
+    // Yaw.
+    euler[2] =  atan2f(rot_matrix[1], rot_matrix[0]);
+
+    /* dcm, ground to body */
+    for (i = 0; i < 9; i++)
     {
-        imu.accRaw[i] = (float) imu.accADC[i] * ACC_SCALE * CONSTANTS_ONE_G;
-        imu.gyroRaw[i] = (float) imu.gyroADC[i] * GYRO_SCALE * M_PI_F / 180.0f;
+        *(&(IMU_TableStructure.dcm_gb[0][0]) + i) = rot_matrix[i];
     }
 
-    imu.accb[0] = Filter_ApplyLPF2p_1(imu.accRaw[0] - imu.accOffset[0]);
-    imu.accb[1] = Filter_ApplyLPF2p_2(imu.accRaw[1] - imu.accOffset[1]);
-    imu.accb[2] = Filter_ApplyLPF2p_3(imu.accRaw[2] - imu.accOffset[2]);
-    imu.gyro[0] = Filter_ApplyLPF2p_4(imu.gyroRaw[0]);
-    imu.gyro[1] = Filter_ApplyLPF2p_5(imu.gyroRaw[1]);
-    imu.gyro[2] = Filter_ApplyLPF2p_6(imu.gyroRaw[2]);
+    IMU_TableStructure.roll_rad  = euler[0];
+    IMU_TableStructure.pitch_rad = euler[1];
+    IMU_TableStructure.yaw_rad   = euler[2];
+
+    IMU_TableStructure.roll_ang  = euler[0] * 180.0f / M_PI;
+    IMU_TableStructure.pitch_ang = euler[1] * 180.0f / M_PI;
+    IMU_TableStructure.yaw_ang   = euler[2] * 180.0f / M_PI;
 }
 
-#define ACCZ_ERR_MAX 0.05 /* m/s^2 */
-#define CHECK_CNT    5
-
-uint8_t IMU_Check(void)
+// Using Mahony complementary filtering algorithm.
+void  IMU_UpdateNonLinearSO3AHRS(float gyr_x,  float gyr_y,  float gyr_z,
+                                 float acc_x,  float acc_y,  float acc_z,
+                                 float mag_x,  float mag_y,  float mag_z,
+                                 float two_kp, float two_ki, float delta_time)
 {
-    uint32_t AccZSum = 0;
-    float AccZb      = 0;
-
-    uint8_t i;
-    for (i = 0; i < CHECK_CNT; i++)
-    {
-        MPU6050_ReadAcc(imu.accADC);
-        AccZSum += imu.accADC[2];
-    }
-    imu.accRaw[2] = (float) (AccZSum / (float) CHECK_CNT) * ACC_SCALE * CONSTANTS_ONE_G;
-    AccZb = imu.accRaw[2] - imu.accOffset[2];
-
-    if ((AccZb > CONSTANTS_ONE_G - ACCZ_ERR_MAX) && (AccZb < CONSTANTS_ONE_G + ACCZ_ERR_MAX))
-    {
-        imu.caliPass = 1;
-    }
-    else
-    {
-        imu.caliPass = 0;
-    }
-    return imu.caliPass;
-}
-
-/*
-in standard sequence , roll-pitch-yaw , x-y-z
-angle in rad
-get DCM for ground to body
-*/
-/* DMP needs */
-static void EularToDCM(float DCM[3][3], float pitch, float yaw, float roll)
-{
-    float cosx, cosy, cosz, sinx, siny, sinz;
-    float coszcosx, coszcosy, sinzcosx, coszsinx, sinzsinx;
-
-    cosx = cosf(roll * M_PI_F / 180.0f);
-    sinx = sinf(roll * M_PI_F / 180.0f);
-    cosy = cosf(pitch * M_PI_F / 180.0f);
-    siny = sinf(pitch * M_PI_F / 180.0f);
-    cosz = cosf(yaw * M_PI_F / 180.0f);
-    sinz = sinf(yaw * M_PI_F / 180.0f);
-
-    coszcosx = cosz * cosx;
-    coszcosy = cosz * cosy;
-    sinzcosx = sinz * cosx;
-    coszsinx = cosz * sinx;
-    sinzsinx = sinz * sinx;
-
-    DCM[0][0] = coszcosy;
-    DCM[0][1] = cosy * sinz;
-    DCM[0][2] = -siny;
-    DCM[1][0] = -sinzcosx + (coszsinx * siny);
-    DCM[1][1] = coszcosx + (sinzsinx * siny);
-    DCM[1][2] = sinx * cosy;
-    DCM[2][0] = (sinzsinx) + (coszcosx * siny);
-    DCM[2][1] = -(coszsinx) + (sinzcosx * siny);
-    DCM[2][2] = cosy * cosx;
-}
-
-/* Auxiliary variables to reduce number of repeated operations */
-static float q0 = 1.0f;
-static float q1 = 0.0f;   /* Quaternion of sensor frame relative to auxiliary frame */
-static float q2 = 0.0f;
-static float q3 = 0.0f;
-
-static float dq0 = 0.0f;
-static float dq1 = 0.0f;  /* Quaternion of sensor frame relative to auxiliary frame */
-static float dq2 = 0.0f;
-static float dq3 = 0.0f;
-
-static float gyro_bias[3] = {0.0f, 0.0f, 0.0f};  /* Bias estimation */
-static float q0q0, q0q1, q0q2, q0q3;
-static float q1q1, q1q2, q1q3;
-static float q2q2, q2q3;
-static float q3q3;
-
-static uint8_t bFilterInit = 0;
-
-/* Carmack algorithm */
-static float InvSqrt(float num)
-{
-    volatile long  i;
-    volatile float x;
-    volatile float y;
-    volatile const float f = 1.5F;
-
-    x = num * 0.5F;
-    y = num;
-    i = *((long*) &y);
-    i = 0x5F375A86 - (i >> 1);
-    y = *((float*) &i);
-    y = y * (f - (x * y * y));
-    return y;
-}
-
-/* Using accelerometer, sense the gravity vector */
-/* Using magnetometer, sense yaw */
-static void NonLinearSO3AHRSInit(float ax, float ay, float az, float mx, float my, float mz)
-{
-    float initialRoll, initialPitch;
-    float cosRoll, sinRoll, cosPitch, sinPitch;
-    float magX, magY;
-    float initialHdg, cosHeading, sinHeading;
-
-    initialRoll  = atan2(-ay, -az);
-    initialPitch = atan2(ax, -az);
-
-    cosRoll  = cosf(initialRoll);
-    sinRoll  = sinf(initialRoll);
-    cosPitch = cosf(initialPitch);
-    sinPitch = sinf(initialPitch);
-
-    magX = mx * cosPitch + my * sinRoll * sinPitch + mz * cosRoll * sinPitch;
-    magY = my * cosRoll - mz * sinRoll;
-
-    initialHdg = atan2f(-magY, magX);
-
-    cosRoll    = cosf(initialRoll * 0.5f);
-    sinRoll    = sinf(initialRoll * 0.5f);
-
-    cosPitch   = cosf(initialPitch * 0.5f);
-    sinPitch   = sinf(initialPitch * 0.5f);
-
-    cosHeading = cosf(initialHdg * 0.5f);
-    sinHeading = sinf(initialHdg * 0.5f);
-
-    q0 = cosRoll * cosPitch * cosHeading + sinRoll * sinPitch * sinHeading;
-    q1 = sinRoll * cosPitch * cosHeading - cosRoll * sinPitch * sinHeading;
-    q2 = cosRoll * sinPitch * cosHeading + sinRoll * cosPitch * sinHeading;
-    q3 = cosRoll * cosPitch * sinHeading - sinRoll * sinPitch * cosHeading;
-
-    /* Auxillary variables to reduce number of repeated operations, for 1st pass */
-    q0q0 = q0 * q0;
-    q0q1 = q0 * q1;
-    q0q2 = q0 * q2;
-    q0q3 = q0 * q3;
-    q1q1 = q1 * q1;
-    q1q2 = q1 * q2;
-    q1q3 = q1 * q3;
-    q2q2 = q2 * q2;
-    q2q3 = q2 * q3;
-    q3q3 = q3 * q3;
-}
-
-/* Desc：attitude calculation, key algorithm */
-/* Mahony complementary filtering algorithm */
-/* https://github.com/hsteinhaus/PX4Firmware/blob/master/src/modules/attitude_estimator_so3/attitude_estimator_so3_main.cpp */
-static void NonLinearSO3AHRSUpdate(float gx, float gy, float gz, float ax, float ay, float az, float mx, float my, float mz, float twoKp, float twoKi, float dt)
-{
-    float recipNorm;
+    float recip_norm;
     float halfex = 0.0f;
     float halfey = 0.0f;
     float halfez = 0.0f;
 
-    /* Make filter converge to initial solution faster */
-    /* This function assumes you are in static position */
-    /* WARNING : in case air reboot, this can cause problem. But this is very unlikely happen */
-    if (bFilterInit == 0)
+    // Make filter converge to initial solution faster.
+    // WARNING: in case air reboot, this can cause problem. But this is very
+    // unlikely happen.
+    if (!filter_init_flag)
     {
-        NonLinearSO3AHRSInit(ax, ay, az, mx, my, mz);
-        bFilterInit = 1;
+        IMU_InitNonLinearSO3AHRS(acc_x, acc_y, acc_z, mag_x, mag_y, mag_z);
+        filter_init_flag = true;
     }
 
-    /* ! If magnetometer measurement is available, use it. */
-    if (!((mx == 0.0f) && (my == 0.0f) && (mz == 0.0f)))
+    //If magnetometer measurement is available, use it.
+    if (!((mag_x == 0.0f) && (mag_y == 0.0f) && (mag_z == 0.0f)))
     {
         float hx, hy, hz, bx, bz;
         float halfwx, halfwy, halfwz;
-
-        /* Normalise magnetometer measurement */
-        /* Will sqrt work better? PX4 system is powerful enough? */
-        recipNorm = InvSqrt(mx * mx + my * my + mz * mz);
-        mx *= recipNorm;
-        my *= recipNorm;
-        mz *= recipNorm;
-
-        /* Reference direction of Earth's magnetic field */
-        hx = 2.0f * (mx * (0.5f - q2q2 - q3q3) + my * (q1q2 - q0q3) + mz * (q1q3 + q0q2));
-        hy = 2.0f * (mx * (q1q2 + q0q3) + my * (0.5f - q1q1 - q3q3) + mz * (q2q3 - q0q1));
-        hz = 2.0f * mx * (q1q3 - q0q2) + 2.0f * my * (q2q3 + q0q1) + 2.0f * mz * (0.5f - q1q1 - q2q2);
+        // Normalise magnetometer measurement.
+        recip_norm = IMU_CalculateInverseSqrt(mag_x * mag_x +
+                                              mag_y * mag_y +
+                                              mag_z * mag_z);
+        mag_x *= recip_norm;
+        mag_y *= recip_norm;
+        mag_z *= recip_norm;
+        // Reference direction of Earth's magnetic field.
+        hx = 2.0f * (mag_x * (0.5f - q2_q2 - q3_q3) + mag_y * (q1_q2 - q0_q3) +
+            mag_z * (q1_q3 + q0_q2));
+        hy = 2.0f * (mag_x * (q1_q2 + q0_q3) + mag_y * (0.5f - q1_q1 - q3_q3) +
+            mag_z * (q2_q3 - q0_q1));
+        hz = 2.0f *  mag_x * (q1_q3 - q0_q2) + 2.0f * mag_y * (q2_q3 + q0_q1) +
+            2.0f * mag_z * (0.5f - q1_q1 - q2_q2);
         bx = sqrt(hx * hx + hy * hy);
         bz = hz;
-
-        /* Estimated direction of magnetic field */
-        halfwx = bx * (0.5f - q2q2 - q3q3) + bz * (q1q3 - q0q2);
-        halfwy = bx * (q1q2 - q0q3) + bz * (q0q1 + q2q3);
-        halfwz = bx * (q0q2 + q1q3) + bz * (0.5f - q1q1 - q2q2);
-
-        /* Error is sum of cross product between estimated direction and measured direction of field vectors */
-        halfex += (my * halfwz - mz * halfwy);
-        halfey += (mz * halfwx - mx * halfwz);
-        halfez += (mx * halfwy - my * halfwx);
+        // Estimated direction of magnetic field.
+        halfwx = bx * (0.5f - q2_q2 - q3_q3) + bz * (q1_q3 - q0_q2);
+        halfwy = bx * (q1_q2 - q0_q3) + bz * (q0_q1 + q2_q3);
+        halfwz = bx * (q0_q2 + q1_q3) + bz * (0.5f - q1_q1 - q2_q2);
+        // Error is sum of cross product between estimated direction and
+        // measured direction of field vectors.
+        halfex += (mag_y * halfwz - mag_z * halfwy);
+        halfey += (mag_z * halfwx - mag_x * halfwz);
+        halfez += (mag_x * halfwy - mag_y * halfwx);
     }
 
-    /* Compute feedback only if accelerometer measurement valid (avoids NaN in accelerometer normalisation) */
-    if (!((ax == 0.0f) && (ay == 0.0f) && (az == 0.0f)))
+    // Compute feedback only if accelerometer measurement valid(avoids NaN in
+    // accelerometer normalisation).
+    if (!((acc_x == 0.0f) && (acc_y == 0.0f) && (acc_z == 0.0f)))
     {
         float halfvx, halfvy, halfvz;
-
-        /* Normalise accelerometer measurement */
-        recipNorm = InvSqrt(ax * ax + ay * ay + az * az);
-
-        ax *= recipNorm;
-        ay *= recipNorm;
-        az *= recipNorm;
-
-        /* Estimated direction of gravity and magnetic field */
-        halfvx = q1q3 - q0q2;
-        halfvy = q0q1 + q2q3;
-        halfvz = q0q0 - 0.5f + q3q3;
-
-        /* Error is sum of cross product between estimated direction and measured direction of field vectors */
-        halfex += ay * halfvz - az * halfvy;
-        halfey += az * halfvx - ax * halfvz;
-        halfez += ax * halfvy - ay * halfvx;
+        // Normalise accelerometer measurement.
+        recip_norm = IMU_CalculateInverseSqrt(acc_x * acc_x +
+                                              acc_y * acc_y +
+                                              acc_z * acc_z);
+        acc_x *= recip_norm;
+        acc_y *= recip_norm;
+        acc_z *= recip_norm;
+        // Estimated direction of gravity and magnetic field.
+        halfvx = q1_q3 - q0_q2;
+        halfvy = q0_q1 + q2_q3;
+        halfvz = q0_q0 - 0.5f + q3_q3;
+        // Error is sum of cross product between estimated direction and
+        // measured direction of field vectors.
+        halfex += acc_y * halfvz - acc_z * halfvy;
+        halfey += acc_z * halfvx - acc_x * halfvz;
+        halfez += acc_x * halfvy - acc_y * halfvx;
     }
 
-    /* Apply feedback only when valid data has been gathered from the accelerometer or magnetometer */
-    if (halfex != 0.0f && halfey != 0.0f && halfez != 0.0f)
+    // Apply feedback only when valid data has been gathered from the
+    // accelerometer or magnetometer.
+    if ((halfex != 0.0f) && (halfey != 0.0f) && (halfez != 0.0f))
     {
-        /* Compute and apply integral feedback if enabled */
-        if (twoKi > 0.0f)
+        // Compute and apply integral feedback if enabled.
+        if (two_ki > 0.0f)
         {
-            gyro_bias[0] += twoKi * halfex * dt;  /* Integral error scaled by Ki */
-            gyro_bias[1] += twoKi * halfey * dt;
-            gyro_bias[2] += twoKi * halfez * dt;
-
-            /* Apply integral feedback */
-            gx += gyro_bias[0];
-            gy += gyro_bias[1];
-            gz += gyro_bias[2];
+            // Integral error scaled by ki.
+            gyr_bias[0] += two_ki * halfex * delta_time;
+            gyr_bias[1] += two_ki * halfey * delta_time;
+            gyr_bias[2] += two_ki * halfez * delta_time;
+            // Apply integral feedback.
+            gyr_x += gyr_bias[0];
+            gyr_y += gyr_bias[1];
+            gyr_z += gyr_bias[2];
         }
         else
         {
-            gyro_bias[0] = 0.0f;  /* Prevent integral windup */
-            gyro_bias[1] = 0.0f;
-            gyro_bias[2] = 0.0f;
+            // Prevent integral windup.
+            gyr_bias[0] = 0.0f;
+            gyr_bias[1] = 0.0f;
+            gyr_bias[2] = 0.0f;
         }
-
-        /* Apply proportional feedback */
-        gx += twoKp * halfex;
-        gy += twoKp * halfey;
-        gz += twoKp * halfez;
+        // Apply proportional feedback.
+        gyr_x += two_kp * halfex;
+        gyr_y += two_kp * halfey;
+        gyr_z += two_kp * halfez;
     }
 
-    /* Time derivative of quaternion. q_dot = 0.5*q\otimes omega. */
-    /* ! q_k = q_{k-1} + dt*\dot{q} */
-    /* ! \dot{q} = 0.5*q \otimes P(\omega) */
-    dq0 = 0.5f * (-q1 * gx - q2 * gy - q3 * gz);
-    dq1 = 0.5f * (q0 * gx + q2 * gz - q3 * gy);
-    dq2 = 0.5f * (q0 * gy - q1 * gz + q3 * gx);
-    dq3 = 0.5f * (q0 * gz + q1 * gy - q2 * gx);
+    // Time derivative of quaternion.
+    dq0 = 0.5f * (-q1 * gyr_x - q2 * gyr_y - q3 * gyr_z);
+    dq1 = 0.5f * ( q0 * gyr_x + q2 * gyr_z - q3 * gyr_y);
+    dq2 = 0.5f * ( q0 * gyr_y - q1 * gyr_z + q3 * gyr_x);
+    dq3 = 0.5f * ( q0 * gyr_z + q1 * gyr_y - q2 * gyr_x);
 
-    q0 += dt * dq0;
-    q1 += dt * dq1;
-    q2 += dt * dq2;
-    q3 += dt * dq3;
+    q0 += delta_time * dq0;
+    q1 += delta_time * dq1;
+    q2 += delta_time * dq2;
+    q3 += delta_time * dq3;
 
-    /* Normalise quaternion */
-    recipNorm = InvSqrt(q0 * q0 + q1 * q1 + q2 * q2 + q3 * q3);
-    q0 *= recipNorm;
-    q1 *= recipNorm;
-    q2 *= recipNorm;
-    q3 *= recipNorm;
+    // Normalise quaternion.
+    recip_norm = IMU_CalculateInverseSqrt(q0 * q0 + q1 * q1 + q2 * q2 +
+                                          q3 * q3);
+    q0 *= recip_norm;
+    q1 *= recip_norm;
+    q2 *= recip_norm;
+    q3 *= recip_norm;
 
-    /* Auxiliary variables to avoid repeated arithmetic */
-    q0q0 = q0 * q0;
-    q0q1 = q0 * q1;
-    q0q2 = q0 * q2;
-    q0q3 = q0 * q3;
-    q1q1 = q1 * q1;
-    q1q2 = q1 * q2;
-    q1q3 = q1 * q3;
-    q2q2 = q2 * q2;
-    q2q3 = q2 * q3;
-    q3q3 = q3 * q3;
+    // Auxiliary variables to avoid repeated arithmetic.
+    q0_q0 = q0 * q0;
+    q0_q1 = q0 * q1;
+    q0_q2 = q0 * q2;
+    q0_q3 = q0 * q3;
+    q1_q1 = q1 * q1;
+    q1_q2 = q1 * q2;
+    q1_q3 = q1 * q3;
+    q2_q2 = q2 * q2;
+    q2_q3 = q2 * q3;
+    q3_q3 = q3 * q3;
 }
 
-#define so3_comp_params_Kp  1.0f
-#define so3_comp_params_Ki  0.05f
-
-/* Desc：attitude calculation, key algorithm */
-/* Software solution */
-void IMU_SO3Thread(void)
+bool IMU_Calibrate(void)
 {
-    /* Time constant */
-    float dt = 0.01f;                            /* s */
-    static uint32_t PreTime = 0, StartTime = 0;  /* us */
-    uint32_t NowTime;
-    uint8_t i;
+    u8 i                     = 0;
+    u16 delta_time           = 0;
+    u16 timestamp_now        = 0;
+    bool return_flag         = false;
+    static u16 count         = 0;
+    static u16 timestamp_pre = 0;
+    static bool cali_flag    = false;
+    static float acc_sum[3]  = {0, 0, 0};
+    static float gyr_sum[3]  = {0, 0, 0};
 
-    /* Output euler angles */
-    float euler[3] = {0.0f, 0.0f, 0.0f};         /* rad */
+    timestamp_now = (u16)Delay_GetRuntimeMs();
+    delta_time    = timestamp_now - timestamp_pre;
 
-    /* Initialization */
-    float Rot_matrix[9] = {1.f,  0.0f,  0.0f, 0.0f,  1.f,  0.0f, 0.0f,  0.0f,  1.f };  /* *< init: identity matrix */
-    float acc[3]        = {0.0f, 0.0f, 0.0f};    /* m/s^2 */
-    float mag[3]        = {0.0f, 0.0f, 0.0f};
-    float gyro[3]       = {0.0f, 0.0f, 0.0f};    /* rad/s */
-
-    /* Need to calc gyro offset before imu start working */
-    static float gyro_offsets_sum[3] = {0.0f, 0.0f, 0.0f};  /* gyro_offsets[3] = {0.0f, 0.0f, 0.0f} */
-    static uint16_t offset_count = 0;
-
-    NowTime = Delay_GetRuntimeUs();
-    dt = (PreTime > 0) ? (NowTime - PreTime) / 1000000.0f : 0;
-    PreTime = NowTime;
-
-    IMU_ReadSensorHandle();
-
-    if (!imu.ready)  /* Need to calibrate gyro */
+    if (!cali_flag)
     {
-        if (StartTime == 0)
+        cali_flag = true;
+        for (i = 0; i < 3; i++)
         {
-            StartTime = NowTime;
+            count      = 0;
+            acc_sum[i] = 0;
+            gyr_sum[i] = 0;
+            IMU_TableStructure.flag_ready = false;
         }
-
-        gyro_offsets_sum[0] += imu.gyroRaw[0];
-        gyro_offsets_sum[1] += imu.gyroRaw[1];
-        gyro_offsets_sum[2] += imu.gyroRaw[2];
-        offset_count++;
-
-        if (NowTime > StartTime + GYRO_CALC_TIME)
-        {
-            imu.gyroOffset[0]   = gyro_offsets_sum[0] / offset_count;
-            imu.gyroOffset[1]   = gyro_offsets_sum[1] / offset_count;
-            imu.gyroOffset[2]   = gyro_offsets_sum[2] / offset_count;
-            offset_count        = 0;
-            gyro_offsets_sum[0] = 0;
-            gyro_offsets_sum[1] = 0;
-            gyro_offsets_sum[2] = 0;
-
-            imu.ready = 1;
-            StartTime = 0;
-        }
-        return;
     }
 
-    gyro[0] = imu.gyro[0] - imu.gyroOffset[0];
-    gyro[1] = imu.gyro[1] - imu.gyroOffset[1];
-    gyro[2] = imu.gyro[2] - imu.gyroOffset[2];
-
-    acc[0]  = -imu.accb[0];
-    acc[1]  = -imu.accb[1];
-    acc[2]  = -imu.accb[2];
-
-    /* NOTE : Accelerometer is reversed. */
-    /* Because proper mount of PX4 will give you a reversed accelerometer readings. */
-    NonLinearSO3AHRSUpdate(gyro[0], gyro[1], gyro[2], -acc[0], -acc[1], -acc[2], mag[0], mag[1], mag[2],
-                           so3_comp_params_Kp, so3_comp_params_Ki, dt);
-
-    /* Convert q->R, This R converts inertial frame to body frame. */
-    Rot_matrix[0] = q0q0 + q1q1 - q2q2 - q3q3;  /* 11 */
-    Rot_matrix[1] = 2.f * (q1 * q2 + q0 * q3);  /* 12 */
-    Rot_matrix[2] = 2.f * (q1 * q3 - q0 * q2);  /* 13 */
-    Rot_matrix[3] = 2.f * (q1 * q2 - q0 * q3);  /* 21 */
-    Rot_matrix[4] = q0q0 - q1q1 + q2q2 - q3q3;  /* 22 */
-    Rot_matrix[5] = 2.f * (q2 * q3 + q0 * q1);  /* 23 */
-    Rot_matrix[6] = 2.f * (q1 * q3 + q0 * q2);  /* 31 */
-    Rot_matrix[7] = 2.f * (q2 * q3 - q0 * q1);  /* 32 */
-    Rot_matrix[8] = q0q0 - q1q1 - q2q2 + q3q3;  /* 33 */
-
-    /* 1-2-3 Representation. */
-    /* Equation (290) */
-    /* Representing Attitude: Euler Angles, Unit Quaternions, and Rotation Vectors, James Diebel. */
-    /* Existing PX4 EKF code was generated by MATLAB which uses coloum major order matrix. */
-    euler[0] = atan2f(Rot_matrix[5], Rot_matrix[8]);  /* ! Roll */
-    euler[1] = -asinf(Rot_matrix[2]);                 /* ! Pitch */
-    euler[2] = atan2f(Rot_matrix[1], Rot_matrix[0]);
-
-    /* DCM, ground to body */
-    for (i = 0; i < 9; i++)
+    if (delta_time >= 10)
     {
-        *(&(imu.DCMgb[0][0]) + i) = Rot_matrix[i];
+        if (count < 300)
+        {
+            for (i = 0; i < 3; i++)
+            {
+                acc_sum[i] += IMU_TableStructure.acc_raw[i];
+                gyr_sum[i] += IMU_TableStructure.gyr_raw[i];
+            }
+            count++;
+            timestamp_pre = timestamp_now;
+        }
+        else
+        {
+            for (i = 0; i < 3; i++)
+            {
+                IMU_TableStructure.acc_off[i] = acc_sum[i] / (float)count;
+                IMU_TableStructure.gyr_off[i] = gyr_sum[i] / (float)count;
+            }
+            IMU_TableStructure.acc_off[2] -= IMU_CONSTANTS_ONE_G;
+            cali_flag   = false;
+            return_flag = true;
+        }
     }
 
-    imu.rollRad  = euler[0];
-    imu.pitchRad = euler[1];
-    imu.yawRad   = euler[2];
+    return return_flag;
+}
 
-    imu.roll  = euler[0] * 180.0f / M_PI_F;
-    imu.pitch = euler[1] * 180.0f / M_PI_F;
-    imu.yaw   = euler[2] * 180.0f / M_PI_F;
+bool IMU_Check(void)
+{
+    u8  i;
+    u32 acc_z_sum    = 0;
+    float acc_z_bias = 0;
+
+    for (i = 0; i < IMU_CHECK_COUNT; i++)
+    {
+        MPU6050_ReadAcc(IMU_TableStructure.acc_adc);
+        acc_z_sum += IMU_TableStructure.acc_adc[2];
+    }
+
+    IMU_TableStructure.acc_raw[2] = (float)(acc_z_sum / (float)IMU_CHECK_COUNT)
+        * IMU_ACC_SCALE * IMU_CONSTANTS_ONE_G;
+    acc_z_bias = IMU_TableStructure.acc_raw[2] - IMU_TableStructure.acc_off[2];
+
+    if ((acc_z_bias > IMU_CONSTANTS_ONE_G - IMU_ACCZ_ERR_MAX) &&
+        (acc_z_bias < IMU_CONSTANTS_ONE_G + IMU_ACCZ_ERR_MAX))
+    {
+        IMU_TableStructure.flag_cali = true;
+    }
+    else
+    {
+        IMU_TableStructure.flag_cali = false;
+    }
+
+    return IMU_TableStructure.flag_cali;
+}
+
+// Calculate inverse square-root by using Carmack algorithm.
+// See: http://en.wikipedia.org/wiki/Fast_inverse_square_root.
+float IMU_CalculateInverseSqrt(float number)
+{
+    volatile long  i;
+    volatile float x;
+    volatile float y;
+    volatile const float f = 1.5f;
+
+    x = number * 0.5f;
+    y = number;
+    i = *((long *)&y);
+    i = 0X5F375A86 - (i >> 1);
+    y = *((float *)&i);
+    y = y * (f - (x * y * y));
+
+    return y;
 }

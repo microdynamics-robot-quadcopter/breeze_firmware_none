@@ -200,9 +200,12 @@ void CommLink_HandleCommand(void)
 
 void CommLink_HandleDebugDataA(void)
 {
-    CommLink_DataPacketAStructure.roll.value  = imu.roll  * 100;
-    CommLink_DataPacketAStructure.pitch.value = imu.pitch * 100;
-    CommLink_DataPacketAStructure.yaw.value   = imu.yaw   * 100;
+    CommLink_DataPacketAStructure.roll.value  = IMU_TableStructure.roll_ang  *
+        100;
+    CommLink_DataPacketAStructure.pitch.value = IMU_TableStructure.pitch_ang *
+        100;
+    CommLink_DataPacketAStructure.yaw.value   = IMU_TableStructure.yaw_ang   *
+        100;
     CommLink_DataPacketAStructure.temp.value  = ms5611_temperature * 100;
     CommLink_DataPacketAStructure.speed.value =
         Altitude_NEDFrameStructure.vel_z * 100;
@@ -252,25 +255,31 @@ void CommLink_HandleDebugDataB(void)
     CommLink_AddBits8ToBuffer(0X02);
     CommLink_AddBits8ToBuffer(30);
 
-    CommLink_AddBits16ToBuffer(imu.accb[0] * 1000);
-    CommLink_AddBits16ToBuffer(imu.accb[1] * 1000);
-    CommLink_AddBits16ToBuffer(imu.accb[2] * 1000);
+    CommLink_AddBits16ToBuffer(IMU_TableStructure.acc_b[0] * 1000);
+    CommLink_AddBits16ToBuffer(IMU_TableStructure.acc_b[1] * 1000);
+    CommLink_AddBits16ToBuffer(IMU_TableStructure.acc_b[2] * 1000);
 
-    CommLink_AddBits16ToBuffer(imu.gyro[0] * 180.0F / M_PI * 100);
-    CommLink_AddBits16ToBuffer(imu.gyro[1] * 180.0F / M_PI * 100);
-    CommLink_AddBits16ToBuffer(imu.gyro[2] * 180.0F / M_PI * 100);
+    CommLink_AddBits16ToBuffer(IMU_TableStructure.gyr[0] * 180.0F / M_PI *
+        100);
+    CommLink_AddBits16ToBuffer(IMU_TableStructure.gyr[1] * 180.0F / M_PI *
+        100);
+    CommLink_AddBits16ToBuffer(IMU_TableStructure.gyr[2] * 180.0F / M_PI *
+        100);
 
     CommLink_AddBits16ToBuffer(0);
     CommLink_AddBits16ToBuffer(0);
     CommLink_AddBits16ToBuffer(0);
 
-    CommLink_AddBits16ToBuffer(imu.accRaw[0] * 1000);
-    CommLink_AddBits16ToBuffer(imu.accRaw[1] * 1000);
-    CommLink_AddBits16ToBuffer(imu.accRaw[2] * 1000);
+    CommLink_AddBits16ToBuffer(IMU_TableStructure.acc_raw[0] * 1000);
+    CommLink_AddBits16ToBuffer(IMU_TableStructure.acc_raw[1] * 1000);
+    CommLink_AddBits16ToBuffer(IMU_TableStructure.acc_raw[2] * 1000);
 
-    CommLink_AddBits16ToBuffer(imu.gyroRaw[0] * 180.0F / M_PI * 100);
-    CommLink_AddBits16ToBuffer(imu.gyroRaw[1] * 180.0F / M_PI * 100);
-    CommLink_AddBits16ToBuffer(imu.gyroRaw[2] * 180.0F / M_PI * 100);
+    CommLink_AddBits16ToBuffer(IMU_TableStructure.gyr_raw[0] * 180.0F / M_PI *
+        100);
+    CommLink_AddBits16ToBuffer(IMU_TableStructure.gyr_raw[1] * 180.0F / M_PI *
+        100);
+    CommLink_AddBits16ToBuffer(IMU_TableStructure.gyr_raw[2] * 180.0F / M_PI *
+        100);
 
     CommLink_AddBits8ToBuffer(send_checksum);
 
@@ -295,9 +304,9 @@ void CommLink_HandleDebubDataC(void)
     CommLink_DataPacketBStructure.data[7]  =
         ((s16)(ms5611_altitude * 1000)) & 0XFF;
     CommLink_DataPacketBStructure.data[8]  =
-        ((s16)(imu.accg[2] * 1000)) >> 8;
+        ((s16)(IMU_TableStructure.acc_g[2] * 1000)) >> 8;
     CommLink_DataPacketBStructure.data[9]  =
-        ((s16)(imu.accg[2] * 1000)) & 0XFF;
+        ((s16)(IMU_TableStructure.acc_g[2] * 1000)) & 0XFF;
     CommLink_DataPacketBStructure.data[10] = 0;
     CommLink_DataPacketBStructure.data[11] = 0;
     CommLink_DataPacketBStructure.sum      = 0;
@@ -323,27 +332,27 @@ void CommLink_ProcessDataFromNRF(void)
 {
     if (control_alt_control_mode == CONTROL_STATE_LANDING)
     {
-        comm_link_rc_data[ROLL]     = 1500;
-        comm_link_rc_data[PITCH]    = 1500;
-        comm_link_rc_data[YAW]      = 1500;
-        comm_link_rc_data[THROTTLE] = 1500;
+        comm_link_rc_data[IMU_ROLL]   = 1500;
+        comm_link_rc_data[IMU_PITCH]  = 1500;
+        comm_link_rc_data[IMU_YAW]    = 1500;
+        comm_link_rc_data[IMU_THRUST] = 1500;
     }
 
-    COMM_LINK_CONSTRAIN(comm_link_rc_data[ROLL], 1000, 2000);
-    COMM_LINK_CONSTRAIN(comm_link_rc_data[PITCH], 1000, 2000);
-    COMM_LINK_CONSTRAIN(comm_link_rc_data[YAW], 1000, 2000);
-    COMM_LINK_CONSTRAIN(comm_link_rc_data[THROTTLE], 1000, 2000);
+    COMM_LINK_CONSTRAIN(comm_link_rc_data[IMU_ROLL], 1000, 2000);
+    COMM_LINK_CONSTRAIN(comm_link_rc_data[IMU_PITCH], 1000, 2000);
+    COMM_LINK_CONSTRAIN(comm_link_rc_data[IMU_YAW], 1000, 2000);
+    COMM_LINK_CONSTRAIN(comm_link_rc_data[IMU_THRUST], 1000, 2000);
 
     CommLink_DataStructure.roll  = CommLink_CutDBScaleToLinear(
-        (comm_link_rc_data[ROLL] - 1500), 500, COMM_LINK_APP_DB_PR) *
+        (comm_link_rc_data[IMU_ROLL] - 1500), 500, COMM_LINK_APP_DB_PR) *
         CONTROL_ANGLE_MAX;
     CommLink_DataStructure.pitch = CommLink_CutDBScaleToLinear(
-        (comm_link_rc_data[PITCH] - 1500), 500, COMM_LINK_APP_DB_PR) *
+        (comm_link_rc_data[IMU_PITCH] - 1500), 500, COMM_LINK_APP_DB_PR) *
         CONTROL_ANGLE_MAX;
     CommLink_DataStructure.yaw   = CommLink_CutDBScaleToLinear(
-        (comm_link_rc_data[YAW] - 1500), 500, COMM_LINK_APP_DB_YAW) *
+        (comm_link_rc_data[IMU_YAW] - 1500), 500, COMM_LINK_APP_DB_YAW) *
         CONTROL_YAW_RATE_MAX;
-    CommLink_DataStructure.thr = comm_link_rc_data[THROTTLE] - 1000;
+    CommLink_DataStructure.thr = comm_link_rc_data[IMU_THRUST] - 1000;
 
     switch (comm_link_mcu_state)
     {
@@ -389,13 +398,13 @@ void CommLink_ReceiveDataFromNRF(void)
         {
             case COMM_LINK_MSP_SET_4CON:
             {
-                comm_link_rc_data[ROLL]     = nrf24l01_rx_data[11] +
+                comm_link_rc_data[IMU_ROLL]     = nrf24l01_rx_data[11] +
                     (nrf24l01_rx_data[12] << 8);
-                comm_link_rc_data[PITCH]    = nrf24l01_rx_data[9]  +
+                comm_link_rc_data[IMU_PITCH]    = nrf24l01_rx_data[9]  +
                     (nrf24l01_rx_data[10] << 8);
-                comm_link_rc_data[YAW]      = nrf24l01_rx_data[7]  +
+                comm_link_rc_data[IMU_YAW]      = nrf24l01_rx_data[7]  +
                     (nrf24l01_rx_data[8]  << 8);
-                comm_link_rc_data[THROTTLE] = nrf24l01_rx_data[5]  +
+                comm_link_rc_data[IMU_THRUST] = nrf24l01_rx_data[5]  +
                     (nrf24l01_rx_data[6]  << 8);
                 break;
             }
@@ -411,7 +420,7 @@ void CommLink_ReceiveDataFromNRF(void)
             }
             case COMM_LINK_MSP_ACC_CALI:
             {
-                imuCaliFlag = 1;
+                imu_cali_flag = true;
                 break;
             }
         }

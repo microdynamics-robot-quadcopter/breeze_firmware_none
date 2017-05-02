@@ -58,12 +58,12 @@ void LED_JumpStateMachine(void)
 {
     LED_StateMachineStructure.state = LED_STATE_READY;
 
-    if (!imu.ready)
+    if (!IMU_TableStructure.flag_ready)
     {
         // Start the calibration of IMU.
         LED_StateMachineStructure.state = LED_STATE_CALI;
     }
-    if (!imu.caliPass)
+    if (!IMU_TableStructure.flag_cali)
     {
         // Fail to calibrate the IMU.
         LED_StateMachineStructure.state = LED_STATE_CALI_FAIL;
@@ -72,7 +72,7 @@ void LED_JumpStateMachine(void)
     {
         LED_StateMachineStructure.state = LED_STATE_BAT_LOW;
     }
-    if (imuCaliFlag)
+    if (imu_cali_flag)
     {
         // Finish the calibrate of IMU.
         LED_StateMachineStructure.state = LED_STATE_CALI;

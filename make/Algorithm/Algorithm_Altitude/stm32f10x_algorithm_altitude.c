@@ -24,7 +24,6 @@ History:
 myyerrol    2017.04.30    Modify the module
 *******************************************************************************/
 
-// #include "stm32f10x_it.h"
 #include "stm32f10x_driver_delay.h"
 #include "stm32f10x_module_ms5611.h"
 #include "stm32f10x_algorithm_altitude.h"
@@ -39,7 +38,7 @@ static float weight_z_bar    = 0.5f;
 static float weight_z_acc    = 20.0f;
 static float weight_acc_bias = 0.05f;
 // Acceleration's data in NED frame.
-static float ned_acc_data[3] = {0.0f, 0.0f, -CONSTANTS_ONE_G};
+static float ned_acc_data[3] = {0.0f, 0.0f, -IMU_CONSTANTS_ONE_G};
 // Barometer's correctional factor.
 // Unit: m.
 static float bar_corr_factor = 0.0f;
@@ -66,7 +65,7 @@ void Altitude_CombineData(void)
         return ;
     }
 
-    if (!imu.ready)
+    if (!IMU_TableStructure.flag_ready)
     {
         return ;
     }
@@ -80,21 +79,22 @@ void Altitude_CombineData(void)
 
     if (altitude_acc_update_flag)
     {
-        imu.accb[0] -= body_acc_bias[0];
-        imu.accb[1] -= body_acc_bias[1];
-        imu.accb[2] -= body_acc_bias[2];
+        IMU_TableStructure.acc_b[0] -= body_acc_bias[0];
+        IMU_TableStructure.acc_b[1] -= body_acc_bias[1];
+        IMU_TableStructure.acc_b[2] -= body_acc_bias[2];
 
         for (i = 0; i < 3; i++)
         {
             ned_acc_data[i] = 0.0f;
             for (j = 0; j < 3; j++)
             {
-                ned_acc_data[i] += imu.DCMgb[j][i] * imu.accb[j];
+                ned_acc_data[i] += IMU_TableStructure.dcm_gb[j][i] *
+                    IMU_TableStructure.acc_b[j];
             }
         }
 
         ned_acc_data[2] = -ned_acc_data[2];
-        ned_acc_corr[2] =  ned_acc_data[2] + CONSTANTS_ONE_G - z_estimate[2];
+        ned_acc_corr[2] =  ned_acc_data[2] + IMU_CONSTANTS_ONE_G - z_estimate[2];
         altitude_acc_update_flag = false;
     }
 
@@ -107,7 +107,7 @@ void Altitude_CombineData(void)
         float temp = 0.0f;
         for (j = 0; j < 3; j++)
         {
-            temp += imu.DCMgb[i][j] * acc_bias_corr[j];
+            temp += IMU_TableStructure.dcm_gb[i][j] * acc_bias_corr[j];
         }
         body_acc_bias[i] += temp * weight_acc_bias * delta_time;
     }

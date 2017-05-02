@@ -108,13 +108,13 @@ void EEPROM_SetDefaultParams(void)
     Control_PIDAltVel.ki = 0.02f;
     Control_PIDAltVel.kd = 0;
 
-    imu.accOffset[0] = -0.1620515;
-    imu.accOffset[1] = 0.07422026;
-    imu.accOffset[2] = 0.7743073;
+    IMU_TableStructure.acc_off[0] = -0.1620515;
+    IMU_TableStructure.acc_off[1] = 0.07422026;
+    IMU_TableStructure.acc_off[2] = 0.7743073;
 
-    imu.gyroOffset[0] = -0.06097556;
-    imu.gyroOffset[1] = -0.03780485;
-    imu.gyroOffset[2] = 0;
+    IMU_TableStructure.gyr_off[0] = -0.06097556;
+    IMU_TableStructure.gyr_off[1] = -0.03780485;
+    IMU_TableStructure.gyr_off[2] = 0;
 }
 
 void EEPROM_TransParamsToTable(void)
@@ -142,8 +142,8 @@ void EEPROM_TransParamsToTable(void)
         ((float *)(&EEPROM_TableStructure.pid_alt_vel))[i]    =
             ((float *)(&Control_PIDAltVel))[i];
 
-        EEPROM_TableStructure.offset_acc[i] = imu.accOffset[i];
-        EEPROM_TableStructure.offset_gyr[i] = imu.gyroOffset[i];
+        EEPROM_TableStructure.offset_acc[i] = IMU_TableStructure.acc_off[i];
+        EEPROM_TableStructure.offset_gyr[i] = IMU_TableStructure.gyr_off[i];
     }
 
     for (i = 0; i < 5; i++)
@@ -180,8 +180,8 @@ void EEPROM_TransTableToParams(void)
         ((float *)(&Control_PIDAltVel))[i]     =
             ((float *)(&EEPROM_TableStructure.pid_alt_vel))[i];
 
-        imu.accOffset[i]  = EEPROM_TableStructure.offset_acc[i];
-        imu.gyroOffset[i] = EEPROM_TableStructure.offset_gyr[i];
+        IMU_TableStructure.acc_off[i] = EEPROM_TableStructure.offset_acc[i];
+        IMU_TableStructure.gyr_off[i] = EEPROM_TableStructure.offset_gyr[i];
     }
 
     for (i = 0; i < 5; i++)

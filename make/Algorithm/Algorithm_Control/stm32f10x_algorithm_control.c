@@ -82,34 +82,36 @@ void Control_CallPIDAngle(void)
 
     if (control_alt_control_mode == CONTROL_STATE_MANUAL)
     {
-        target_angle[ROLL]  = (float)CommLink_DataStructure.roll;
-        target_angle[PITCH] = (float)CommLink_DataStructure.pitch;
+        target_angle[IMU_ROLL]  = (float)CommLink_DataStructure.roll;
+        target_angle[IMU_PITCH] = (float)CommLink_DataStructure.pitch;
     }
     else
     {
-        target_angle[ROLL]  = split_power_roll;
-        target_angle[PITCH] = split_power_pitch;
+        target_angle[IMU_ROLL]  = split_power_roll;
+        target_angle[IMU_PITCH] = split_power_pitch;
     }
 
     if (head_free_mode_flag)
     {
 #if CONTROL_YAW_CORRECT
-        float diff_rad      = -(imu.yaw - head_yaw_angle) * M_PI / 180.0f;
+        float diff_rad      = -(IMU_TableStructure.yaw_ang - head_yaw_angle) *
+            M_PI / 180.0f;
 #else
-        float diff_rad      =  (imu.yaw - head_yaw_angle) * M_PI / 180.0f;
+        float diff_rad      =  (IMU_TableStructure.yaw_ang - head_yaw_angle) *
+            M_PI / 180.0f;
 #endif
         float diff_cos      = cosf(diff_rad);
         float diff_sin      = sinf(diff_rad);
-        target_angle[ROLL]  = target_angle[ROLL]  * diff_cos -
-            target_angle[PITCH] * diff_sin;
-        target_angle[PITCH] = target_angle[PITCH] * diff_cos +
-            target_angle[ROLL]  * diff_sin;
+        target_angle[IMU_ROLL]  = target_angle[IMU_ROLL]  * diff_cos -
+            target_angle[IMU_PITCH] * diff_sin;
+        target_angle[IMU_PITCH] = target_angle[IMU_PITCH] * diff_cos +
+            target_angle[IMU_ROLL]  * diff_sin;
     }
 
-    Control_CallPIDPosition(&Control_PIDPitchAngle, target_angle[PITCH],
-                            imu.pitch, delta_time);
-    Control_CallPIDPosition(&Control_PIDRollAngle, target_angle[ROLL],
-                            imu.roll, delta_time);
+    Control_CallPIDPosition(&Control_PIDPitchAngle, target_angle[IMU_PITCH],
+                            IMU_TableStructure.pitch_ang, delta_time);
+    Control_CallPIDPosition(&Control_PIDRollAngle, target_angle[IMU_ROLL],
+                            IMU_TableStructure.roll_ang, delta_time);
 }
 
 // Control quadcopter's attitude. Angle rate control in cascade pid.
@@ -129,15 +131,15 @@ void Control_CallPIDAngleRate(void)
     // Note: original pid parameters are in AD value, need to convert.
     Control_CallPIDPosition(&Control_PIDPitchAngleRate,
                             Control_PIDPitchAngle.output,
-                            imu.gyro[PITCH] * 180.0f / M_PI,
+                            IMU_TableStructure.gyr[IMU_PITCH] * 180.0f / M_PI,
                             delta_time);
     Control_CallPIDPosition(&Control_PIDRollAngleRate,
                             Control_PIDRollAngle.output,
-                            imu.gyro[ROLL] * 180.0f / M_PI,
+                            IMU_TableStructure.gyr[IMU_ROLL]  * 180.0f / M_PI,
                             delta_time);
     Control_CallPIDPosition(&Control_PIDYawAngleRate,
                             yaw_angle_rate,
-                            imu.gyro[YAW] * 180.0f / M_PI,
+                            IMU_TableStructure.gyr[IMU_YAW]   * 180.0f / M_PI,
                             delta_time);
 
     output_pitch = Control_PIDPitchAngleRate.output;
@@ -398,7 +400,7 @@ void Control_SetHeadFreeMode(bool flag)
 {
     if (flag)
     {
-        head_yaw_angle = imu.yaw;
+        head_yaw_angle = IMU_TableStructure.yaw_ang;
         head_free_mode_flag = true;
     }
     else
@@ -409,12 +411,12 @@ void Control_SetHeadFreeMode(bool flag)
 
 void Control_SetMotorPWM(void)
 {
-    float tilt_cos = imu.accb[2] / CONSTANTS_ONE_G;
+    float tilt_cos = IMU_TableStructure.acc_b[2] / IMU_CONSTANTS_ONE_G;
 
     if (control_alt_control_mode == CONTROL_STATE_MANUAL)
     {
         output_thrust = CommLink_DataStructure.thr;
-        tilt_cos      = imu.DCMgb[2][2];
+        tilt_cos      = IMU_TableStructure.dcm_gb[2][2];
         output_thrust = output_thrust / tilt_cos;
     }
     else

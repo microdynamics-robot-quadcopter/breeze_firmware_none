@@ -92,7 +92,8 @@ void Flight_HandleFailures(void)
 
     // When quadcopter crash down or excessive pitch or roll angles are
     // detected, turn off the motor, to prevent the motor burning.
-    if (fabs(imu.pitch) > 80 || fabs(imu.roll) > 80)
+    if (fabs(IMU_TableStructure.pitch_ang) > 80 ||
+        fabs(IMU_TableStructure.roll_ang)  > 80)
     {
         Motor_SetPWM(0, 0, 0, 0);
         comm_link_fly_enable_flag = false;

@@ -1,156 +1,107 @@
-#include "stm32f10x_driver_sys.h"
-#include "stm32f10x_driver_pwm.h"
-#include "stm32f10x_driver_tim.h"
-#include "stm32f10x_driver_iic.h"
-#include "stm32f10x_driver_flash.h"
-#include "stm32f10x_driver_delay.h"
-#include "stm32f10x_driver_usart.h"
-#include "stm32f10x_driver_eeprom.h"
-#include "stm32f10x_module_led.h"
-#include "stm32f10x_module_rpdata.h"
-#include "stm32f10x_module_ms5611.h"
-#include "stm32f10x_module_monitor.h"
-#include "stm32f10x_module_battery.h"
-#include "stm32f10x_module_mpu6050.h"
-#include "stm32f10x_module_nrf24l01.h"
-#include "stm32f10x_algorithm_bar.h"
-#include "stm32f10x_algorithm_imu.h"
-#include "stm32f10x_algorithm_flight.h"
-#include "stm32f10x_algorithm_control.h"
 #include "stm32f10x_it.h"
+#include "stm32f10x_driver_clock.h"
+#include "stm32f10x_driver_delay.h"
+#include "stm32f10x_driver_eeprom.h"
+#include "stm32f10x_driver_flash.h"
+#include "stm32f10x_driver_iic.h"
+#include "stm32f10x_driver_nvic.h"
+#include "stm32f10x_driver_io.h"
+#include "stm32f10x_driver_timer.h"
+#include "stm32f10x_driver_usart.h"
+#include "stm32f10x_module_battery.h"
+#include "stm32f10x_module_comm_link.h"
+#include "stm32f10x_module_led.h"
+#include "stm32f10x_module_motor.h"
+#include "stm32f10x_module_mpu6050.h"
+#include "stm32f10x_module_ms5611.h"
+#include "stm32f10x_module_nrf24l01.h"
+#include "stm32f10x_algorithm_altitude.h"
+#include "stm32f10x_algorithm_control.h"
+#include "stm32f10x_algorithm_filter.h"
+#include "stm32f10x_algorithm_flight.h"
+#include "stm32f10x_algorithm_imu.h"
 
-/*software counter*/
-uint16_t BatCnt = 0;
+static u16 battery_check_count = 0;
 
 void Hardware_Init(void)
 {
-    SystemClock_HSE(9);
-    CycleCounter_Init();                     /*Init cycle counter*/
-    SysTick_Config(SystemCoreClock / 1000);  /*SysTick开启系统tick定时器并初始化其中断，中断溢出时间为1ms，写法是固定的*/
-    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
-    usart_Init(115200);
-    TIM4_Init(1000, SysClock);
-    //FLASH_Unlock();
-    STMFLASH_Unlock();
-    LoadParamsFromEEPROM();
-    //delay_init();
+    Clock_Init();
+    Delay_Init();
+    USART_InitUSART(115200);
+    Timer_InitTIM4(1000, clock_system);
+    Flash_Unlock();
+    EEPROM_LoadParamsFromEEPROM();
     LED_Init();
-    PWM_Init();
-    Battery_CheckInit();
+    Motor_Init();
+    Battery_Init();
     IIC_Init();
     MPU6050_Init();
     NRF24L01_Init();
     Battery_Check();
     MS5611_Init();
     IMU_Init();
-    altCtrlMode = MANUAL;
     MS5611_WaitBaroInitOffset();
+    control_alt_control_mode = CONTROL_STATE_MANUAL;
 }
 
 int main(void)
 {
-//    u8 len = 0;
-//    u8 i;
-//    u16 time = 0;
     Hardware_Init();
-//  PWM_MotorFlash(200, 200, 200, 200);
+    LED_SetInitialLight();
 
-//    while (1)
-//    {
-//        NRF_Irq();
-//        ProcessDataFromNRF();
-//    }
+    LED_A_ON;
 
-    LedA_On;
     while(1)
     {
-        if (loop100HzFlag)
+        if (timer_loop_flag_100hz)
         {
-            loop100HzFlag = 0;
-
-            IMU_SO3Thread();
-            accUpdated = 1;
-            MS5611_Thread();
-
-            if (imuCaliFlag)  /*为1表示进行校准*/
+            timer_loop_flag_100hz = false;
+            IMU_StartSO3Thread();
+            altitude_acc_update_flag = true;
+            MS5611_UpdateData();
+            if (imu_cali_flag)
             {
                 if (IMU_Calibrate())
                 {
-                    imuCaliFlag              = 0;
-                    gParamsSaveEEPROMRequest = 1;
-                    imu.caliPass             = 1;
-                    LedB_On;
+                    imu_cali_flag                = false;
+                    eeprom_params_request_flag   = true;
+                    IMU_TableStructure.flag_cali = true;
+                    LED_B_ON;
                 }
             }
-            ControlAttiRate();
-            ControlMotor();
+            Control_CallPIDAngleRate();
+            Control_SetMotorPWM();
         }
 
-        NRF_Irq();
+        NRF24L01_IRQHandler();
 
-        if (loop50HzFlag)
+        if (timer_loop_flag_50hz)
         {
-            loop50HzFlag = 0;
-
-            ProcessDataFromNRF();
-            FlightStateSet();
-            AltitudeCombineThread();
-            ControlAlti();
-            ControlAttiAng();
-            CommPCUploadHandle();
+            timer_loop_flag_50hz = false;
+            CommLink_ProcessDataFromNRF();
+            Flight_SetMode();
+            Altitude_CombineData();
+            Control_SetAltitude();
+            Control_CallPIDAngle();
+            CommLink_WriteDebugData();
         }
-
-        if (loop10HzFlag)
+        if (timer_loop_flag_10hz)
         {
-            loop10HzFlag = 0;
-
-            if ((++BatCnt) * 100 >= BAT_CHECK_PERIOD)
+            timer_loop_flag_10hz = false;
+            if ((++battery_check_count) * 100 >= BATTERY_CHECK_PERIOD)
             {
-                BatCnt = 0;
+                battery_check_count = 0;
                 Battery_Check();
-                if (Battery.AlarmFlag)
+                if (Battery_InformationStructure.flag_alarm)
                 {
-                    LedD_On;
+                    LED_D_ON;
                 }
             }
-
-            if (gParamsSaveEEPROMRequest)
+            if (eeprom_params_request_flag)
             {
-                gParamsSaveEEPROMRequest = 0;
-                SaveParamsToEEPROM();
+                eeprom_params_request_flag = false;
+                EEPROM_SaveParamsToEEPROM();
             }
         }
     }
-//    while (1)
-//    {
-//        LED_test(1);
-//        delay_ms(1000);
-//        LED_test(0);
-//        delay_ms(1000);
-//        if (USART_RX_STA & 0x8000)
-//        {
-//            len = USART_RX_STA & 0x3f;
-//            printf("\n\nThis is the content you send!!!\n\n");
-//            for (i = 0; i < len; i++)
-//            {
-//                USART_SendData(USART1, USART_RX_BUF[i]);
-//                while (USART_GetFlagStatus(USART1, USART_FLAG_TC) != SET);
-//            }
-//            printf("\n\n");
-//            USART_RX_STA = 0;
-//        }
-//        else
-//        {
-//            time++;
-//            if (time % 5000 == 0)
-//            {
-//                printf("I am supermaker!!!\n\n");
-//            }
-//            else if (time % 200 == 0)
-//            {
-//                printf("This is 200 numbers\n\n");
-//            }
-//            delay_ms(10);
-//        }
-//    }
 }

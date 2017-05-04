@@ -400,7 +400,7 @@ void Control_SetHeadFreeMode(bool flag)
 {
     if (flag)
     {
-        head_yaw_angle = IMU_TableStructure.yaw_ang;
+        head_yaw_angle      = IMU_TableStructure.yaw_ang;
         head_free_mode_flag = true;
     }
     else

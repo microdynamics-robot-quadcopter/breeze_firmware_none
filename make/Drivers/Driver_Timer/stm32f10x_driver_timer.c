@@ -62,7 +62,7 @@ void Timer_InitTIM4(u16 arr, u16 psc)
 
     TIM_DeInit(TIM4);
 
-    TIM_TimeBaseStructure.TIM_Period        = arr;
+    TIM_TimeBaseStructure.TIM_Period        = arr - 1;
     TIM_TimeBaseStructure.TIM_Prescaler     = psc - 1;
     TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
     TIM_TimeBaseStructure.TIM_CounterMode   = TIM_CounterMode_Up;

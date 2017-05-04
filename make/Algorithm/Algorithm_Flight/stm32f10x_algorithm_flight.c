@@ -37,11 +37,11 @@ void Flight_SetMode(void)
     {
         if (CommLink_DataStructure.thr >= 600)
         {
-            if (control_alt_control_mode != CONTROL_STATE_CLIMB_RATE)
+            if (control_altitude_mode != CONTROL_STATE_CLIMB_RATE)
             {
                 control_integral_reset_flag  = true;
                 control_thrust_z_split_power = 0;
-                control_alt_control_mode     = CONTROL_STATE_CLIMB_RATE;
+                control_altitude_mode        = CONTROL_STATE_CLIMB_RATE;
                 control_offland_flag         = true;
                 control_alt_land             =
                     -Altitude_NEDFrameStructure.pos_z;
@@ -50,7 +50,7 @@ void Flight_SetMode(void)
         }
         else
         {
-            if (control_alt_control_mode == CONTROL_STATE_MANUAL)
+            if (control_altitude_mode == CONTROL_STATE_MANUAL)
             {
                 CommLink_DataStructure.thr = 200;
             }
@@ -72,7 +72,7 @@ void Flight_StartAutoland(void)
         land_time = Delay_GetRuntimeMs() - land_start_timestamp;
         if (land_time > FLIGHT_AUTOLAND_TIME_MAX)
         {
-            control_alt_control_mode  = CONTROL_STATE_MANUAL;
+            control_altitude_mode     = CONTROL_STATE_MANUAL;
             comm_link_fly_enable_flag = false;
             control_offland_flag      = false;
             land_start_timestamp      = 0;
@@ -80,7 +80,7 @@ void Flight_StartAutoland(void)
     }
     else
     {
-        control_alt_control_mode  = CONTROL_STATE_MANUAL;
+        control_altitude_mode     = CONTROL_STATE_MANUAL;
         comm_link_fly_enable_flag = false;
     }
 }
@@ -114,7 +114,7 @@ void Flight_HandleFailures(void)
     {
         if (control_offland_flag || comm_link_fly_enable_flag)
         {
-            control_alt_control_mode = CONTROL_STATE_LANDING;
+            control_altitude_mode = CONTROL_STATE_LANDING;
         }
         flight_lost_rc_flag = true;
     }

@@ -41,7 +41,7 @@ void Hardware_Init(void)
     MS5611_Init();
     IMU_Init();
     MS5611_WaitBaroInitOffset();
-    control_alt_control_mode = CONTROL_STATE_MANUAL;
+    control_altitude_mode = CONTROL_STATE_MANUAL;
 }
 
 int main(void)

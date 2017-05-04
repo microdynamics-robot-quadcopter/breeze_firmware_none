@@ -330,7 +330,7 @@ void CommLink_HandleDebugDataC(void)
 
 void CommLink_ProcessDataFromNRF(void)
 {
-    if (control_alt_control_mode == CONTROL_STATE_LANDING)
+    if (control_altitude_mode == CONTROL_STATE_LANDING)
     {
         comm_link_rc_data[IMU_ROLL]   = 1500;
         comm_link_rc_data[IMU_PITCH]  = 1500;
@@ -375,7 +375,7 @@ void CommLink_ProcessDataFromNRF(void)
         {
             comm_link_mcu_state          = COMM_LINK_STATE_DISEN_MCU;
             comm_link_fly_enable_flag    = false;
-            control_alt_control_mode     = CONTROL_STATE_MANUAL;
+            control_altitude_mode        = CONTROL_STATE_MANUAL;
             control_integral_reset_flag  = true;
             control_thrust_z_split_power = 0;
             control_thrust_z_integral    = Control_EstimateThrustRefHover();
@@ -404,7 +404,7 @@ void CommLink_ReceiveDataFromNRF(void)
                     (nrf24l01_rx_data[10] << 8);
                 comm_link_rc_data[IMU_YAW]      = nrf24l01_rx_data[7]  +
                     (nrf24l01_rx_data[8]  << 8);
-                comm_link_rc_data[IMU_THRUST] = nrf24l01_rx_data[5]  +
+                comm_link_rc_data[IMU_THRUST]   = nrf24l01_rx_data[5]  +
                     (nrf24l01_rx_data[6]  << 8);
                 break;
             }

@@ -35,7 +35,7 @@ myyerrol    2017.04.30    Format the module
 #include "stm32f10x_algorithm_control.h"
 #include "stm32f10x_algorithm_imu.h"
 
-u8    control_alt_control_mode;
+u8    control_altitude_mode;
 float control_alt_land;
 float control_thrust_z_integral    = 0;
 float control_thrust_z_split_power = 0;
@@ -80,7 +80,7 @@ void Control_CallPIDAngle(void)
     delta_time    = (timestamp_pre > 0) ? (timestamp_now - timestamp_pre) : 0;
     timestamp_pre = timestamp_now;
 
-    if (control_alt_control_mode == CONTROL_STATE_MANUAL)
+    if (control_altitude_mode == CONTROL_STATE_MANUAL)
     {
         target_angle[IMU_ROLL]  = (float)CommLink_DataStructure.roll;
         target_angle[IMU_PITCH] = (float)CommLink_DataStructure.pitch;
@@ -222,7 +222,7 @@ void Control_SetAltitude(void)
 
     // Only in climb rate mode and landind mode, now we don't work on manual
     // mode.
-    if ((control_alt_control_mode == CONTROL_STATE_MANUAL) ||
+    if ((control_altitude_mode == CONTROL_STATE_MANUAL) ||
         (!comm_link_fly_enable_flag))
     {
         return;
@@ -276,7 +276,7 @@ void Control_SetAltitude(void)
         split_power_z_move_rate * CONTROL_ALT_FEED_FORWARD;
 
     // Consider landing mode.
-    if (control_alt_control_mode == CONTROL_STATE_LANDING)
+    if (control_altitude_mode == CONTROL_STATE_LANDING)
     {
         pos_z_vel_split_power = CONTROL_LAND_SPEED;
     }
@@ -300,7 +300,7 @@ void Control_SetAltitude(void)
     // Limit thrust's min.
     thrust_min = Control_EstimateThrustRefMin();
 
-    if (control_alt_control_mode != CONTROL_STATE_LANDING)
+    if (control_altitude_mode != CONTROL_STATE_LANDING)
     {
         if (-control_thrust_z_split_power < thrust_min)
         {
@@ -413,7 +413,7 @@ void Control_SetMotorPWM(void)
 {
     float tilt_cos = IMU_TableStructure.acc_b[2] / IMU_CONSTANTS_ONE_G;
 
-    if (control_alt_control_mode == CONTROL_STATE_MANUAL)
+    if (control_altitude_mode == CONTROL_STATE_MANUAL)
     {
         output_thrust = CommLink_DataStructure.thr;
         tilt_cos      = IMU_TableStructure.dcm_gb[2][2];

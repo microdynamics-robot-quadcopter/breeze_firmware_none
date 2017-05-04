@@ -98,7 +98,7 @@ typedef struct
     float y;
 } Control_RPYAngle;
 
-extern u8    control_alt_control_mode;
+extern u8    control_altitude_mode;
 extern bool  control_integral_reset_flag;
 extern bool  control_offland_flag;
 extern float control_hover_thrust;

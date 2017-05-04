@@ -26,6 +26,8 @@ myyerrol    2017.04.11    Format the module
 #include "stm32f10x_driver_delay.h"
 #include "stm32f10x_module_battery.h"
 #include "stm32f10x_module_led.h"
+#include "stm32f10x_algorithm_control.h"
+#include "stm32f10x_algorithm_flight.h"
 #include "stm32f10x_algorithm_imu.h"
 
 LED_Buffer       LED_BufferStructure;
@@ -63,6 +65,10 @@ void LED_JumpStateMachine(void)
         // Start the calibration of IMU.
         LED_StateMachineStructure.state = LED_STATE_CALI;
     }
+    if (flight_lost_rc_flag)
+    {
+        LED_StateMachineStructure.state = LED_STATE_LOST_RC;
+    }
     if (!IMU_TableStructure.flag_cali)
     {
         // Fail to calibrate the IMU.
@@ -80,6 +86,10 @@ void LED_JumpStateMachine(void)
     if (Battery_InformationStructure.flag_charge)
     {
         LED_StateMachineStructure.state = LED_STATE_BAT_CHG;
+    }
+    if (control_altitude_mode == CONTROL_STATE_LANDING)
+    {
+        LED_StateMachineStructure.state = LED_STATE_LANDING;
     }
 
     switch (LED_StateMachineStructure.state)
@@ -105,6 +115,22 @@ void LED_JumpStateMachine(void)
             LED_BufferStructure.byte = LED_A | LED_B;
             break;
         }
+        case LED_STATE_BAT_LOW:
+        {
+            if (++LED_StateMachineStructure.state_count >= 3)
+            {
+                LED_StateMachineStructure.state_count = 0;
+            }
+            if (LED_StateMachineStructure.state_count == 0)
+            {
+                LED_BufferStructure.byte = 0x0F;
+            }
+            else
+            {
+                LED_BufferStructure.byte = 0x00;
+            }
+            break;
+        }
         case LED_STATE_CALI_FAIL:
         {
             if (++LED_StateMachineStructure.state_count >= 4)
@@ -121,20 +147,19 @@ void LED_JumpStateMachine(void)
             }
             break;
         }
-        case LED_STATE_BAT_LOW:
+        case LED_STATE_LOST_RC:
         {
-            if (++LED_StateMachineStructure.state_count >= 3)
+            if (++LED_StateMachineStructure.state_count >= 4)
             {
                 LED_StateMachineStructure.state_count = 0;
             }
-            if (LED_StateMachineStructure.state_count == 0)
-            {
-                LED_BufferStructure.byte = 0x0F;
-            }
-            else
-            {
-                LED_BufferStructure.byte = 0x00;
-            }
+            LED_BufferStructure.byte = 1 <<
+                LED_StateMachineStructure.state_count;
+            break;
+        }
+        case LED_STATE_LANDING:
+        {
+            LED_BufferStructure.byte = 0X0F;
             break;
         }
         case LED_STATE_BAT_CHG:

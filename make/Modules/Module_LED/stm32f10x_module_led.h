@@ -60,6 +60,7 @@ myyerrol    2017.04.11    Format the module
 #define LED_STATE_BAT_LOW   3
 #define LED_STATE_BAT_CHG   4
 #define LED_STATE_LOST_RC   5
+#define LED_STATE_LANDING   6
 
 typedef enum
 {

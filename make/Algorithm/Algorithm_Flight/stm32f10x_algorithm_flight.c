@@ -45,7 +45,7 @@ void Flight_SetMode(void)
                 control_offland_flag         = true;
                 control_alt_land             =
                     -Altitude_NEDFrameStructure.pos_z;
-                Control_SetHeadFreeMode(true);
+                Control_SetHeadFreeMode(false);
             }
         }
         else

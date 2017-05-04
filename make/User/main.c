@@ -55,7 +55,7 @@ int main(void)
     {
         if (timer_loop_flag_100hz)
         {
-            timer_loop_flag_100hz = false;
+            timer_loop_flag_100hz    = false;
             IMU_StartSO3Thread();
             altitude_acc_update_flag = true;
             MS5611_UpdateData();
@@ -72,14 +72,17 @@ int main(void)
             Control_CallPIDAngleRate();
             Control_SetMotorPWM();
         }
-
+        // Receive data from NRF24L01.
         NRF24L01_IRQHandler();
-
         if (timer_loop_flag_50hz)
         {
             timer_loop_flag_50hz = false;
             CommLink_ProcessDataFromNRF();
             Flight_SetMode();
+            if (control_altitude_mode == CONTROL_STATE_LANDING)
+            {
+                Flight_StartAutoland();
+            }
             Altitude_CombineData();
             Control_SetAltitude();
             Control_CallPIDAngle();
@@ -102,6 +105,8 @@ int main(void)
                 eeprom_params_request_flag = false;
                 EEPROM_SaveParamsToEEPROM();
             }
+            Flight_HandleFailures();
+            // LED_JumpStateMachine();
         }
     }
 }

@@ -46,7 +46,7 @@ u8 nrf24l01_tx_data[NRF24L01_WIDTH_PAYLOAD_TX];
 u8 nrf24l01_rx_address[NRF24L01_WIDTH_ADDR_RX] =
 {
     0X34,
-    0Xc3,
+    0XC3,
     0X10,
     0X10,
     0X00

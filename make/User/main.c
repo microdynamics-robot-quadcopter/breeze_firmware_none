@@ -49,8 +49,6 @@ int main(void)
     Hardware_Init();
     LED_SetInitialLight();
 
-    LED_A_ON;
-
     while(1)
     {
         if (timer_loop_flag_100hz)
@@ -66,7 +64,6 @@ int main(void)
                     imu_cali_flag                = false;
                     eeprom_params_request_flag   = true;
                     IMU_TableStructure.flag_cali = true;
-                    LED_B_ON;
                 }
             }
             Control_CallPIDAngleRate();
@@ -86,7 +83,7 @@ int main(void)
             Altitude_CombineData();
             Control_SetAltitude();
             Control_CallPIDAngle();
-            CommLink_WriteDebugData();
+            // CommLink_WriteDebugData();
         }
         if (timer_loop_flag_10hz)
         {
@@ -95,10 +92,6 @@ int main(void)
             {
                 battery_check_count = 0;
                 Battery_Check();
-                if (Battery_InformationStructure.flag_alarm)
-                {
-                    LED_D_ON;
-                }
             }
             if (eeprom_params_request_flag)
             {
@@ -106,7 +99,7 @@ int main(void)
                 EEPROM_SaveParamsToEEPROM();
             }
             Flight_HandleFailures();
-            // LED_JumpStateMachine();
+            LED_JumpStateMachine();
         }
     }
 }

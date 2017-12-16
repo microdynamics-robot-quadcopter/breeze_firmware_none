@@ -5,8 +5,6 @@ MCU     := cortex-m3
 DDEFS   += -DSTM32F10X_MD
 DDEFS   += -DHSE_VALUE=8000000 -DUSE_STDPERIPH_DRIVER
 
-SRC_ASM := ../Libraries/CMSIS/startup/gcc/startup_stm32f10x_md.s
-
 DIR_DRIVERS += ../Drivers/Driver_Clock/
 DIR_DRIVERS += ../Drivers/Driver_Delay/
 DIR_DRIVERS += ../Drivers/Driver_EEPROM/
@@ -32,6 +30,13 @@ DIR_ALGORITHM += ../Algorithm/Algorithm_Filter/
 DIR_ALGORITHM += ../Algorithm/Algorithm_Flight/
 DIR_ALGORITHM += ../Algorithm/Algorithm_IMU/
 
+DIR_INCLUDE  += -I../Libraries/CMSIS/ \
+                -I../Libraries/FWLib/inc/ \
+                $(addprefix -I, $(DIR_DRIVERS)) \
+                $(addprefix -I, $(DIR_MODULES)) \
+                $(addprefix -I, $(DIR_ALGORITHM)) \
+                -I../User/ \
+
 SRC_C   += $(wildcard ../Libraries/CMSIS/*.c)
 SRC_C   += $(wildcard ../Libraries/FWLib/src/*.c)
 SRC_C   += $(wildcard $(addsuffix *.c, $(DIR_DRIVERS)))
@@ -39,12 +44,7 @@ SRC_C   += $(wildcard $(addsuffix *.c, $(DIR_MODULES)))
 SRC_C   += $(wildcard $(addsuffix *.c, $(DIR_ALGORITHM)))
 SRC_C   += $(wildcard ../User/*.c)
 
-DIR_INCLUDE  += -I../Libraries/CMSIS/ \
-                -I../Libraries/FWLib/inc/ \
-                $(addprefix -I, $(DIR_DRIVERS)) \
-                $(addprefix -I, $(DIR_MODULES)) \
-                $(addprefix -I, $(DIR_ALGORITHM)) \
-                -I../User/ \
+SRC_ASM := ../Libraries/CMSIS/startup/gcc/startup_stm32f10x_md.s
 
 LINK_SCRIPT := ../Libraries/LinkScript/stm32f10x_flash.lds
 

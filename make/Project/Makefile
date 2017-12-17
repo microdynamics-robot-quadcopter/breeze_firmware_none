@@ -45,14 +45,14 @@ LINK_SCRIPT := ../Libraries/LinkScript/stm32f10x_flash.lds
 
 CC_PREFIX := arm-none-eabi-
 
-CC   := $(CC_PREFIX)gcc
-CXX  := $(CC_PREFIX)g++
-CP   := $(CC_PREFIX)objcopy
-GDB  := $(CC_PREFIX)gdb
-SIZE := $(CC_PREFIX)size
-AS   := $(CC) -x assembler-with-cpp
-HEX  := $(CP) -O ihex
-BIN  := $(CP) -O binary -S
+CC        := $(CC_PREFIX)gcc
+CXX       := $(CC_PREFIX)g++
+CP        := $(CC_PREFIX)objcopy
+GDB       := $(CC_PREFIX)gdb
+SIZE      := $(CC_PREFIX)size
+AS        := $(CC) -x assembler-with-cpp
+HEX       := $(CP) -O ihex
+BIN       := $(CP) -O binary -S
 
 DDEFS += -DSTM32F10X_MD
 DDEFS += -DHSE_VALUE=8000000 -DUSE_STDPERIPH_DRIVER

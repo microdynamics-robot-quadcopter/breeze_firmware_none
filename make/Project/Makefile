@@ -41,6 +41,8 @@ SRC_C   += $(wildcard ../User/*.c)
 
 SRC_ASM := ../Libraries/CMSIS/startup/gcc/startup_stm32f10x_md.s
 
+OBJS    := $(filter %.o, $(SRC_ASM:.s=.o)) $(filter %.o, $(SRC_C:.c=.o))
+
 LINK_SCRIPT := ../Libraries/LinkScript/stm32f10x_flash.lds
 
 CC_PREFIX := arm-none-eabi-
@@ -80,8 +82,6 @@ FLAGS_CXX := $(SPECS) $(FLAGS_MCU) $(OPT) -c -g -gdwarf-2 -mthumb \
 FLAGS_LD  := $(SPECS) $(FLAGS_MCU) $(OPT) -lm -g -gdwarf-2 -mthumb \
              -nostartfiles -Xlinker --gc-sections -T$(LINK_SCRIPT) \
              -Wl,-Map=$(PROJECT).map,--cref,--no-warn-mismatch
-
-OBJS      := $(filter %.o, $(SRC_ASM:.s=.o)) $(filter %.o, $(SRC_C:.c=.o))
 
 TYPE_BURN  := openocd_swd_flash
 TYPE_DEBUG := openocd_swd_debug
